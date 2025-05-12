@@ -1,0 +1,81 @@
+<div nz-row nzJustify="space-between" nzAlign="middle">
+    <h2>Chapas</h2>
+    <button (click)="showModal()" nz-button nzType="primary" [nzSize]="'default'">
+        <span nz-icon nzType="plus" nzTheme="outline"></span>
+        Criar chapa
+    </button>
+</div>
+
+<div class="inner-content">
+    <form nz-form [nzLayout]="'vertical'" [formGroup]="formGroup">
+        <div nz-row nzGutter="16">
+            <div nz-col nzFlex="auto">
+                <nz-form-item>
+                    <input nz-input type="text" formControlName="name" placeholder="Buscar"/>
+                </nz-form-item>
+            </div>
+
+            <div nz-col nzLg="3">
+                <nz-input-group>
+                    <nz-select nzPlaceHolder="Status" formControlName="status">
+                        <nz-option nzValue="" nzLabel="Todos" ngDefaultControl></nz-option>
+                        <nz-option nzValue="true" nzLabel="Ativo"></nz-option>
+                        <nz-option nzValue="false" nzLabel="Inativo"></nz-option>
+                    </nz-select>
+                </nz-input-group>
+            </div>
+
+            <div nz-col>
+                <button nz-button nzType="primary" type="submit" (click)="search()">
+                    <span nz-icon nzType="search" nzTheme="outline" ></span>
+                </button>
+            </div>
+        </div>
+    </form>
+
+        <nz-table
+                  #tableDataPlate
+                  [nzFrontPagination]="false"
+                  [nzShowPagination]="false"
+                  [nzData]="tableData">
+            <thead>
+            <tr>
+                <th>Nome da chapa</th>
+                <th>Ativo</th>
+                <th>Ação</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of tableDataPlate.data" style="position: relative;">
+                <td>{{item.name}}</td>
+                <td>
+                    <nz-switch [(ngModel)]="item.active"
+                               (click)="toggle(item, 'active')"
+                               [disabled]="item.was_voted"></nz-switch>
+                </td>
+                <td>
+                    <nz-space [nzSize]="'small'">
+                        <button *nzSpaceItem nz-button nzType="default" nz-tooltip
+                                nzTooltipTitle="{{item.was_voted? 'Essa chapa está sendo usada':'Editar'}}"
+                                (click)="showEditModal(item)" [disabled]="item.was_voted">
+                            <span nz-icon nzType="edit"></span>
+                        </button>
+                        <button *nzSpaceItem nz-button nzType="default" nz-tooltip
+                                nzTooltipTitle="{{item.was_voted? 'Essa chapa está sendo usada':'Editar'}}"
+                                (click)="showConfirmMessage(item)" [disabled]="item.was_voted">
+                            <span nz-icon nzType="delete"></span>
+                        </button>
+                    </nz-space>
+                </td>
+            </tr>
+            </tbody>
+        </nz-table>
+    <div style="margin-top: 10px; flex-direction: row-reverse; display: flex">
+        <nz-pagination [nzPageIndex]="paginator.nzPageIndex"
+                       [nzTotal]="pageLength"
+                       (nzPageIndexChange)="search()"
+                       (nzPageSizeChange)="search()"
+                       nzShowSizeChanger
+                       [nzPageSize]="paginator.nzPageSize"></nz-pagination>
+    </div>
+</div>

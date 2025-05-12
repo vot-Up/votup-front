@@ -1,0 +1,17 @@
+<div>
+    <nz-list *ngFor="let voter of list_user">
+        <nz-list-item>
+            {{voter.name}}
+        </nz-list-item>
+    </nz-list>
+</div>
+<div *nzModalFooter>
+    <nz-form-control>
+        <button nz-button nzType="default" type="button" (click)="cancel()">Fechar</button>
+        <button nz-button nzType="primary" type="submit"
+                (click)="generateReportVoterPlate()">
+            <span nz-icon nzType="file-pdf" nzTheme="outline"></span>
+            Gerar Relatorio
+        </button>
+    </nz-form-control>
+</div>

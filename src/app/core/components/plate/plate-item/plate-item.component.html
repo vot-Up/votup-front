@@ -1,0 +1,138 @@
+<form nz-form [nzLayout]="'vertical'" [formGroup]="formGroup">
+    <div>
+        <div nz-col nzFlex="4">
+            <nz-form-control nzErrorTip="Este campo é obrigatório.">
+                <div class="header-label" style=" align-items: baseline;">
+                    <div style="height: 32px; display: flex; justify-content: center">
+                        <nz-form-label nzRequired>Nome</nz-form-label>
+                    </div>
+                    <input nz-input type="text" formControlName="name" maxlength="54" style="margin-left: 10px"/>
+                    <div nz-col nzFlex="4" [hidden]="!hide">
+                        <button class="success" nz-button nzType="primary" (click)="savePlate(true)"
+                                [disabled]="!formGroup.valid" style="margin-left: 10px">
+                            <span nz-icon nzType="check" nzTheme="outline"></span>
+                            Salvar
+                        </button>
+                    </div>
+                </div>
+            </nz-form-control>
+        </div>
+    </div>
+</form>
+<div nz-col [hidden]="hide">
+    <div nz-col>
+        <h4>Arraste o presidente e o vice-presidente da chapa:</h4>
+    </div>
+
+    <div cdkDropListGroup nz-row nzGutter="12">
+        <div nz-col nzFlex="6">
+            <div class="list-head" nz-row nzJustify="space-between">
+                <div><strong>Disponíveis</strong></div>
+                <div><strong>{{candidates.length}} pessoas</strong></div>
+            </div>
+            <div class="search-bar">
+                <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                    <input nz-input placeholder="Buscar" [(ngModel)]="searchUser" type="text"/>
+                </nz-input-group>
+            </div>
+            <ng-template #suffixIconButton>
+                <button nz-button nzType="primary" nzSearch (click)="getCandidates()" type="submit">
+                    <span nz-icon nzType="search"></span>
+                </button>
+            </ng-template>
+
+
+            <div cdkDropList #userList="cdkDropList" class="list" id="U"
+                 [cdkDropListData]="candidates" (cdkDropListDropped)="dropItem($event)"
+                 [cdkDropListConnectedTo]="[presidentList, vicePresidentList]">
+                <div nz-row nzAlign="middle" class="list-item" *ngFor="let item of candidates" cdkDrag>
+                    <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    <div nz-col nzFlex="24">
+                        <div nz-row class="flex-1">
+                            <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
+                                <div nz-col>
+                                    <nz-avatar *ngIf="!item.avatar" nzSrc="..\..\..\..\assets\images\avatar.svg"
+                                               nzIcon="user"></nz-avatar>
+                                    <nz-avatar *ngIf="item.avatar" nzSrc="{{item.avatar}}" nzIcon="user"></nz-avatar>
+                                </div>
+                                <div nz-col nzFlex="auto" class="name">
+                                    <div>{{item.name}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div nz-col nzFlex="6">
+            <div class="list-head" nz-row nzJustify="space-between">
+                <div><strong>Presidente</strong></div>
+            </div>
+
+            <div cdkDropList #presidentList="cdkDropList" class="list" id="P"
+                 [cdkDropListData]="presidents" (cdkDropListDropped)="dropItem($event)"
+                 [cdkDropListConnectedTo]="[userList, vicePresidentList]"
+                 style="margin-bottom: 16px; height: 100px;">
+                <div nz-row nzAlign="middle" class="list-item" *ngFor="let item of presidents" cdkDrag>
+                    <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    <div nz-col nzFlex="24">
+                        <div nz-row class="flex-1">
+                            <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
+                                <div nz-col>
+                                    <nz-avatar *ngIf="!item.avatar" nzSrc="..\..\..\..\assets\images\avatar.svg"
+                                               nzIcon="user"></nz-avatar>
+                                    <nz-avatar *ngIf="item.avatar" nzSrc="{{item.avatar}}" nzIcon="user"></nz-avatar>
+                                </div>
+                                <div nz-col nzFlex="auto" class="name">
+                                    <div>{{item.name}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="list-head" nz-row nzJustify="space-between">
+                <div><strong>Vice-presidente</strong></div>
+            </div>
+            <div cdkDropList #vicePresidentList="cdkDropList" class="list" id="V"
+                 [cdkDropListData]="vice_presidents" (cdkDropListDropped)="dropItem($event)"
+                 [cdkDropListConnectedTo]="[userList, presidentList]" style="height: 100px!important;">
+                <div nz-row nzAlign="middle" class="list-item" *ngFor="let item of vice_presidents" cdkDrag>
+                    <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    <div nz-col nzFlex="24">
+                        <div nz-row class="flex-1">
+                            <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
+                                <div nz-col>
+                                    <nz-avatar *ngIf="!item.avatar" nzSrc="..\..\..\..\assets\images\avatar.svg"
+                                               nzIcon="user"></nz-avatar>
+                                    <nz-avatar *ngIf="item.avatar" nzSrc="{{item.avatar}}" nzIcon="user"></nz-avatar>
+                                </div>
+                                <div nz-col nzFlex="auto" class="name">
+                                    <div>{{item.name}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div *nzModalFooter>
+    <button nz-button
+            nzType="default"
+            (click)="close()">Fechar
+    </button>
+    <button class="success"
+            type="submit"
+            [hidden]="hide"
+            nz-button nzType="success"
+            [disabled]="!formGroup.valid"
+            (click)="savePlate(true)">
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+        Salvar
+    </button>
+</div>

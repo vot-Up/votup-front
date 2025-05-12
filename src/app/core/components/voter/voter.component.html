@@ -1,0 +1,93 @@
+<div nz-row nzJustify="space-between" nzAlign="middle">
+    <h2>Eleitores</h2>
+    <button (click)="openModal()" nz-button nzType="primary" [nzSize]="'default'">
+        <span nz-icon nzType="plus" nzTheme="outline"></span>
+        Cadastrar eleitor
+    </button>
+</div>
+
+<div class="inner-content">
+    <form nz-form [formGroup]="formGroup">
+        <div nz-row nzGutter="16">
+            <div nz-col nzFlex="auto">
+                <nz-form-item>
+                    <input nz-input placeholder="Buscar nome de eleitor" formControlName="name"/>
+                </nz-form-item>
+            </div>
+
+            <div nz-col nzLg="{{3}}">
+                <nz-select nzPlaceHolder="Status" formControlName="active">
+                    <nz-option nzValue="true" nzLabel="Ativo"></nz-option>
+                    <nz-option nzValue="false" nzLabel="Inativo"></nz-option>
+                    <nz-option nzValue="" nzLabel="Todos"></nz-option>
+                </nz-select>
+            </div>
+
+            <div nz-col>
+                <button (click)="search()" nz-button nzType="primary">
+                    <span nz-icon nzType="search" nzTheme="outline"></span>
+                </button>
+            </div>
+        </div>
+
+    </form>
+
+    <nz-table
+        #tableDataUser
+        [nzFrontPagination]="false"
+        [nzShowPagination]="false"
+        [nzData]="tableData"
+        (nzCurrentPageDataChange)="changePaginator($event)">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Nome</th>
+            <th>Celular</th>
+            <th>Ativo</th>
+            <th>Ação</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of tableDataUser.data" style="position: relative;"
+            (dblclick)="editElector(data); isUpdate=true"
+            class="clicavel">
+            <td *ngIf="data?.avatar">
+                <div class="image-mask image-small">
+                    <img src="{{data.avatar}}" alt="">
+                </div>
+            </td>
+            <td *ngIf="!data.avatar">
+                <img src="../../../../assets/images/avatar.svg" width="32px" height="32px" alt="">
+            </td>
+            <td>{{ data.name }}</td>
+            <td>{{ data.cellphone | phone}}</td>
+            <td>
+                <nz-switch [(ngModel)]="data.active" (click)="toggle(data, 'active')"
+                ></nz-switch>
+            </td>
+            <td>
+                <nz-space [nzSize]="'small'">
+                    <button *nzSpaceItem nz-button nzType="default" nz-tooltip
+                            nzTooltipTitle="Editar" (click)="editElector(data); isUpdate=true"
+                    >
+                        <span nz-icon nzType="edit"></span>
+                    </button>
+                    <button *nzSpaceItem nz-button nzType="default" nz-tooltip
+                            nzTooltipTitle="Excluir" (click)="excludeElector(data)"
+                    >
+                        <span nz-icon nzType="delete"></span>
+                    </button>
+                </nz-space>
+            </td>
+        </tr>
+        </tbody>
+    </nz-table>
+    <div style="margin-top: 10px; flex-direction: row-reverse; display: flex">
+        <nz-pagination [nzPageIndex]="paginator.nzPageIndex"
+                       [nzTotal]="pageLength"
+                       (nzPageIndexChange)="search()"
+                       (nzPageSizeChange)="search()"
+                       nzShowSizeChanger
+                       [nzPageSize]="paginator.nzPageSize"></nz-pagination>
+    </div>
+</div>

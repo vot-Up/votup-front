@@ -1,0 +1,63 @@
+<div nz-row class="login-main">
+
+    <div class="login-image">
+        <img src="assets/images/login.svg" alt="">
+    </div>
+
+    <div class="login-form-content">
+
+        <div class="logo">
+            <img src="assets/images/logo-urna.svg" height="32px" alt="">
+            Urna Mágica
+        </div>
+
+        <form nz-form class="login-form" [formGroup]="formGroup">
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Por favor, digite seu email!">
+                    <nz-input-group nzPrefixIcon="user">
+                        <input type="text" nz-input formControlName="email" placeholder="Email" autocomplete="off"/>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-control nzErrorTip="Por favor, digite sua senha!">
+                    <nz-input-group nzPrefixIcon="lock">
+                        <input nz-input
+                               placeholder="Senha"
+                               type="password"
+                               [type]="hide ? 'password': 'text'"
+                               formControlName="password"
+                               minlength="4"
+                               maxlength="64"
+                               autocomplete="off"
+                               required>
+                    </nz-input-group>
+                </nz-form-control>
+            </nz-form-item>
+
+            <div class="login-link">
+
+                <a nz-button nzType="link"
+                   (click)="this.router.navigate(['reset-password']).then();">
+                    Esqueceu sua senha?
+                </a>
+            </div>
+
+            <nz-alert nzType="warning" *ngIf="test == true"
+                      class="login-alert"
+                      nzMessage="Usuario não encontrado"
+                      nzShowIcon
+            ></nz-alert>
+
+            <button nzBlock nz-button nzType="primary"
+                    (click)="login()"
+                    [disabled]="!formGroup.valid">
+                Entrar
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+

@@ -1,0 +1,184 @@
+<form nz-form [nzLayout]="'vertical'" [formGroup]="formGroup">
+    <div nz-row nzGutter="16">
+        <div nz-col nzLg="4">
+            <nz-form-item>
+                <nz-form-label nzRequired>Data limite da votação</nz-form-label>
+                <nz-date-picker
+                    nzFormat="dd/MM/yyyy" nzPlaceHolder="Selecione a data"
+                    required formControlName="date"
+                ></nz-date-picker>
+            </nz-form-item>
+        </div>
+
+        <div nz-col nzFlex="auto">
+            <nz-form-item>
+                <nz-form-label [nzSpan]="'vertical'" nzRequired>Nome da votação</nz-form-label>
+                <nz-form-control [nzSpan]="'vertical'" nzErrorTip="Este campo é obrigatório.">
+                    <input nz-input formControlName="description" maxlength="54"/>
+                </nz-form-control>
+            </nz-form-item>
+
+
+
+        </div>
+        <div nz-row nzFlex="4" nzAlign="middle" style="margin-top: 5px" [hidden]="hide">
+            <button class="success"
+                    nz-button nzType="primary" *ngIf="!object.url"
+                    (click)="showConfirmMessageSavePlate()"
+                    [disabled]="!formGroup.valid">
+                <span nz-icon nzType="check" nzTheme="outline"></span>
+                Salvar
+            </button>
+        </div>
+    </div>
+
+
+    <div nz-col *ngIf="object.url">
+        <div nz-col>
+            <h4>Arraste as chapas que partiparão da votação:</h4>
+        </div>
+
+        <div nz-row nzGutter="16">
+
+            <div nz-col nzFlex="12">
+                <div class="list-head" nz-row nzJustify="space-between">
+                    <div><strong>Chapas disponíveis</strong></div>
+                </div>
+                <div
+                    cdkDropList
+                    #plateList="cdkDropList"
+                    [cdkDropListData]="plates"
+                    [cdkDropListConnectedTo]="[addedList]"
+                    class="list"
+                    (cdkDropListDropped)="drop($event, dropTypes.ALL)"
+                    [cdkDropListDisabled]="!object.active">
+                    <div nz-row nzAlign="middle" class="list-item" *ngFor="let item of plates" cdkDrag
+                         [cdkDragData]="item">
+                        <div nz-col nzFlex="24">
+                            <div nz-row nzGutter="8" class="f-w">
+                                <span class="holder" nz-icon nzType="holder" nzTheme="outline"></span>
+                                <div nz-column class="fx-1">
+                                    <div nz-col nzFlex="auto" class="mb-4">
+                                        <strong>{{item.name}}</strong>
+                                    </div>
+                                    <div nz-row nzFlex="auto" class="f-w">
+                                        <div class="fx-1" nz-row nzGutter="8">
+                                            <nz-avatar *ngIf="!getCandidatePlate('P', item).avatar"
+                                                       nzSrc="..\..\..\..\assets\images\avatar.svg" nzIcon="user">
+                                            </nz-avatar>
+                                            <nz-avatar *ngIf="getCandidatePlate('P', item).avatar"
+                                                       nzSrc="{{getCandidatePlate('P', item).avatar}}"
+                                                       nzIcon="user">
+                                            </nz-avatar>
+                                            <div nz-col nzGutter="8" nzFlex="auto">
+                                                <div>{{getCandidatePlate('P', item).name}} </div>
+                                                <div class="fs-12">
+                                                    <strong>Presidente</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="fx-1" nz-row nzGutter="8">
+                                            <nz-avatar *ngIf="!getCandidatePlate('V', item).avatar"
+                                                       nzSrc="..\..\..\..\assets\images\avatar.svg" nzIcon="user">
+                                            </nz-avatar>
+                                            <nz-avatar *ngIf="getCandidatePlate('V', item).avatar"
+                                                       nzSrc="{{getCandidatePlate('V', item).avatar}}"
+                                                       nzIcon="user">
+                                            </nz-avatar>
+                                            <div nz-col>
+                                                <div>{{getCandidatePlate('V', item).name}} </div>
+                                                <div class="fs-12">
+                                                    <strong>Vice-presidente</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="plates.length === 0" nz-col nzAlign="middle" class="no-data-message">
+                                <img src="../../../../../assets/images/no-data.svg" width="64px" alt="">
+                                <span>Nenhum item selecionado</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div nz-col nzFlex="12">
+                <div class="list-head" nz-row nzJustify="space-between">
+                    <div><strong>Chapas participantes</strong></div>
+                </div>
+                <div
+                    cdkDropList
+                    #addedList="cdkDropList"
+                    [cdkDropListData]="plate_added"
+                    [cdkDropListConnectedTo]="[plateList]"
+                    class="list"
+                    (cdkDropListDropped)="drop($event, dropTypes.ADDED)"
+                    [cdkDropListDisabled]="!object.active">
+                    <div nz-row nzAlign="middle" class="list-item" *ngFor="let item of plate_added" cdkDrag
+                         [cdkDragData]="item">
+                        <div nz-col nzFlex="24">
+                            <div nz-row nzGutter="8" class="f-w">
+                                <span class="holder" nz-icon nzType="holder" nzTheme="outline"></span>
+                                <div nz-column class="fx-1">
+                                    <div nz-col nzFlex="auto" class="mb-4">
+                                        <strong>{{item.name}}</strong>
+                                    </div>
+                                    <div nz-row nzFlex="auto" class="f-w">
+                                        <div class="fx-1" nz-row nzGutter="8">
+                                            <nz-avatar *ngIf="!getCandidatePlate('P', item).avatar"
+                                                       nzSrc="..\..\..\..\assets\images\avatar.svg" nzIcon="user">
+                                            </nz-avatar>
+                                            <nz-avatar *ngIf="getCandidatePlate('P', item).avatar"
+                                                       nzSrc="{{getCandidatePlate('P', item).avatar}}"
+                                                       nzIcon="user">
+                                            </nz-avatar>
+                                            <div nz-col nzGutter="8" nzFlex="auto">
+                                                <div>{{getCandidatePlate('P', item).name}} </div>
+                                                <div class="fs-12">
+                                                    <strong>Presidente</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="fx-1" nz-row nzGutter="8">
+                                            <nz-avatar *ngIf="!getCandidatePlate('V', item).avatar"
+                                                       nzSrc="..\..\..\..\assets\images\avatar.svg" nzIcon="user">
+                                            </nz-avatar>
+                                            <nz-avatar *ngIf="getCandidatePlate('V', item).avatar"
+                                                       nzSrc="{{getCandidatePlate('V', item).avatar}}"
+                                                       nzIcon="user">
+                                            </nz-avatar>
+                                            <div nz-col>
+                                                <div>{{getCandidatePlate('V', item).name}} </div>
+                                                <div class="fs-12">
+                                                    <strong>Vice-presidente</strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="plate_added.length === 0" nz-col nzAlign="middle" class="no-data-message">
+                            <img src="../../../../../assets/images/no-data.svg" width="64px" alt="">
+                            <span>Nenhum item selecionado</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</form>
+
+<div *nzModalFooter>
+    <button nz-button nzType="default" (click)="close()">Fechar</button>
+    <button class="success" *ngIf="object.url" nz-button nzType="primary" (click)="showConfirmMessageSavePlate(true)">
+        <span nz-icon nzType="check" nzTheme="outline"></span>
+        Salvar
+    </button>
+</div>

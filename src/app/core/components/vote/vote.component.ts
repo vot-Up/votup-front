@@ -1,0 +1,232 @@
+import {AfterContentInit, AfterViewInit, Component, EventEmitter, Injector, OnInit} from '@angular/core';
+import {VoteItemComponent} from "./vote-item/vote-item.component";
+import {NzModalService} from "ng-zorro-antd/modal";
+import {Voting} from "../../../../models/core/voting";
+import {BaseComponent} from "../../base.component";
+import {URLS} from "../../../app/app.urls";
+import {takeUntil} from "rxjs";
+import {DatePipe} from "@angular/common";
+import {RankingComponent} from "./ranking/ranking.component";
+import {NzMessageService} from "ng-zorro-antd/message";
+import {Utils} from "../../../../utilities/utils";
+import {ResumeVoteComponent} from "./resume-vote/resume-vote.component";
+import {BaseService} from "../../../../services/base.service";
+import {Plate} from "../../../../models/core/plate";
+import {AuthService} from "../../../../services/auth.service";
+
+@Component({
+    selector: 'app-vote',
+    templateUrl: './vote.component.html',
+    styleUrls: ['./vote.component.less']
+})
+export class VoteComponent extends BaseComponent<Voting> implements OnInit {
+    public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
+    public isVoteActive = false;
+    public plateService: BaseService<Plate>;
+    public object: Voting = new Voting()
+    public hasPermissionValue: boolean
+
+    constructor(public injector: Injector,
+                private modalService: NzModalService,
+                private datePipe: DatePipe,
+                public authService: AuthService,
+                public toast: NzMessageService,
+    ) {
+        super(injector, {endpoint: URLS.VOTING, searchOnInit: true});
+        this.plateService = this.createService(Plate, URLS.PLATE);
+    }
+
+
+    public createFormGroup(): void {
+        this.formGroup = this.formBuilder.group({
+            active: [null],
+            description: [null],
+            start_date: [null],
+            final_date: [null]
+        })
+    }
+
+    public search(): void {
+        this.service.clearParameter();
+        if (this.v.active) {
+            this.service.addParameter("active", this.v.active)
+        }
+        if (this.v.description) {
+            this.service.addParameter("description", this.v.description)
+        }
+        if (this.v.start_date) {
+
+            const dateObject_start = new Date(this.v.start_date);
+            const formattedDate_start = this.datePipe.transform(
+                dateObject_start, 'yyyy-MM-dd 00:00:00'
+            );
+
+            this.service.addParameter("start_date", formattedDate_start)
+        }
+        if (this.v.final_date) {
+            const dateObject_final = new Date(this.v.final_date);
+            const formattedDate_final = this.datePipe.transform(
+                dateObject_final, 'yyyy-MM-dd 23:59:59'
+            );
+            this.service.addParameter("final_date", formattedDate_final)
+        }
+        super.search(() => {
+            this.modalClosedEmitter = new EventEmitter<void>();
+            this.isVoteActive = (this.tableData.find(vote => vote.active === true) != undefined)
+        })
+    }
+
+    public delete(value): void {
+        this.service.clearParameter();
+        this.service.delete(value.id)
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(() => {
+                this.search();
+            });
+    }
+
+    public showModal(voting?: Voting, isNew = false): void {
+        const data = {isVoteActive: this.isVoteActive};
+
+        if (voting !== undefined) {
+            data['pk'] = voting.id;
+            data['voting'] = voting;
+        }
+        this.modalService.create({
+            nzWidth: '80%',
+            nzCentered: true,
+            nzTitle: 'Criar votação',
+            nzContent: VoteItemComponent,
+            nzAfterClose: this.modalClosedEmitter,
+            nzData: data
+        });
+
+        this.modalClosedEmitter
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(() => {
+                this.search();
+            });
+    }
+
+    public showConfirmMessage(value): void {
+        this.modalService.confirm({
+            nzTitle: 'Tem certeza de que quer apagar essa votação?',
+            nzOkText: 'Sim',
+            nzOkType: 'primary',
+            nzOkDanger: true,
+            nzOnOk: () => this.delete(value),
+            nzCancelText: 'Não',
+            nzAfterClose: this.modalClosedEmitter
+        });
+        this.modalClosedEmitter
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(() => {
+                this.search();
+            });
+    }
+
+    public showCloseVoteMessage(vote): void {
+        this.modalService.confirm({
+            nzTitle: 'Tem certeza que deseja encerrar essa votação?',
+            nzOkText: 'Sim',
+            nzCancelText: 'Não',
+            nzOkType: 'primary',
+            nzOkDanger: true,
+            nzOnOk: () => this.closeVote(vote),
+            nzAfterClose: this.modalClosedEmitter,
+        });
+        this.modalClosedEmitter.pipe(takeUntil(this.unsubscribe))
+            .subscribe(() => {
+                this.search();
+            });
+    }
+
+    public closeVote(vote: Voting): void {
+        const payload = {
+            "vote_id": vote.id
+        }
+        this.service.clearParameter()
+        this.service.patchFromListRoute("close_vote", payload)
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(response => {
+                if (response['message']) {
+                    this.toast.create('success', response['message']);
+                }
+            })
+    }
+
+    public activeVote(vote: Voting): void {
+        const payload = {
+            "vote_id": vote.id
+        };
+        this.service.clearParameter();
+        this.service.patchFromListRoute("active_vote", payload)
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(response => {
+                if (response['message']) {
+                    this.toast.create('success', response['message']);
+                }
+            })
+    }
+
+
+    public showEditVote(voting) {
+        this.modalService.create({
+            nzWidth: '80%',
+            nzCentered: true,
+            nzTitle: 'Resultado',
+            nzContent: ResumeVoteComponent,
+            nzAfterClose: this.modalClosedEmitter,
+            nzData: {voting: voting}
+        });
+        this.modalClosedEmitter
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(() => {
+                this.search();
+            });
+    }
+
+    public showRanking(votingId): void {
+        this.modalService.create({
+            nzWidth: '80%',
+            nzCentered: true,
+            nzTitle: 'Resultado',
+            nzContent: RankingComponent,
+            nzAfterClose: this.modalClosedEmitter,
+            nzData: {pk: votingId.id}
+        });
+        this.modalClosedEmitter
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(() => {
+                this.search();
+            });
+    }
+
+    public activeVoteModal(vote: Voting) {
+        this.modalService.confirm({
+            nzTitle: 'Tem certeza que reativar essa votaçao?',
+            nzOkText: 'Sim',
+            nzCancelText: 'Não',
+            nzOkType: 'primary',
+            nzOkDanger: true,
+            nzOnOk: () => this.activeVote(vote),
+            nzAfterClose: this.modalClosedEmitter,
+        });
+        this.modalClosedEmitter
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(() => {
+                this.search();
+            });
+    }
+
+    public generateReportResume(id_resume_vote: number): void {
+        const payload = {};
+        payload["resume_vote"] = id_resume_vote;
+        this.service.loadFile("resume_report", payload)
+            .subscribe(response => {
+                Utils.downloadFileFromBlob(response, "resume.pdf");
+            });
+    }
+
+
+}

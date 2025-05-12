@@ -1,0 +1,39 @@
+<nz-table
+    #basicTable [nzData]="ranking"
+    [nzFrontPagination]="false"
+    [nzShowPagination]="false"
+>
+    <thead>
+    <tr>
+        <th>Chapas</th>
+        <th>Quantidade de votos</th>
+        <th>Votos</th>
+        <!--        <th>Resultado</th>-->
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let items of basicTable.data" style="position: relative;">
+        <td>{{items.plate__name}}</td>
+        <td><strong>{{items.total}}</strong></td>
+        <td>
+            <button nz-button nzType="default" nzTooltipPlacement=""
+                    (click)="openModal(items)"
+                    nz-tooltip
+                    nzTooltipTitle="Resumo Usuarios"
+                    class="table-action-button">
+                <span nz-icon nzType="form" nzTheme="outline"></span>
+            </button>
+        </td>
+    </tr>
+    </tbody>
+</nz-table>
+<div *nzModalFooter>
+    <nz-form-control>
+        <button nz-button nzType="default" type="button" (click)="cancel()">Fechar</button>
+        <button nz-button nzType="primary" type="submit"
+                (click)="generateReportVoterPlate()">
+            <span nz-icon nzType="file-pdf" nzTheme="outline"></span>
+            Gerar Relatorio
+        </button>
+    </nz-form-control>
+</div>

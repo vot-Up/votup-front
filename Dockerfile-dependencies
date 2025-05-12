@@ -1,0 +1,11 @@
+FROM node:18.18.0
+
+ENV APP_PATH  /tmp
+
+WORKDIR $APP_PATH
+
+USER root
+
+ADD package.json $APP_PATH
+
+RUN npm install

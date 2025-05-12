@@ -1,0 +1,50 @@
+<div nz-row class="login-main" *ngIf="!isVoting">
+
+
+
+    <div class="login-image">
+        <img src="assets/images/login.svg" alt="">
+    </div>
+
+    <div class="login-form-content">
+        <div class="logo">
+            <img src="assets/images/logo-urna.svg" height="32px" alt="">
+            Urna Mágica
+        </div>
+
+        <div nz-col class="labels">
+            <div nz-col>
+                <span>Vamos lá!</span>
+            </div>
+            <div nz-col>
+                <span>Digite o seu telefone para votar.</span>
+            </div>
+        </div>
+
+        <div nz-col>
+            <form class="login-form" nz-form nz-col [formGroup]="formGroup" (ngSubmit)="getVotingUser()">
+                <nz-form-item>
+                    <nz-form-control nzErrorTip="Número de telefone inválido">
+                        <nz-input-group nzPrefixIcon="phone">
+                            <input required nz-input type="text" formControlName="phone" maxlength="15"
+                                   placeholder="(99) 99999-9999" [mask]="'(00) 00000-0000'"/>
+                        </nz-input-group>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+            <div nz-col class="button-voter" >
+                <nz-space nzSize="small">
+                    <button class="login-email" *nzSpaceItem nz-button nzType="primary" (click)="getVotingUser()"
+                            [disabled]="!formGroup.valid">
+                        Prosseguir
+                    </button>
+                    <button class="login-email" *nzSpaceItem nz-button nzType="primary" (click)="this.router.navigate(['main']).then()">
+                        Cancelar
+                    </button>
+                </nz-space>
+
+            </div>
+        </div>
+    </div>
+</div>
+<app-voting *ngIf="isVoting" [votingUser]="votingUser" (finishVote)="newVote()" ></app-voting>

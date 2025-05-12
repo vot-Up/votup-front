@@ -1,0 +1,59 @@
+<form nz-form [formGroup]="formGroup" novalidate>
+    <div nz-row nzJustify="space-evenly center">
+        <nz-form-item class="full-width">
+            <ng-container>
+                <div nz-row>
+                    <div nz-col class="mr-36-8">
+                        <div class="image-mask">
+                            <div *ngIf="!avatar">
+                                <img width="80px" src='..\..\..\..\assets\images\avatar.svg' alt="avatar">
+                            </div>
+                            <img [src]="avatar" *ngIf="avatar" alt="">
+                        </div>
+                        <input #image type="file" accept=".jpeg,.png,.jpg" (change)="changeFile($event)" hidden>
+                    </div>
+                    <div nz-row style="align-items: center;">
+                        <button nz-button nzType="primary" type="button" (click)="image.click()"
+                                style="margin-right: 8px;">
+                            Nova foto
+                        </button>
+                        <button nz-button nzType="default" [disabled]="!avatar" type="button" (click)="clearFile()"> Deletar</button>
+                    </div>
+                </div>
+            </ng-container>
+        </nz-form-item>
+    </div>
+    <div nz-col>
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name"> Nome</nz-form-label>
+            <nz-form-control nzErrorTip="Nome inválido!">
+                <input nz-input
+                       type="text"
+                       maxlength="64"
+                       placeholder="Digite o nome completo"
+                       formControlName="name"/>
+            </nz-form-control>
+        </nz-form-item>
+
+
+        <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired> Celular</nz-form-label>
+            <nz-form-control nzErrorTip="Número inválido!">
+                <input nz-input id="cell" formControlName="cellphone" maxlength="15" type="text"
+                       [mask]="'(00) 00000-0000'" placeholder="Ex.: (92) 99999-9999"/>
+            </nz-form-control>
+        </nz-form-item>
+    </div>
+    <div *nzModalFooter>
+        <nz-form-control>
+            <button nz-button nzType="default" type="button" (click)="cancel()">Fechar</button>
+            <button class="success" nz-button nzType="primary" type="submit"
+                    (click)="saveOrUpdate()" [disabled]="!formGroup.valid">
+                <span nz-icon nzType="check" nzTheme="outline"></span>
+                Salvar
+            </button>
+        </nz-form-control>
+    </div>
+</form>
+
+

@@ -20,6 +20,7 @@
     "@angular/platform-browser-dynamic": "^17.3.12",
     "@angular/router": "^17.3.12",
     "@ant-design/icons": "^5.2.5",
+    "@ctrl/tinycolor": "^4.1.0",
     "howler": "^2.2.4",
     "jwt-decode": "^3.1.2",
     "ng-zorro-antd": "^17.4.1",

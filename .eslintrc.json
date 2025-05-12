@@ -1,0 +1,53 @@
+{
+    "root": true,
+    "ignorePatterns": ["projects/**/*"],
+    "overrides": [
+        {
+            "files": ["*.ts"],
+            "parser": "@typescript-eslint/parser",
+            "parserOptions": {
+                "project": [
+                    "tsconfig.json",
+                    "tsconfig.app.json",
+                    "tsconfig.spec.json",
+                    "e2e/tsconfig.json"
+                ],
+                "createDefaultProgram": true
+            },
+            "plugins": ["@angular-eslint", "@typescript-eslint"],
+            "extends": [
+                "plugin:@angular-eslint/recommended",
+                "plugin:@angular-eslint/template/process-inline-templates",
+                "plugin:@typescript-eslint/recommended"
+            ],
+            "rules": {
+                "@typescript-eslint/no-empty-function": "off",
+                "@angular-eslint/directive-selector": [
+                    "warn",
+                    { "type": "attribute", "prefix": "app", "style": "camelCase" }
+                ],
+                "@angular-eslint/component-selector": [
+                    "warn",
+                    { "type": "element", "prefix": "app", "style": "kebab-case" }
+                ],
+                // Ignora variáveis e parâmetros chamados exatamente "ex", o type parameter "K" ou variáveis/eventos "e"
+                "@typescript-eslint/no-unused-vars": [
+                    "warn",
+                    {
+                        "varsIgnorePattern": "^(?:ex|K|e)$",
+                        "argsIgnorePattern": "^(?:ex|e|route|state|nextState|event|)$"
+                    }
+                ],
+                "@typescript-eslint/no-explicit-any": "warn"
+            }
+        },
+        {
+            "files": ["*.html"],
+            "plugins": ["@angular-eslint/template"],
+            "extends": ["plugin:@angular-eslint/template/recommended"],
+            "rules": {
+                "@angular-eslint/template/prefer-control-flow": "warn"
+            }
+        }
+    ]
+}

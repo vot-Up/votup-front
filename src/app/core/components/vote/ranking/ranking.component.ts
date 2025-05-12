@@ -4,8 +4,6 @@ import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
 import {Observable, of, takeUntil} from "rxjs";
 import {Utils} from "../../../../../utilities/utils";
-import {Plate} from "../../../../../models/core/plate";
-import {UsersItemComponent} from "../../users/users-item/users-item.component";
 import {RankingItemComponent} from "./ranking-item/ranking-item.component";
 
 interface Ranking {
@@ -67,7 +65,6 @@ export class RankingComponent extends BaseComponent<null> implements OnInit {
         }
         return plateWithMostVotes;
     }
-
 
 
     public openModal(plate): void {

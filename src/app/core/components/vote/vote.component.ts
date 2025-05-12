@@ -1,4 +1,4 @@
-import {AfterContentInit, AfterViewInit, Component, EventEmitter, Injector, OnInit} from '@angular/core';
+import {Component, EventEmitter, Injector, OnInit} from '@angular/core';
 import {VoteItemComponent} from "./vote-item/vote-item.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {Voting} from "../../../../models/core/voting";
@@ -85,7 +85,7 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
             });
     }
 
-    public showModal(voting?: Voting, isNew = false): void {
+    public showModal(voting?: Voting): void {
         const data = {isVoteActive: this.isVoteActive};
 
         if (voting !== undefined) {

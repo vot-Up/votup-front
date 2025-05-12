@@ -1,10 +1,18 @@
-import {ActivatedRouteSnapshot, CanActivate, CanDeactivate, CanLoad, Route, Router, RouterStateSnapshot} from "@angular/router";
+import {
+    ActivatedRouteSnapshot,
+    CanActivate,
+    CanDeactivate,
+    CanLoad,
+    Route,
+    Router,
+    RouterStateSnapshot
+} from "@angular/router";
 import {Injectable} from "@angular/core";
 import {AuthService} from "../../services/auth.service";
 import {AppVariables} from "./app.variables";
 
 @Injectable()
-export class AppGuard implements CanActivate, CanLoad, CanDeactivate<{}> {
+export class AppGuard implements CanActivate, CanLoad, CanDeactivate<any> {
 
     constructor(public variables: AppVariables,
                 public authService: AuthService,

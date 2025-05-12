@@ -1,7 +1,7 @@
-import {Component, Inject, Injector} from '@angular/core';
+import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {Voter} from "../../../../../models/core/voter";
 import {SafeUrl} from "@angular/platform-browser";
-import {Observable, of, Subject, takeUntil} from "rxjs";
+import {Observable, of, takeUntil} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
@@ -14,7 +14,7 @@ import {BaseComponent} from "../../../base.component";
     templateUrl: './voter-item.component.html',
     styleUrls: ['./voter-item.component.less']
 })
-export class VoterItemComponent extends BaseComponent<Voter> {
+export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
     public object: Voter = new Voter();
     public items: Voter[] = [];
     public avatar: SafeUrl;
@@ -41,7 +41,7 @@ export class VoterItemComponent extends BaseComponent<Voter> {
             } else {
                 this.loadFile();
             }
-            if(this.data.voter) {
+            if (this.data.voter) {
                 this.object = this.data.voter;
             }
         });
@@ -111,7 +111,7 @@ export class VoterItemComponent extends BaseComponent<Voter> {
             this.formGroup.removeControl("password");
         }
 
-        super.saveOrUpdateFormData((event) => {
+        super.saveOrUpdateFormData(() => {
             this.message('success')
             this.modal.closeAll();
         });

@@ -1,7 +1,6 @@
 import {HttpClient, HttpHeaders, HttpParams, HttpUserEvent} from "@angular/common/http";
 import {catchError, map, tap} from "rxjs/operators";
 import {from, Observable, throwError} from "rxjs";
-import {webSocket} from "rxjs/webSocket";
 import {PaginatedResult} from "../dto/paginated-result";
 import {environment} from "../environments/environment";
 

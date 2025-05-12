@@ -4,14 +4,13 @@ import {URLS} from "../../app/app.urls";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {VotingUser} from "../../../models/core/voting-user";
 import {take} from "rxjs/operators";
-import {CustomValidators} from "../../../utilities/validator/custom-validators";
 
 @Component({
     selector: 'app-login-elector',
     templateUrl: './login-elector.component.html',
     styleUrls: ['./login-elector.component.less']
 })
-export class LoginElector extends BaseComponent<VotingUser> {
+export class LoginElectorComponent extends BaseComponent<VotingUser> {
 
     public votingUser: VotingUser;
     public isVoting = false;
@@ -44,6 +43,7 @@ export class LoginElector extends BaseComponent<VotingUser> {
         this.f.phone.setValue("")
     }
 
-    public cancel() {}
+    public cancel() {
+    }
 
 }

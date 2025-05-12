@@ -8,7 +8,7 @@
 
         <div class="logo">
             <img src="assets/images/logo-urna.svg" height="32px" alt="">
-            Urna Mágica
+           VotUp
         </div>
 
         <form nz-form class="login-form" [formGroup]="formGroup">
@@ -43,11 +43,13 @@
                 </a>
             </div>
 
-            <nz-alert nzType="warning" *ngIf="test == true"
-                      class="login-alert"
-                      nzMessage="Usuario não encontrado"
-                      nzShowIcon
-            ></nz-alert>
+            @if (test) {
+                <nz-alert nzType="warning"
+                          class="login-alert"
+                          nzMessage="Usuario não encontrado"
+                          nzShowIcon
+                ></nz-alert>
+            }
 
             <button nzBlock nz-button nzType="primary"
                     (click)="login()"

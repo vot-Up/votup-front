@@ -1,47 +1,55 @@
 <nz-layout class="layout">
-    <nz-header *ngIf="isHiddenMenu()" class="header-up">
-        <div class="logo">
-            <img src="assets/images/logo-urna.svg" height="32px" alt="">
-            Urna Mágica
-        </div>
-        <ul nz-menu nzTheme="light" nzMode="horizontal">
-            <li nz-menu-item>
-                <a routerLink="/core/vote" routerLinkActive="active">
-                    Votação
-                </a>
-            </li>
-            <li nz-menu-item>
-                <a routerLink="/core/candidate_group" routerLinkActive="active">
-                    Chapas
-                </a>
-            </li>
-            <li nz-menu-item>
-                <a routerLink="/core/users" routerLinkActive="active">
-                    Usuários
-                </a>
-            </li>
-            <li nz-menu-item>
-                <a routerLink="/core/voters" routerLinkActive="active">
-                    Eleitores
-                </a>
-            </li>
-            <li nz-menu-item>
-                <a routerLink="/core/candidates" routerLinkActive="active">
-                    Candidatos
-                </a>
-            </li>
-        </ul>
-        <div class="space"></div>
-        <div class="header-username" *ngIf="authService.isLoggedIn()">Olá, <strong>{{authService.user.name}}</strong>
-        </div>
-        <button nz-button nzType="text" *ngIf="authService.isLoggedIn()"
-                (click)="this.authService.logout(true, true);">
-            Sair
-        </button>
-    </nz-header>
-    <nz-content>
-        <router-outlet></router-outlet>
-    </nz-content>
-    <nz-footer *ngIf="isHiddenMenu()">Urna Mágica ©2023 Todos os direitos reservados</nz-footer>
+  @if (isHiddenMenu()) {
+    <nz-header class="header-up">
+      <div class="logo">
+        <img src="assets/images/logo-urna.svg" height="32px" alt="">
+       VotUp
+      </div>
+      <ul nz-menu nzTheme="light" nzMode="horizontal">
+        <li nz-menu-item>
+          <a routerLink="/core/vote" routerLinkActive="active">
+            Votação
+          </a>
+        </li>
+        <li nz-menu-item>
+          <a routerLink="/core/candidate_group" routerLinkActive="active">
+            Chapas
+          </a>
+        </li>
+        <li nz-menu-item>
+          <a routerLink="/core/users" routerLinkActive="active">
+            Usuários
+          </a>
+        </li>
+        <li nz-menu-item>
+          <a routerLink="/core/voters" routerLinkActive="active">
+            Eleitores
+          </a>
+        </li>
+        <li nz-menu-item>
+          <a routerLink="/core/candidates" routerLinkActive="active">
+            Candidatos
+          </a>
+        </li>
+      </ul>
+      <div class="space"></div>
+      @if (authService.isLoggedIn()) {
+        <div class="header-username">Olá, <strong>{{authService.user.name}}</strong>
+      </div>
+    }
+    @if (authService.isLoggedIn()) {
+      <button nz-button nzType="text"
+        (click)="this.authService.logout(true, true);">
+        Sair
+      </button>
+    }
+  </nz-header>
+}
+<nz-content>
+  <router-outlet></router-outlet>
+</nz-content>
+@if (isHiddenMenu()) {
+  <nz-footer>Urna Mágica ©2023 Todos os direitos reservados</nz-footer>
+}
 </nz-layout>
 <audio id="audioElement" src="assets/audios/login-wellcome.mp3"></audio>

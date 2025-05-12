@@ -1,5 +1,3 @@
-import {User} from "../models/core/user";
-
 interface IUser {
     // items: any,
     loading: boolean

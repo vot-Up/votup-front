@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, Input} from '@angular/core';
+import {Component, EventEmitter, Injector, Input, OnInit} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../base.component";
 import {URLS} from "../../../app/app.urls";
@@ -13,7 +13,7 @@ import {User} from "../../../../models/core/user";
     templateUrl: './candidate.component.html',
     styleUrls: ['./candidate.component.less']
 })
-export class CandidateComponent extends BaseComponent<Candidate> {
+export class CandidateComponent extends BaseComponent<Candidate> implements OnInit {
     @Input() candidate: Candidate
 
     public object: Candidate = new Candidate();
@@ -30,7 +30,7 @@ export class CandidateComponent extends BaseComponent<Candidate> {
         super(injector, {endpoint: URLS.CANDIDATE, retrieveOnInit: true, searchOnInit: true});
     }
 
-    ngOnInit(): void {
+    public ngOnInit(): void {
         super.ngOnInit(() => this.candidateLogged = this.authService.user);
     }
 
@@ -105,7 +105,7 @@ export class CandidateComponent extends BaseComponent<Candidate> {
         this.service.clearParameter();
         this.service.getFromListRoute('get_candidate_associate')
             .pipe(takeUntil(this.unsubscribe))
-            .subscribe(response => {
+            .subscribe(() => {
             });
 
     }

@@ -2,7 +2,7 @@ import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {CdkDragDrop, transferArrayItem} from "@angular/cdk/drag-drop";
 import {Plate} from "../../../../../models/core/plate";
 import {URLS} from "../../../../app/app.urls";
-import {Observable, of, takeUntil} from "rxjs";
+import {takeUntil} from "rxjs";
 import {BaseComponent} from "../../../base.component";
 import {BaseService} from "../../../../../services/base.service";
 import {PlateUser} from "../../../../../models/core/plate-user";

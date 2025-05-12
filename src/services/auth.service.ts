@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import {shareReplay, tap} from "rxjs/operators";
 import {Router} from "@angular/router";
 import {environment} from "../environments/environment";
@@ -55,7 +55,7 @@ export class AuthService {
     private setToken(response: AuthResponse) {
         if (response) {
             this.storage.setItem("token", response.token.access);
-            this.user;
+            // this.user;
         }
     }
 

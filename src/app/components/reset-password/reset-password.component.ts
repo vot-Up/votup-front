@@ -35,7 +35,7 @@ export class ResetPasswordComponent extends BaseComponent<User> {
     }
 
     public getValidUser() {
-        let payload = {
+        const payload = {
             "cellphone": this.v.cellphone,
             "email": this.v.email,
             "new_password": this.v.new_password

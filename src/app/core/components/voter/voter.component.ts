@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, Input} from '@angular/core';
+import {Component, EventEmitter, Injector, Input, OnInit} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../base.component";
 import {URLS} from "../../../app/app.urls";
@@ -12,7 +12,7 @@ import {VoterItemComponent} from "./voter-item/voter-item.component";
     templateUrl: './voter.component.html',
     styleUrls: ['./voter.component.less']
 })
-export class VoterComponent extends BaseComponent<Voter> {
+export class VoterComponent extends BaseComponent<Voter> implements OnInit {
     @Input() voter: Voter
 
     public object: Voter = new Voter();
@@ -111,5 +111,6 @@ export class VoterComponent extends BaseComponent<Voter> {
 
 
     public changePaginator(event: any): void {
+        console.log(event)
     }
 }

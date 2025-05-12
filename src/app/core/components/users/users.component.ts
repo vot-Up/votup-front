@@ -121,5 +121,6 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
 
 
     public changePaginator(event: any): void {
+        console.log(event)
     }
 }

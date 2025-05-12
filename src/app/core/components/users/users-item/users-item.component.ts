@@ -74,7 +74,7 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
             file_name: ['file_name'],
             password: [123456],
             is_active: [true],
-            is_superuser: [this.data?.user ? this.data?.user?.is_superuser: false]
+            is_superuser: [this.data?.user ? this.data?.user?.is_superuser : false]
         });
     }
 
@@ -127,7 +127,7 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
             this.formGroup.removeControl("password");
         }
 
-        super.saveOrUpdateFormData((event) => {
+        super.saveOrUpdateFormData(() => {
             this.message('success')
             this.modal.closeAll();
         });

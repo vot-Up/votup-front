@@ -16,7 +16,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {NzToolTipModule} from "ng-zorro-antd/tooltip";
 import {NzDatePickerComponent, NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {DragDropModule} from "@angular/cdk/drag-drop";
-import {HttpClientModule} from "@angular/common/http";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 import {NzLayoutModule} from "ng-zorro-antd/layout";
 import {NzMenuModule} from "ng-zorro-antd/menu";
 import {NzBreadCrumbModule} from "ng-zorro-antd/breadcrumb";
@@ -49,8 +49,7 @@ import {NzListModule} from "ng-zorro-antd/list";
 import {NzCollapseModule} from "ng-zorro-antd/collapse";
 
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         VoteComponent,
         UsersComponent,
         PlateComponent,
@@ -64,10 +63,10 @@ import {NzCollapseModule} from "ng-zorro-antd/collapse";
         ResumeVoteComponent,
         RankingItemComponent,
     ],
-    imports: [
-        CommonModule,
+    exports: [
+        VotingComponent
+    ], imports: [CommonModule,
         FormsModule,
-        HttpClientModule,
         NzLayoutModule,
         NzMenuModule,
         NzBreadCrumbModule,
@@ -99,16 +98,11 @@ import {NzCollapseModule} from "ng-zorro-antd/collapse";
         NzCommentModule,
         SharedModule,
         NzListModule,
-        NzCollapseModule,
-    ],
-    exports: [
-        VotingComponent
-    ],
-    providers: [
+        NzCollapseModule], providers: [
         AppGuard,
         AuthService,
-        NzDatePickerComponent
-    ]
-})
+        NzDatePickerComponent,
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class CoreModule {
 }

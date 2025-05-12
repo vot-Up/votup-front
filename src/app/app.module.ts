@@ -4,7 +4,7 @@ import {DatePipe, registerLocaleData} from '@angular/common';
 import {en_US, NZ_I18N} from 'ng-zorro-antd/i18n';
 import pt from '@angular/common/locales/pt-PT';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {NzLayoutModule} from "ng-zorro-antd/layout";
 import {NzMenuModule} from "ng-zorro-antd/menu";
@@ -36,7 +36,7 @@ import {MainComponent} from './components/main/main.component';
 import {CellphoneFormatePipe} from "../utilities/validator/cellphone-formate.pipe";
 import {UserService} from "../services/user.service";
 import {AuthInterceptor} from "../utilities/validator/auth.interceptor";
-import {LoginElector} from "./components/login-elector/login-elector.component";
+import {LoginElectorComponent} from "./components/login-elector/login-elector.component";
 import {CoreModule} from "./core/core.module";
 import {NgxMaskDirective, NgxMaskPipe, provideNgxMask} from "ngx-mask";
 import {SharedModule} from "./shared/shared.module";
@@ -48,20 +48,20 @@ import {NzPaginationModule} from "ng-zorro-antd/pagination";
 
 registerLocaleData(pt);
 
-@NgModule({
-    declarations: [
+@NgModule({ declarations: [
         AppComponent,
         LoginComponent,
         MainComponent,
-        LoginElector,
+        LoginElectorComponent,
         CellphoneFormatePipe,
         ResetPasswordComponent,
         VoterComponent,
         CandidateComponent
     ],
-    imports: [
-        FormsModule,
-        HttpClientModule,
+    exports: [
+        CellphoneFormatePipe
+    ],
+    bootstrap: [AppComponent], imports: [FormsModule,
         BrowserAnimationsModule,
         NzLayoutModule,
         NzMenuModule,
@@ -88,13 +88,8 @@ registerLocaleData(pt);
         NgxMaskDirective,
         NgxMaskPipe,
         SharedModule,
-        NzPaginationModule,
-    ],
-    exports: [
-        CellphoneFormatePipe
-    ],
-    providers: [
-        {provide: NZ_I18N, useValue: en_US},
+        NzPaginationModule], providers: [
+        { provide: NZ_I18N, useValue: en_US },
         {
             provide: HTTP_INTERCEPTORS,
             useClass: AuthInterceptor,
@@ -108,9 +103,8 @@ registerLocaleData(pt);
         DatePipe,
         UserService,
         NzMessageService,
-        provideNgxMask()
-    ],
-    bootstrap: [AppComponent]
-})
+        provideNgxMask(),
+        provideHttpClient(withInterceptorsFromDi())
+    ] })
 export class AppModule {
 }

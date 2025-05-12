@@ -19,7 +19,7 @@ export const EVENT = {
 
 export interface BaseOptions {
     pk?: string;
-    paramsOnInit?: {};
+    paramsOnInit?: object;
     endpoint: string;
     retrieveOnInit?: boolean;
     retrieveIdRoute?: string;
@@ -46,9 +46,9 @@ export abstract class BaseComponent<T> implements OnInit, OnDestroy {
     public router: Router
     public formBuilder: FormBuilder;
     public formGroup: FormGroup;
-    public object: T | {};
+    public object: T | object;
     public tableData: T[] = [];
-    public rawObject: T | {};
+    public rawObject: T | object;
     public activatedRoute: ActivatedRoute;
     public pageLength = 0;
     @ViewChild(NzPaginationComponent, {static: true}) paginator: NzPaginationComponent;

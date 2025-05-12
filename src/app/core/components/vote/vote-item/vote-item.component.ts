@@ -14,10 +14,6 @@ import {DatePipe} from "@angular/common";
 import {Candidate} from "../../../../../models/core/candidate";
 
 
-interface DialogData {
-    voting: Voting;
-}
-
 enum DropListTypes {
     ALL, ADDED
 }

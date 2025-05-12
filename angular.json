@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "urna_magica": {
+        "votup": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:browser",
                     "options": {
-                        "outputPath": "dist/urna_magica",
+                        "outputPath": "dist/votup",
                         "index": "src/index.html",
                         "main": "src/main.ts",
                         "polyfills": [
@@ -70,10 +70,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "browserTarget": "urna_magica:build:production"
+                            "browserTarget": "votup:build:production"
                         },
                         "development": {
-                            "browserTarget": "urna_magica:build:development"
+                            "browserTarget": "votup:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -81,7 +81,7 @@
                 "extract-i18n": {
                     "builder": "@angular-devkit/build-angular:extract-i18n",
                     "options": {
-                        "browserTarget": "urna_magica:build"
+                        "browserTarget": "votup:build"
                     }
                 },
                 "test": {

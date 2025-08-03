@@ -8,7 +8,7 @@ export class Candidate extends ModelBase {
     last_login: Date
     is_superuser: boolean
     is_staff: boolean
-    avatar: any
+    avatar_url: any
     file_name: string
     active: boolean
     disabled: boolean

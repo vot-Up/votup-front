@@ -1,7 +1,7 @@
 export const URLS = {
     //core
-    TOKEN: "/api/votup/token/",
-    USER: "/api/votup/user/",
+    TOKEN: "/api/account/token/",
+    USER: "/api/account/user/",
     VOTE: "/api/votup/voter/",
     CANDIDATE: "/api/votup/candidate/",
     PLATE: "/api/votup/plate/",

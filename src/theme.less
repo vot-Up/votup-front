@@ -2,47 +2,110 @@
 // For more information: https://ng.ant.design/docs/customize-theme/en
 @import "../node_modules/ng-zorro-antd/ng-zorro-antd.less";
 
-// Override less variables to here
+// DESIGN.MD TOKENS
+@colors-primary: #9fe870;
+@colors-primary-active: #cdffad;
+@colors-canvas: #ffffff;
+@colors-canvas-soft: #e8ebe6;
+@colors-ink: #0e0f0c;
+@colors-body: #454745;
+@colors-mute: #868685;
+@colors-positive: #2ead4b;
+@colors-negative: #d03238;
+@colors-border-subtle: rgba(0, 0, 0, .06);
+@colors-border-strong: rgba(0, 0, 0, .12);
+@colors-shadow-subtle: rgba(14, 15, 12, .12);
+@colors-surface-muted: #f5f5f5;
+@colors-placeholder: #bdbdbd;
+@colors-border-muted: #e3e3e3;
+@colors-row-hover: #f2fbe9;
+@shadow-drag-preview: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+
+@spacing-xxs: 2px;
+@spacing-xs: 4px;
+@spacing-sm: 8px;
+@spacing-md: 12px;
+@spacing-lg: 16px;
+@spacing-xl: 24px;
+@spacing-2xl: 32px;
+@spacing-3xl: 48px;
+
+@rounded-none: 0;
+@rounded-sm: 8px;
+@rounded-md: 12px;
+@rounded-lg: 16px;
+@rounded-xl: 24px;
+@rounded-pill: 9999px;
+@rounded-full: 9999px;
+
+@typography-display-mega: 126px;
+@typography-display-xxl: 96px;
+@typography-display-xl: 64px;
+@typography-display-lg: 47px;
+@typography-display-md: 40px;
+@typography-display-sm: 32px;
+@typography-display-xs: 24px;
+@typography-body-lg: 20px;
+@typography-body-md: 16px;
+@typography-body-sm: 14px;
+@typography-caption: 12px;
+@typography-button-md: 16px;
+
+@font-weight-display: 900;
+@font-weight-semibold: 600;
+@font-weight-regular: 400;
+
+// NG-ZORRO OVERRIDES
 // View all variables: https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/components/style/themes/default.less
+@primary-color: @colors-primary;
+@font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+@text-color: @colors-body;
+@heading-color: @colors-ink;
+@border-radius-base: @rounded-md;
+@btn-border-radius-base: @rounded-xl;
+@btn-border-radius-sm: @rounded-lg;
 
-// -------- Colors -----------
-// >>> Primary
-@primary-color: #00875A;
+// SHARED MIXINS
+@import 'styles/expandable-list';
 
+// COMPONENT STYLES
 body {
-    background-color: #F2F5FD;
+    background-color: @colors-canvas-soft;
+    color: @colors-body;
+    font-family: @font-family;
 }
 
 h2 {
     margin-bottom: 0;
+    color: @colors-ink;
 }
 
 .logo {
-    margin-right: 24px;
+    margin-right: @spacing-xl;
     float: left;
-    font-size: 15px;
-    font-weight: bold;
-    color: #5B6075;
+    font-size: @typography-body-sm;
+    font-weight: @font-weight-semibold;
+    color: @colors-body;
 
     img {
-        margin-top: -8px;
+        margin-top: -@spacing-sm;
     }
 }
 
 .ant-layout,
 .ant-layout-footer {
-    background-color: #F2F5FD;
+    background-color: @colors-canvas-soft;
 }
 
 .ant-layout-header {
-    padding: 0 110px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 8px #f0f1f2;
+    padding: 0 @spacing-2xl;
+    background-color: @colors-canvas;
+    box-shadow: 0 2px @spacing-sm @colors-shadow-subtle;
     align-items: center;
 }
 
 .ant-layout-footer {
-    font-size: 12px;
+    font-size: @typography-caption;
     opacity: .55;
 }
 
@@ -65,14 +128,20 @@ nz-header {
 }
 
 nz-content {
-    padding: 32px 110px;
-    margin-top: 64px;
+    padding: @spacing-lg @spacing-md calc(@spacing-3xl + 64px);
+    margin-top: 0;
+}
+
+@media (min-width: 768px) {
+    nz-content {
+        padding: @spacing-xl @spacing-2xl @spacing-2xl;
+    }
 }
 
 .inner-content {
-    background: #fff;
-    padding: 24px;
-    margin-top: 16px;
+    background: @colors-canvas;
+    padding: @spacing-xl;
+    margin-top: @spacing-lg;
 }
 
 nz-footer {
@@ -81,9 +150,9 @@ nz-footer {
 
 .ant-menu-item {
     line-height: 32px;
-    border: 1px solid #ffffff;
-    margin-right: 4px;
-    border-radius: 100px;
+    border: 1px solid @colors-canvas;
+    margin-right: @spacing-xs;
+    border-radius: @rounded-pill;
 }
 
 .ant-menu-horizontal {
@@ -96,7 +165,7 @@ nz-footer {
 }
 
 .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item {
-    padding: 0 12px;
+    padding: 0 @spacing-md;
 }
 
 .ant-menu-item.ant-menu-item-selected {
@@ -113,10 +182,10 @@ nz-footer {
 }
 
 .header-username {
-    border-right: 1px solid rgba(0, 0, 0, .12);
-    line-height: 24px;
-    padding-right: 8px;
-    margin-right: 8px;
+    border-right: 1px solid @colors-border-strong;
+    line-height: @spacing-xl;
+    padding-right: @spacing-sm;
+    margin-right: @spacing-sm;
 }
 
 .logout {
@@ -124,7 +193,7 @@ nz-footer {
 }
 
 .ant-table table {
-    border: 1px solid rgba(0, 0, 0, .06);
+    border: 1px solid @colors-border-subtle;
     border-bottom: 0;
 }
 
@@ -135,16 +204,16 @@ nz-footer {
 
 .ant-modal {
     .ant-modal-header {
-        background: #fff;
-        color: #ffffff;
+        background: @colors-canvas;
+        color: @colors-canvas;
 
         .ant-modal-title {
-            color: #5B6075;
+            color: @colors-body;
         }
     }
 
     .ant-modal-close {
-        color: #5B6075;
+        color: @colors-body;
     }
 }
 
@@ -153,39 +222,37 @@ nz-footer {
 .list {
     height: 380px;
     overflow-y: auto;
-    background-color: #ffffff;
-    border: 1px solid rgba(0, 0, 0, .06);
+    background-color: @colors-canvas;
+    border: 1px solid @colors-border-subtle;
     display: block;
 }
 
 .list-item {
-    padding: 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, .06);
+    padding: @spacing-sm;
+    border-bottom: 1px solid @colors-border-subtle;
     cursor: move;
-    background: #ffffff;
+    background: @colors-canvas;
 
     &:hover {
-        background-color: aliceblue;
+        background-color: @colors-row-hover;
     }
 }
 
 .list-head {
-    background-color: #f5f5f5;
-    border: 1px solid rgba(0, 0, 0, .06);
+    background-color: @colors-surface-muted;
+    border: 1px solid @colors-border-subtle;
     border-bottom: 0;
-    padding: 8px;
+    padding: @spacing-sm;
 }
 
 .anticon-holder {
-    margin-right: 8px;
+    margin-right: @spacing-sm;
 }
 
 .cdk-drag-preview {
     box-sizing: border-box;
-    border-radius: 4px;
-    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    border-radius: @rounded-sm;
+    box-shadow: @shadow-drag-preview;
 }
 
 .cdk-drag-placeholder {
@@ -205,7 +272,7 @@ nz-footer {
 }
 
 .no-data-message {
-    color: #BDBDBD;
+    color: @colors-placeholder;
     align-items: center;
     text-align: center;
     height: 100%;
@@ -214,7 +281,7 @@ nz-footer {
     justify-content: center;
 
     img {
-        margin-bottom: 4px;
+        margin-bottom: @spacing-xs;
     }
 }
 
@@ -223,31 +290,31 @@ nz-footer {
 }
 
 .mgb-8 {
-    margin-bottom: 8px;
+    margin-bottom: @spacing-sm;
 }
 
 .president-label {
-    font-size: 12px;
+    font-size: @typography-caption;
     opacity: .5;
 }
 
 .search-bar {
-    border: 1px solid rgba(0, 0, 0, 0.06);
+    border: 1px solid @colors-border-subtle;
     border-bottom: 0;
-    padding: 8px
+    padding: @spacing-sm
 }
 
 /* END DRAG AND DROP */
 
 .success {
-    background-color: #27ae60;
-    border: 1px solid #27ae60;
-    color: #ffffff;
+    background-color: @colors-positive;
+    border: 1px solid @colors-positive;
+    color: @colors-canvas;
 
     &:hover {
-        background-color: #17964D;
-        border: 1px solid #17964D;
-        color: #ffffff;
+        background-color: darken(@colors-positive, 8%);
+        border: 1px solid darken(@colors-positive, 8%);
+        color: @colors-canvas;
     }
 }
 
@@ -257,7 +324,7 @@ nz-footer {
     height: 80px;
     border-radius: 50%;
     overflow: hidden;
-    border: 1px solid #e3e3e3;
+    border: 1px solid @colors-border-muted;
 
     &.image-small {
         width: 32px;

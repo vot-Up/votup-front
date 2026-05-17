@@ -1,44 +1,24 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
-import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
-import {ActivatedRoute, Router} from "@angular/router";
-import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
-import { NzSpaceComponent, NzSpaceItemDirective, NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import {Router} from "@angular/router";
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-    selector: 'app-login-elector',
+    selector: 'app-main',
     templateUrl: './main.component.html',
     styleUrls: ['./main.component.less'],
-    imports: [NzRowDirective, NzColDirective, NzSpaceComponent, NzSpaceItemDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective]
+    imports: [NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective]
 })
-export class MainComponent implements OnInit {
-  private fb = inject(UntypedFormBuilder);
-  route = inject(ActivatedRoute);
+export class MainComponent {
   router = inject(Router);
 
-  validateForm!: UntypedFormGroup;
-    public url = signal<string>("/");
-
-  submitForm(): void {
-      if (!this.validateForm.valid) {
-          Object.values(this.validateForm.controls).forEach(control => {
-              if (control.invalid) {
-                  control.markAsDirty();
-                  control.updateValueAndValidity({onlySelf: true});
-              }
-          });
-      }
+  goToCreateVote(): void {
+      this.router.navigate(['login']).then();
   }
 
-  ngOnInit(): void {
-    this.validateForm = this.fb.group({
-      userName: [null, [Validators.required]],
-      password: [null, [Validators.required]],
-      remember: [true]
-    });
-      this.url.set(this.route.snapshot.queryParams["u"] || "/");
+  goToLoginElector(): void {
+      this.router.navigate(['login-elector']).then();
   }
 }

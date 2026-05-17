@@ -1,21 +1,17 @@
-<div nz-row class="login-main">
-
-    <div class="login-image">
-        <img src="assets/images/login.svg" alt="">
-    </div>
-
-    <div class="login-form-content">
-
+<section class="login-page">
+    <div class="login-panel">
         <div class="logo">
-            <img src="../../../assets/images/logo-votup.svg" height="32px" alt="">
-           VotUp
+            <img src="../../../assets/images/logo-votup.svg" height="32" alt="VotUp">
+            <span>VotUp</span>
         </div>
+        <h1>Bem-vindo de volta</h1>
+        <p>Entre com seu email e senha para acessar o painel administrativo.</p>
 
         <form nz-form class="login-form" [formGroup]="formGroup">
             <nz-form-item>
                 <nz-form-control nzErrorTip="Por favor, digite seu email!">
                     <nz-input-group nzPrefixIcon="user">
-                        <input type="text" nz-input formControlName="email" placeholder="Email" autocomplete="off"/>
+                        <input type="email" nz-input formControlName="email" placeholder="Email" autocomplete="off"/>
                     </nz-input-group>
                 </nz-form-control>
             </nz-form-item>
@@ -36,30 +32,22 @@
             </nz-form-item>
 
             <div class="login-link">
-
-                <a nz-button nzType="link"
-                   (click)="this.router.navigate(['reset-password']).then();">
+                <a nz-button nzType="link" (click)="this.router.navigate(['reset-password']).then();">
                     Esqueceu sua senha?
                 </a>
             </div>
 
             @if (test()) {
-                <nz-alert nzType="warning"
-                          class="login-alert"
-                          nzMessage="Usuario não encontrado"
-                          nzShowIcon
-                ></nz-alert>
+                <nz-alert nzType="warning" class="login-alert" nzMessage="Usuario não encontrado" nzShowIcon></nz-alert>
             }
 
-            <button nzBlock nz-button nzType="primary"
-                    (click)="login()"
-                    [disabled]="!formGroup.valid">
+            <button nzBlock nz-button nzType="primary" class="submit-button" (click)="login()" [disabled]="!formGroup.valid">
                 Entrar
             </button>
-
         </form>
-
     </div>
-
-</div>
+    <div class="login-visual">
+        <img src="assets/images/login.svg" alt="Ilustração de login">
+    </div>
+</section>
 

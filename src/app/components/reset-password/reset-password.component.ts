@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import {CustomValidators} from "../../../utilities/validator/custom-validators";
 import {User} from "../../../models/core/user";
 import {BaseComponent} from "../../core/base.component";
@@ -6,11 +7,8 @@ import {URLS} from "../../app/app.urls";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {BaseService} from "../../../services/base.service";
 import {takeUntil} from "rxjs";
-import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzFormDirective, NzFormItemComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
 import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
-import { NzSpaceCompactItemDirective, NzSpaceComponent, NzSpaceItemDirective } from 'ng-zorro-antd/space';
 import { NzInputGroupComponent, NzInputDirective } from 'ng-zorro-antd/input';
 import { LowercaseDirective } from '../../../utilities/lowercase.directive';
 import { NgxMaskDirective } from 'ngx-mask';
@@ -22,7 +20,7 @@ import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
     styleUrls: ['./reset-password.component.less'],
-    imports: [NzRowDirective, NzColDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzFormControlComponent, ɵNzTransitionPatchDirective, NzSpaceCompactItemDirective, NzInputGroupComponent, NzInputDirective, LowercaseDirective, NgxMaskDirective, NzSpaceComponent, NzSpaceItemDirective, NzButtonComponent, NzWaveDirective]
+    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzFormControlComponent, ɵNzTransitionPatchDirective, NzInputGroupComponent, NzInputDirective, LowercaseDirective, NgxMaskDirective, NzButtonComponent, NzWaveDirective]
 })
 export class ResetPasswordComponent extends BaseComponent<User> {
     messageService = inject(NzMessageService);
@@ -40,12 +38,10 @@ export class ResetPasswordComponent extends BaseComponent<User> {
 
     public createFormGroup(): void {
         this.formGroup = this.formBuilder.group({
-            cellphone: [null, CustomValidators.required],
-            email: [null, CustomValidators.compose([
-                CustomValidators.validEmail
-            ])],
-            new_password: [null, CustomValidators.required]
-        })
+            cellphone: [null, Validators.required],
+            email: [null, [Validators.required, CustomValidators.validEmail]],
+            new_password: [null, Validators.required]
+        });
     }
 
     public getValidUser() {

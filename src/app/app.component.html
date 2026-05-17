@@ -1,55 +1,33 @@
 <nz-layout class="layout">
   @if (hiddenMenu()) {
-    <nz-header class="header-up">
-      <div class="logo">
-        <img src="../assets/images/logo-votup.svg" height="32px" alt="">
-       VotUp
+    <header class="shell-header">
+      <div class="brand">
+        <img src="../assets/images/logo-votup.svg" height="32" alt="VotUp">
+        <span>VotUp</span>
       </div>
-      <ul nz-menu nzTheme="light" nzMode="horizontal">
-        <li nz-menu-item>
-          <a routerLink="/core/vote" routerLinkActive="active">
-            Votação
-          </a>
-        </li>
-        <li nz-menu-item>
-          <a routerLink="/core/candidate_group" routerLinkActive="active">
-            Chapas
-          </a>
-        </li>
-        <li nz-menu-item>
-          <a routerLink="/core/users" routerLinkActive="active">
-            Usuários
-          </a>
-        </li>
-        <li nz-menu-item>
-          <a routerLink="/core/voters" routerLinkActive="active">
-            Eleitores
-          </a>
-        </li>
-        <li nz-menu-item>
-          <a routerLink="/core/candidates" routerLinkActive="active">
-            Candidatos
-          </a>
-        </li>
-      </ul>
-      <div class="space"></div>
       @if (authService.isLoggedIn()) {
-        <div class="header-username">Olá, <strong>{{authService.user.name}}</strong>
-      </div>
-    }
-    @if (authService.isLoggedIn()) {
-      <button nz-button nzType="text"
-        (click)="this.authService.logout(true, true);">
-        Sair
-      </button>
-    }
-  </nz-header>
-}
-<nz-content>
-  <router-outlet></router-outlet>
-</nz-content>
-@if (hiddenMenu()) {
-  <nz-footer>votUp ©202x Todos os direitos reservados</nz-footer>
-}
+        <div class="user-area">
+          <div class="user-copy">Olá, <strong>{{ authService.user.name }}</strong></div>
+          <button nz-button nzType="text" class="logout-button" (click)="logout()">Sair</button>
+        </div>
+      }
+    </header>
+    <nav class="shell-nav" aria-label="Navegação principal">
+      @for (item of navItems; track item.path) {
+        <a
+          class="shell-nav-item"
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <span nz-icon [nzType]="item.icon" nzTheme="outline"></span>
+          <span class="shell-nav-label">{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+  }
+  <nz-content>
+    <router-outlet></router-outlet>
+  </nz-content>
 </nz-layout>
 <audio id="audioElement" src="assets/audios/login-wellcome.mp3"></audio>

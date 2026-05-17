@@ -1,0 +1,119 @@
+@import (reference) "../theme.less";
+
+.layout {
+    min-height: 100vh;
+}
+
+.shell-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: @spacing-lg;
+    padding: @spacing-md @spacing-lg;
+    background: @colors-canvas;
+    border-bottom: 1px solid @colors-border-subtle;
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: @spacing-sm;
+    color: @colors-ink;
+    font-size: @typography-body-sm;
+    font-weight: @font-weight-semibold;
+}
+
+.user-area {
+    display: inline-flex;
+    align-items: center;
+    gap: @spacing-sm;
+    color: @colors-body;
+}
+
+.user-copy {
+    font-size: @typography-body-sm;
+}
+
+.logout-button {
+    padding-inline: @spacing-sm;
+}
+
+.shell-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    padding: @spacing-xs;
+    background: @colors-canvas;
+    border-top: 1px solid @colors-border-subtle;
+    box-shadow: 0 -8px 24px @colors-shadow-subtle;
+}
+
+.shell-nav-item {
+    min-height: 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: @spacing-xxs;
+    padding: @spacing-sm @spacing-xs;
+    border-radius: @rounded-lg;
+    color: @colors-body;
+    text-decoration: none;
+    font-size: @typography-caption;
+    font-weight: @font-weight-semibold;
+}
+
+.shell-nav-item.active {
+    color: @colors-primary;
+    background: fade(@colors-primary, 14%);
+}
+
+.shell-nav-item [nz-icon] {
+    font-size: 18px;
+}
+
+.shell-nav-label {
+    line-height: 1;
+}
+
+nz-content {
+    padding: @spacing-lg @spacing-md calc(@spacing-3xl + 64px);
+}
+
+@media (min-width: 768px) {
+    .shell-header {
+        padding: @spacing-lg @spacing-2xl;
+    }
+
+    .shell-nav {
+        position: sticky;
+        top: 0;
+        bottom: auto;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: @spacing-xs;
+        padding: @spacing-sm @spacing-2xl;
+        border-top: 0;
+        border-bottom: 1px solid @colors-border-subtle;
+    }
+
+    .shell-nav-item {
+        min-height: 48px;
+        flex-direction: row;
+        padding: @spacing-sm @spacing-md;
+    }
+
+    .shell-nav-label {
+        font-size: @typography-body-sm;
+    }
+
+    nz-content {
+        padding: @spacing-xl @spacing-2xl @spacing-2xl;
+    }
+}

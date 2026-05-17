@@ -1,45 +1,59 @@
-.login-main {
-    height: 100vh;
-    margin: -96px -110px;
+@import (reference) "../../../theme.less";
+
+.login-page {
+    min-height: 100vh;
     display: flex;
+    flex-direction: column;
+    gap: @spacing-2xl;
+    background: @colors-canvas-soft;
+    padding: @spacing-xl @spacing-lg;
+}
+
+.login-panel,
+.login-visual {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-panel {
+    gap: @spacing-lg;
 }
 
 .logo {
-    margin-bottom: 32px;
-    margin-right: 0;
-    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: @spacing-sm;
+    color: @colors-ink;
+    font-size: @typography-body-sm;
+    font-weight: @font-weight-semibold;
 
     img {
-        margin-top: -8px;
+        margin-top: -@spacing-xs;
     }
 }
 
-.login-image {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    background-color: #00875A;
+h1 {
+    margin: 0;
+    color: @colors-ink;
+    font-size: clamp(32px, 7vw, @typography-display-md);
+    font-weight: @font-weight-display;
+    line-height: .95;
 }
 
-.login-form-content {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+p {
+    margin: 0;
+    color: @colors-body;
+    font-size: @typography-body-md;
 }
 
 .login-form {
-    width: 300px;
+    width: 100%;
+    max-width: 420px;
 }
 
 .login-link {
     text-align: right;
-    margin-bottom: 16px;
-    margin-top: -16px;
+    margin-bottom: @spacing-md;
 
     a {
         padding: 0;
@@ -47,7 +61,38 @@
 }
 
 .login-alert {
-    border: red;
-    color: red;
-    margin-bottom: 16px;
+    margin-bottom: @spacing-md;
+}
+
+.submit-button {
+    min-height: 48px;
+    border-radius: @rounded-xl;
+}
+
+.login-visual {
+    align-items: center;
+
+    img {
+        max-width: min(100%, 520px);
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+}
+
+@media (min-width: 768px) {
+    .login-page {
+        flex-direction: row;
+        align-items: center;
+        padding: @spacing-3xl @spacing-2xl;
+    }
+
+    .login-panel,
+    .login-visual {
+        width: 50%;
+    }
+
+    .login-visual {
+        justify-content: flex-end;
+    }
 }

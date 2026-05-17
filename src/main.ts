@@ -14,7 +14,6 @@ import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
 import { DatePipe } from '@angular/common';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -58,7 +57,6 @@ bootstrapApplication(AppComponent, {
       FormsModule,
       ReactiveFormsModule,
       NzLayoutModule,
-      NzMenuModule,
       NzBreadCrumbModule,
       NzGridModule,
       NzButtonModule,

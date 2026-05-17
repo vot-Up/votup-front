@@ -1,0 +1,288 @@
+// ============================================================================
+// Expandable List Mixins — Mobile-First Admin Pattern
+// ============================================================================
+// Reusable Less mixins for the "compact list with expand" pattern used by
+// all admin list components (Voter, Candidate, Users, Plate, Vote).
+//
+// Design tokens from theme.less:
+//   @colors-primary, @colors-ink, @colors-body, @colors-mute,
+//   @colors-positive, @colors-canvas, @colors-canvas-soft,
+//   @colors-border-subtle, @colors-border-strong, @colors-shadow-subtle,
+//   @colors-row-hover, @colors-surface-muted, @colors-placeholder,
+//   @spacing-*, @rounded-*, @typography-*, @font-weight-*
+// ============================================================================
+
+// ----------------------------------------------------------------------------
+// .expandable-list-container()
+// Wrapper mixin for the entire list. Provides background, spacing, and border.
+// ----------------------------------------------------------------------------
+.expandable-list-container() {
+  background: @colors-canvas;
+  border: 1px solid @colors-border-subtle;
+  border-radius: @rounded-md;
+  overflow: hidden;
+
+  // Remove outer border when items are present (items have their own borders)
+  .expandable-list-item {
+    border-bottom: 1px solid @colors-border-subtle;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// .expandable-list-item()
+// The main row of each list item. Contains avatar (optional), primary text,
+// status badge, and chevron indicator. Touch target ≥ 48px.
+// ----------------------------------------------------------------------------
+.expandable-list-item() {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: @spacing-md @spacing-lg;
+  cursor: pointer;
+  background: @colors-canvas;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: @colors-row-hover;
+  }
+
+  // Avatar area (optional — rendered only when element exists)
+  .expandable-list-avatar {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: @rounded-pill;
+    overflow: hidden;
+    border: 1px solid @colors-border-muted;
+    margin-right: @spacing-md;
+
+    img {
+      object-fit: cover;
+      object-position: center;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // Primary field (name, description, etc.)
+  .expandable-list-primary {
+    flex: 1;
+    min-width: 0; // Allow text truncation
+    font-size: @typography-body-md;
+    font-weight: @font-weight-semibold;
+    color: @colors-ink;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  // Status badge container
+  .expandable-list-status {
+    flex-shrink: 0;
+    margin-left: @spacing-sm;
+    margin-right: @spacing-md;
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: @spacing-xs @spacing-md;
+      border-radius: @rounded-pill;
+      font-size: @typography-caption;
+      font-weight: @font-weight-semibold;
+      line-height: 1;
+      white-space: nowrap;
+
+      &.status-active {
+        background-color: fade(@colors-positive, 12%);
+        color: @colors-positive;
+      }
+
+      &.status-inactive {
+        background-color: @colors-surface-muted;
+        color: @colors-mute;
+      }
+    }
+  }
+
+  // Chevron indicator (expand/collapse)
+  .expandable-list-chevron {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    color: @colors-mute;
+    transition: transform 0.25s ease;
+
+    .anticon {
+      font-size: @typography-body-sm;
+    }
+  }
+
+  // Expanded state — rotate chevron
+  &.expanded {
+    .expandable-list-chevron {
+      transform: rotate(180deg);
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+// .expandable-list-expanded()
+// The expanded/collapsed detail area below the main row.
+// Contains secondary fields and action buttons.
+// ----------------------------------------------------------------------------
+.expandable-list-expanded() {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.2s ease, padding 0.3s ease;
+  background: @colors-canvas-soft;
+  padding: 0 @spacing-lg;
+
+  // When the parent item is expanded
+  &.open {
+    max-height: 500px; // Generous max for various content
+    opacity: 1;
+    padding: @spacing-md @spacing-lg @spacing-lg;
+  }
+
+  // Secondary fields grid
+  .expandable-list-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: @spacing-sm @spacing-xl;
+    margin-bottom: @spacing-md;
+
+    .expandable-list-field {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+
+      .field-label {
+        font-size: @typography-caption;
+        color: @colors-mute;
+        margin-bottom: @spacing-xxs;
+      }
+
+      .field-value {
+        font-size: @typography-body-sm;
+        color: @colors-ink;
+        word-break: break-word;
+      }
+    }
+  }
+
+  // Action buttons row
+  .expandable-list-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: @spacing-sm;
+    padding-top: @spacing-sm;
+    border-top: 1px solid @colors-border-subtle;
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: @spacing-xs;
+      padding: @spacing-sm @spacing-md;
+      min-height: 48px; // Touch target
+      border: 1px solid @colors-border-subtle;
+      border-radius: @rounded-lg;
+      background: @colors-canvas;
+      color: @colors-body;
+      font-size: @typography-body-sm;
+      cursor: pointer;
+      transition: all 0.15s ease;
+
+      &:hover {
+        background-color: @colors-row-hover;
+        border-color: @colors-primary;
+        color: @colors-ink;
+      }
+
+      &:active {
+        background-color: @colors-primary-active;
+      }
+
+      &.action-danger {
+        color: @colors-negative;
+
+        &:hover {
+          border-color: @colors-negative;
+          background-color: fade(@colors-negative, 6%);
+        }
+      }
+
+      .anticon {
+        font-size: @typography-body-md;
+      }
+    }
+  }
+}
+
+// ============================================================================
+// Responsive Overrides — Mobile (< 768px)
+// ============================================================================
+@media (max-width: 767px) {
+  .expandable-list-item() {
+    padding: @spacing-sm @spacing-md;
+
+    .expandable-list-avatar {
+      width: 36px;
+      height: 36px;
+      margin-right: @spacing-sm;
+    }
+
+    .expandable-list-primary {
+      font-size: @typography-body-sm;
+    }
+
+    .expandable-list-status {
+      margin-left: @spacing-xs;
+      margin-right: @spacing-sm;
+
+      .status-badge {
+        padding: @spacing-xxs @spacing-sm;
+        font-size: 11px;
+      }
+    }
+  }
+
+  .expandable-list-expanded() {
+    padding-left: @spacing-md;
+    padding-right: @spacing-md;
+
+    &.open {
+      padding: @spacing-md;
+    }
+
+    .expandable-list-fields {
+      // Stack fields vertically on mobile
+      grid-template-columns: 1fr;
+      gap: @spacing-sm;
+    }
+
+    .expandable-list-actions {
+      // Stack actions vertically on mobile
+      flex-direction: column;
+
+      .action-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+
+  // Container: full-width on mobile
+  .expandable-list-container() {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+}

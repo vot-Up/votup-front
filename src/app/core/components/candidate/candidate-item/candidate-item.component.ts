@@ -37,6 +37,7 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
     public typeImage = ["image/jpeg", "image/png", "image/jpg"];
     public imageCurrent = signal(false);
     public hasImage = signal(false);
+    private selectedFile: Blob | null = null;
 
     constructor() {
 
@@ -95,6 +96,7 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
                     this.f.avatar.setValue(file);
                     this.avatar.set(reader.result as string);
                     this.hasImage.set(true);
+                    this.selectedFile = file;
 
                 };
             }
@@ -110,7 +112,7 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
 
             this.f.avatar.patchValue(file);
             this.selectedFile = file;
-            this.hasImage = true;
+            this.hasImage.set(true);
         }
     }
 
@@ -123,6 +125,7 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
         this.avatar.set(null);
         this.f.avatar.reset();
         this.object.update(obj => ({ ...obj, avatar: null }));
+        this.selectedFile = null;
 
     }
 
@@ -136,11 +139,12 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
         super.saveOrUpdateFormData((event: any) => {
             this.message('success');
 
-            const candidateId = event.body?.id || this.object.id;
+            const candidateId = this.object().id;
 
-            if (this.hasImage && this.selectedFile) {
+            if (candidateId && this.hasImage() && this.selectedFile) {
                 const formData = new FormData();
-                formData.append('avatar', this.selectedFile, this.selectedFile.name);  // ✅ CORRETO!
+                const fileName = this.selectedFile instanceof File ? this.selectedFile.name : "avatar.jpg";
+                formData.append('avatar', this.selectedFile, fileName);
 
                 this.service.postFromDetailRoute(candidateId, 'upload-avatar', formData)
                     .pipe(takeUntil(this.unsubscribe))

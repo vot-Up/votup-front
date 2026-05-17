@@ -15,6 +15,7 @@ import {Plate} from "../../../../models/core/plate";
 import {AuthService} from "../../../../services/auth.service";
 
 @Component({
+  standalone: false,
     selector: 'app-vote',
     templateUrl: './vote.component.html',
     styleUrls: ['./vote.component.less']

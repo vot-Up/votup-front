@@ -18,6 +18,7 @@ interface DialogData {
 }
 
 @Component({
+  standalone: false,
     selector: 'app-resume-vote',
     templateUrl: './resume-vote.component.html',
     styleUrls: ['./resume-vote.component.less']

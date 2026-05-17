@@ -10,4 +10,4 @@ export const URLS = {
     VOTING_PLATE: "/api/votup/voting_plate/",
     VOTING_USER: "/api/votup/voting_user/",
     RESUME_VOTE: "/api/votup/resume_vote/",
-}
+};

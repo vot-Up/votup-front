@@ -14,7 +14,7 @@ import {NzButtonModule} from "ng-zorro-antd/button";
 import {NzIconModule} from "ng-zorro-antd/icon";
 import {NzTableModule} from "ng-zorro-antd/table";
 import {NzDividerModule} from "ng-zorro-antd/divider";
-import {NzToolTipModule} from "ng-zorro-antd/tooltip";
+import {NzTooltipModule} from "ng-zorro-antd/tooltip";
 import {NzInputModule} from "ng-zorro-antd/input";
 import {NzFormModule} from "ng-zorro-antd/form";
 import {NzDatePickerComponent, NzDatePickerModule} from "ng-zorro-antd/date-picker";
@@ -71,7 +71,7 @@ registerLocaleData(pt);
         NzIconModule,
         NzTableModule,
         NzDividerModule,
-        NzToolTipModule,
+        NzTooltipModule,
         NzInputModule,
         NzFormModule,
         NzDatePickerModule,

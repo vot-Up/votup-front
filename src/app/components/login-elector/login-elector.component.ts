@@ -6,6 +6,7 @@ import {VotingUser} from "../../../models/core/voting-user";
 import {take} from "rxjs/operators";
 
 @Component({
+  standalone: false,
     selector: 'app-login-elector',
     templateUrl: './login-elector.component.html',
     styleUrls: ['./login-elector.component.less']

@@ -11,6 +11,7 @@ import {Candidate} from "../../../../../models/core/candidate";
 
 
 @Component({
+  standalone: false,
     selector: 'app-candidate-item',
     templateUrl: './candidate-item.component.html',
     styleUrls: ['./candidate-item.component.less']

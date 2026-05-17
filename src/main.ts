@@ -8,7 +8,6 @@ import { provideNgxMask } from 'ngx-mask';
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
 import { authInterceptorFn } from './utilities/validator/auth.interceptor';
 import { AppVariables } from './app/app/app.variables';
-import { AppGuard } from './app/app/app.guard';
 import { AuthService } from './services/auth.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
@@ -91,7 +90,6 @@ bootstrapApplication(AppComponent, {
     ),
     { provide: NZ_I18N, useValue: en_US },
     AppVariables,
-    AppGuard,
     AuthService,
     NzMessageService,
     NzDatePickerComponent,

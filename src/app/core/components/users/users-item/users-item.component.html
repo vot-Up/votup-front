@@ -5,13 +5,13 @@
         <div nz-row>
           <div nz-col class="mr-36-8">
             <div class="image-mask">
-              @if (!avatar) {
+              @if (!avatar()) {
                 <div>
                   <img width="80px" src='..\..\..\..\assets\images\avatar.svg' alt="avatar">
                 </div>
               }
-              @if (avatar) {
-                <img [src]="avatar" alt="">
+              @if (avatar()) {
+                <img [src]="avatar()" alt="">
               }
             </div>
             <input #image type="file" accept=".jpeg,.png,.jpg" (change)="changeFile($event)" hidden>
@@ -21,7 +21,7 @@
               style="margin-right: 8px;">
               Nova foto
             </button>
-            <button nz-button nzType="default" [disabled]="!avatar" type="button" (click)="clearFile()">
+            <button nz-button nzType="default" [disabled]="!avatar()" type="button" (click)="clearFile()">
               Deletar
             </button>
           </div>
@@ -45,7 +45,7 @@
     <nz-form-item>
       <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email"> E-mail</nz-form-label>
       <nz-form-control nzErrorTip="E-mail inválido!">
-        <input nz-input lowercase
+        <input nz-input appLowercase
           type="email"
           maxlength="50"
           placeholder="Digite o e-mail"
@@ -72,7 +72,7 @@
       </div>
     }
 
-    @if (isEdit) {
+    @if (isEdit()) {
       <div>
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired> Senha</nz-form-label>
@@ -81,7 +81,7 @@
               <input nz-input
                 placeholder="Senha"
                 type="password"
-                [type]="hide ? 'password': 'text'"
+                [type]="hide() ? 'password': 'text'"
                 formControlName="password"
                 minlength="4"
                 maxlength="64"

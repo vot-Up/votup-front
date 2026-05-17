@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import {URLS} from "../../../app/app.urls";
 import {takeUntil} from "rxjs";
 import {BaseComponent} from "../../base.component";
@@ -32,7 +32,7 @@ export class PlateComponent extends BaseComponent<Plate> implements OnInit {
     private modalService = inject(NzModalService);
 
 
-    public items: Plate[] = [];
+    public items = signal<Plate[]>([]);
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
 
     constructor() {

@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../../../base.component";
 import {URLS} from "../../../../../app/app.urls";
@@ -13,7 +13,8 @@ import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
 
-class Ranking {
+interface RankingVoter {
+    name: string;
 }
 
 @Component({
@@ -23,11 +24,11 @@ class Ranking {
     styleUrls: ['./ranking-item.component.less'],
     imports: [NzListComponent, NzListItemComponent, NzModalFooterDirective, NzColDirective, NzFormControlComponent, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective]
 })
-export class RankingItemComponent extends BaseComponent<Ranking> implements OnInit {
+export class RankingItemComponent extends BaseComponent<RankingVoter> implements OnInit {
     modal = inject(NzModalService);
     data = inject(NZ_MODAL_DATA);
 
-    public list_user: any = []
+    public list_user = signal<RankingVoter[]>([])
 
     constructor() {
 
@@ -50,7 +51,7 @@ export class RankingItemComponent extends BaseComponent<Ranking> implements OnIn
         this.service.getFromListRoute('get_voter_plate').pipe(
             takeUntil(this.unsubscribe)
         ).subscribe(response => {
-            this.list_user = response['data']
+            this.list_user.set(response['data'])
         });
     }
 

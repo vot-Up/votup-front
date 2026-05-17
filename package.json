@@ -29,8 +29,7 @@
     "ngx-ui-loader": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
-    "typescript-string-operations": "^1.5.0",
-    "zone.js": "~0.16.0"
+    "typescript-string-operations": "^1.5.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^21.2.11",

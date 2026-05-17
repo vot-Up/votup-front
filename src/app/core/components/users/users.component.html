@@ -1,4 +1,4 @@
-@if (superUserView) {
+@if (superUserView()) {
   <div nz-row nzJustify="space-between" nzAlign="middle">
     <h2>Usuários</h2>
     <button (click)="openModal()" nz-button nzType="primary" [nzSize]="'default'">
@@ -46,10 +46,10 @@
         <th>Nome</th>
         <th>Email</th>
         <th>Celular</th>
-        @if (superUserView) {
+        @if (superUserView()) {
           <th>Ativo</th>
         }
-        @if (superUserView) {
+        @if (superUserView()) {
           <th>Super usuário</th>
         }
         <th>Ação</th>
@@ -58,7 +58,7 @@
     <tbody>
       @for (data of tableDataUser.data; track data) {
         <tr style="position: relative;"
-          (dblclick)="editUser(data); isUpdate=true" class="clicavel">
+          (dblclick)="editUser(data)" class="clicavel">
           @if (data.avatar) {
             <td>
               <div class="image-mask image-small">
@@ -74,16 +74,16 @@
           <td>{{ data.name }}</td>
           <td>{{ data.email }}</td>
           <td>{{ data.cellphone | phone}}</td>
-          @if (superUserView) {
+          @if (superUserView()) {
             <td>
               <nz-switch [(ngModel)]="data.is_active" (click)="toggle(data, 'is_active')"
-              [nzDisabled]="userLoggedActive(data)" ></nz-switch>
+              [nzDisabled]="userLoggedActive()(data)" ></nz-switch>
             </td>
           }
-          @if (superUserView) {
+          @if (superUserView()) {
             <td>
               <nz-switch [(ngModel)]="data.is_superuser" (click)="toggle(data, 'is_superuser')"
-              [nzDisabled]="userLoggedActive(data)" ></nz-switch>
+              [nzDisabled]="userLoggedActive()(data)" ></nz-switch>
             </td>
           }
           <td>
@@ -91,12 +91,12 @@
               <button *nzSpaceItem nz-button nzType="default" nz-tooltip
                             [disabled]="!authService.user.is_superuser &&
                             authService.user.id !== data.id"
-                nzTooltipTitle="Editar" (click)="editUser(data); isUpdate=true">
+                nzTooltipTitle="Editar" (click)="editUser(data)">
                 <span nz-icon nzType="edit"></span>
               </button>
               <button *nzSpaceItem nz-button nzType="default" nz-tooltip
                 nzTooltipTitle="Excluir" (click)="excludeUser(data)"
-                            [disabled]="userLoggedActive(data) || !authService.user.is_superuser &&
+                            [disabled]="userLoggedActive()(data) || !authService.user.is_superuser &&
                             authService.user.id !== data.id">
                 <span nz-icon nzType="delete"></span>
               </button>

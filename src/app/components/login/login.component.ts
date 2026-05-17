@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CustomValidators} from "../../../utilities/validator/custom-validators";
@@ -27,16 +27,16 @@ export class LoginComponent implements OnInit {
     route = inject(ActivatedRoute);
 
 
-    public url: string;
-    public message: string;
+    public url = signal<string>("/");
+    public message = signal<string>("sign-in");
     public formGroup: FormGroup
-    public hide: boolean = true;
-    public test: boolean = false;
+    public hide = signal(true);
+    public test = signal(false);
 
     ngOnInit(): void {
         this.createFormGroup();
-        this.message = "sign-in";
-        this.url = this.route.snapshot.queryParams["u"] || "/";
+        this.message.set("sign-in");
+        this.url.set(this.route.snapshot.queryParams["u"] || "/");
     }
 
     public createFormGroup(): void {
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit {
     }
 
     public login(): void {
-        this.message = "processing";
+        this.message.set("processing");
         const rawValue = this.formGroup.getRawValue();
 
         this.authService.login(rawValue.email, rawValue.password)
@@ -59,8 +59,8 @@ export class LoginComponent implements OnInit {
                     }
                 },
                 () => {
-                    this.message = "sign-in";
-                    this.test = true;
+                    this.message.set("sign-in");
+                    this.test.set(true);
                     this.formGroup.reset()
                 }
             );

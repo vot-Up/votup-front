@@ -8,44 +8,44 @@
   </div>
 </div>
 
-@if (!hiddenSuccess) {
+@if (!hiddenSuccess()) {
   <div>
-    @if (pressed) {
+    @if (pressed()) {
       <div>
         <h2><b>Chapa selecionada: </b></h2>
         <div class="grow-voting" >
-          <div class="plate-max">{{object_plate.name}}</div>
+          <div class="plate-max">{{object_plate()?.name}}</div>
           <div nz-col class="div-option-persona">
             <div>
-              @if (!getCandidatePlate('P', object_plate).avatar) {
+              @if (!getCandidatePlate('P', object_plate()!).avatar) {
                 <div>
                   <img style="border-radius: 100px;" width="144px" height="144px" src='..\..\..\..\assets\images\avatar.svg' alt="avatar">
                 </div>
               }
-              @if (getCandidatePlate('P', object_plate).avatar) {
-                <nz-avatar nzSrc="{{getCandidatePlate('P', object_plate).avatar}}"></nz-avatar>
+              @if (getCandidatePlate('P', object_plate()!).avatar) {
+                <nz-avatar nzSrc="{{getCandidatePlate('P', object_plate()!).avatar}}"></nz-avatar>
               }
             </div>
             <!--                <nz-avatar nzSrc="{{getCandidatePlate('P', object_plate).avatar}}" nzIcon="user"></nz-avatar>-->
             <div nz-col>
-              <div class="name-max">{{getCandidatePlate('P', object_plate).name}}</div>
+              <div class="name-max">{{getCandidatePlate('P', object_plate()!).name}}</div>
               <div class="plate-type name-max">Presidente</div>
             </div>
           </div>
           <div nz-col class="div-option-persona">
             <div>
-              @if (!getCandidatePlate('V', object_plate).avatar) {
+              @if (!getCandidatePlate('V', object_plate()!).avatar) {
                 <div>
                   <img style="border-radius: 100px;" width="144px" height="144px" src='..\..\..\..\assets\images\avatar.svg' alt="avatar">
                 </div>
               }
-              @if (getCandidatePlate('V', object_plate).avatar) {
-                <nz-avatar nzSrc="{{getCandidatePlate('V', object_plate).avatar}}"></nz-avatar>
+              @if (getCandidatePlate('V', object_plate()!).avatar) {
+                <nz-avatar nzSrc="{{getCandidatePlate('V', object_plate()!).avatar}}"></nz-avatar>
               }
             </div>
             <!--                <nz-avatar nzSrc="{{getCandidatePlate('V', object_plate).avatar}}" nzIcon="user"></nz-avatar>-->
             <div nz-col>
-              <div class="name-max">{{getCandidatePlate('V', object_plate).name}}</div>
+              <div class="name-max">{{getCandidatePlate('V', object_plate()!).name}}</div>
               <div class="plate-type name-max">Vice presidente</div>
             </div>
           </div>
@@ -57,7 +57,7 @@
   </h4>
   <form [formGroup]="formGroup">
     <nz-radio-group formControlName="plate" required>
-      @for (plate of listPlates; track plate) {
+      @for (plate of listPlates(); track plate) {
         <label class="radio-group-style" (click)="eventButton(plate)" nz-radio
           [nzValue]="plate">
           <div nzflex="auto" class="div-option">
@@ -112,7 +112,7 @@
   </form>
 </div>
 }
-@if (hiddenSuccess) {
+@if (hiddenSuccess()) {
   <div nz-col class="success-message">
     <img src="./assets/images/voting_success.svg" alt="">
     <nz-form-item class="back-to-start">

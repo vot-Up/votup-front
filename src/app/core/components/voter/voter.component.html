@@ -50,7 +50,7 @@
     <tbody>
       @for (data of tableDataUser.data; track data) {
         <tr style="position: relative;"
-          (dblclick)="editElector(data); isUpdate=true"
+          (dblclick)="editElector(data); isUpdate.set(true)"
           class="clicavel">
           @if (data?.avatar) {
             <td>
@@ -73,7 +73,7 @@
           <td>
             <nz-space [nzSize]="'small'">
               <button *nzSpaceItem nz-button nzType="default" nz-tooltip
-                nzTooltipTitle="Editar" (click)="editElector(data); isUpdate=true"
+                nzTooltipTitle="Editar" (click)="editElector(data); isUpdate.set(true)"
                 >
                 <span nz-icon nzType="edit"></span>
               </button>

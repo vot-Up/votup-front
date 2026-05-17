@@ -1,9 +1,10 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
 import {AuthService} from "../services/auth.service";
-import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {NzButtonModule} from "ng-zorro-antd/button";
 import {NzLayoutModule} from "ng-zorro-antd/layout";
 import {NzMenuModule} from "ng-zorro-antd/menu";
+import {filter} from "rxjs/operators";
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,15 +17,23 @@ export class AppComponent {
     authService = inject(AuthService);
     router = inject(Router);
 
+    private readonly publicRoutes = ["/main", "/login", "/login-elector", "/reset-password"];
+    private readonly currentPath = signal(window.location.pathname);
 
-    public isHiddenMenu() {
-        const list = ["/main", "/login", "/login-elector", "/reset-password"]
+    public readonly hiddenMenu = computed(() => {
+        const path = this.currentPath();
 
-        if (!list.includes(window.location.pathname) && !this.authService.isLoggedIn()) {
+        if (!this.publicRoutes.includes(path) && !this.authService.isLoggedIn()) {
             this.router.navigate(["main"]).then();
         }
 
-        return !list.includes(window.location.pathname)
+        return !this.publicRoutes.includes(path);
+    });
+
+    constructor() {
+        this.router.events
+            .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+            .subscribe(event => this.currentPath.set(event.urlAfterRedirects.split('?')[0]));
     }
 
 }

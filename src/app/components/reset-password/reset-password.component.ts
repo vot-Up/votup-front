@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import {CustomValidators} from "../../../utilities/validator/custom-validators";
 import {User} from "../../../models/core/user";
 import {BaseComponent} from "../../core/base.component";
@@ -27,9 +27,9 @@ import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 export class ResetPasswordComponent extends BaseComponent<User> {
     messageService = inject(NzMessageService);
 
-    public isResetPassword = false;
+    public isResetPassword = signal(false);
     public serviceUser: BaseService<User>
-    public hide: boolean = true;
+    public hide = signal(true);
 
     constructor() {
 

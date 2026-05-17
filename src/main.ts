@@ -1,5 +1,5 @@
 import { bootstrapApplication } from '@angular/platform-browser';
-import { importProvidersFrom } from '@angular/core';
+import { importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
@@ -53,6 +53,7 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(withInterceptors([authInterceptorFn])),
     provideAnimations(),
     provideNgxMask(),
+    provideZonelessChangeDetection(),
     importProvidersFrom(
       FormsModule,
       ReactiveFormsModule,

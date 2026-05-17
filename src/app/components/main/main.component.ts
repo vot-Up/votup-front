@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from "@angular/router";
 import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
@@ -20,7 +20,7 @@ export class MainComponent implements OnInit {
   router = inject(Router);
 
   validateForm!: UntypedFormGroup;
-    public url: string;
+    public url = signal<string>("/");
 
   submitForm(): void {
       if (!this.validateForm.valid) {
@@ -39,6 +39,6 @@ export class MainComponent implements OnInit {
       password: [null, [Validators.required]],
       remember: [true]
     });
-      this.url = this.route.snapshot.queryParams["u"] || "/";
+      this.url.set(this.route.snapshot.queryParams["u"] || "/");
   }
 }

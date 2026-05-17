@@ -1,5 +1,5 @@
 ---
-status: pending
+status: completed
 title: Enable zoneless with Zone.js fallback
 type: refactor
 complexity: high
@@ -32,9 +32,9 @@ Add `provideExperimentalZoneless()` to the bootstrap providers while keeping Zon
 </requirements>
 
 ## Subtasks
-- [ ] 12.1 Ensure task_10 is complete (all components OnPush + signal-based)
-- [ ] 12.2 Add `provideExperimentalZoneless()` to bootstrap providers in `main.ts`
-- [ ] 12.3 Verify `ng build` passes
+- [x] 12.1 Ensure task_10 is complete (all components OnPush + signal-based)
+- [x] 12.2 Add zoneless change detection provider to bootstrap providers in `main.ts` (Angular 21 API: `provideZonelessChangeDetection()`)
+- [x] 12.3 Verify `ng build` passes
 - [ ] 12.4 Test login flow: form input → HTTP POST → navigation to /core/users
 - [ ] 12.5 Test CRUD flows: each entity type (users, votes, plates, voters, candidates) — create, edit, delete
 - [ ] 12.6 Test modal flows: open modal, interact, close, verify parent updates

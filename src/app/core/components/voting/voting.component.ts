@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, input, output, signal } from '@angular/core';
 import {BaseComponent} from "../../base.component";
 import {Plate} from "../../../../models/core/plate";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -30,15 +30,15 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
 
     readonly votingUser = input<VotingUser>(undefined);
 
-    readonly finishVote = output<any>();
+    readonly finishVote = output<void>();
 
-    public object_plate: Plate | null = null;
-    public listPlates: Plate[];
+    public object_plate = signal<Plate | null>(null);
+    public listPlates = signal<Plate[]>([]);
 
     public serviceVotingUser: BaseService<VotingUser>;
 
-    public hiddenSuccess = false;
-    public pressed: boolean = false
+    public hiddenSuccess = signal(false);
+    public pressed = signal(false)
 
     constructor() {
 
@@ -67,7 +67,7 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
         this.service.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
-                this.listPlates = response;
+                this.listPlates.set(response);
             });
     }
 
@@ -89,7 +89,7 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
                     'success',
                     'Voto realizado com sucesso'
                 );
-                this.hiddenSuccess = true;
+                this.hiddenSuccess.set(true);
                 this.playSound();
                 setTimeout(() => {
                     this.redirect()}, 5000
@@ -115,7 +115,7 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
     }
 
     public eventButton(plate) {
-        this.pressed = true
-        this.object_plate = plate
+        this.pressed.set(true)
+        this.object_plate.set(plate)
     }
 }

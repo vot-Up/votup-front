@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import {Voter} from "../../../../../models/core/voter";
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
@@ -31,11 +31,11 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
     modal = inject(NzModalService);
     data = inject(NZ_MODAL_DATA);
 
-    public items: Voter[] = [];
-    public avatar: SafeUrl;
+    public items = signal<Voter[]>([]);
+    public avatar = signal<SafeUrl | null>(null);
     public typeImage = ["image/jpeg", "image/png", "image/jpg"];
-    public imageCurrent = false;
-    public hasImage = false;
+    public imageCurrent = signal(false);
+    public hasImage = signal(false);
 
 
     constructor() {
@@ -51,7 +51,7 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
     ngOnInit(): void {
         super.ngOnInit(() => {
             if (this.data) {
-                this.avatar = this.object().avatar;
+                this.avatar.set(this.object().avatar);
             } else {
                 this.loadFile();
             }
@@ -75,7 +75,7 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
         this.service.getAll().pipe(
             takeUntil(this.unsubscribe)
         ).subscribe(response => {
-            this.items = response
+            this.items.set(response)
         });
     }
 
@@ -86,10 +86,10 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => {
-                    this.imageCurrent = true;
+                    this.imageCurrent.set(true);
                     this.f.avatar.setValue(file);
-                    this.avatar = reader.result;
-                    this.hasImage = true;
+                    this.avatar.set(reader.result as string);
+                    this.hasImage.set(true);
                 };
             }
         }
@@ -98,26 +98,26 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
 
     public loadFile(): void {
         if (this.object().avatar) {
-            this.avatar = Utils.convertBase64ToImage(this.object().avatar);
-            const file = Utils.convertImageToBlob(this.avatar, "jpg");
+            this.avatar.set(Utils.convertBase64ToImage(this.object().avatar));
+            const file = Utils.convertImageToBlob(this.avatar(), "jpg");
             this.f.avatar.patchValue(file);
         }
     }
 
     public convertToImage(base64) {
-        this.avatar = `data:image/jpg;base64,${base64}`;
+        this.avatar.set(`data:image/jpg;base64,${base64}`);
     }
 
     public clearFile(): void {
-        this.imageCurrent = false;
-        this.avatar = null;
+        this.imageCurrent.set(false);
+        this.avatar.set(null);
         this.f.avatar.reset();
         this.object.update(obj => ({ ...obj, avatar: null }));
     }
 
 
     public saveOrUpdate(): void {
-        if (this.object().avatar && !this.hasImage) {
+        if (this.object().avatar && !this.hasImage()) {
             this.formGroup.removeControl("avatar");
         }
 

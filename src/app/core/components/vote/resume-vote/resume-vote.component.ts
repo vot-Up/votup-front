@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import {BaseComponent} from "../../../base.component";
 import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
@@ -39,9 +39,9 @@ export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements 
     modal = inject(NzModalService);
     data = inject<DialogData>(NZ_MODAL_DATA);
 
-    public votingPlateList: VotingPlate[] = [];
+    public votingPlateList = signal<VotingPlate[]>([]);
     public serviceVotingPlate: BaseService<VotingPlate>;
-    public currentDateTime: string = ''
+    public currentDateTime = signal('')
     constructor() {
 
         super({endpoint: URLS.RESUME_VOTE, searchOnInit: true});
@@ -64,14 +64,14 @@ export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements 
         this.serviceVotingPlate.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response: ResumeVoting[]) => {
-                this.votingPlateList = response;
+                this.votingPlateList.set(response);
                 this.fillResumeVoteCreate();
             });
     }
 
     private fillResumeVoteCreate() {
         const listResumeVoting: ResumeVoting[] = [];
-        this.votingPlateList.forEach(item => {
+        this.votingPlateList().forEach(item => {
             const resumeVoting = new ResumeVoting()
             resumeVoting.voting = this.data.voting;
             resumeVoting.plate = item.plate;
@@ -122,12 +122,12 @@ export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements 
 
     generateReportVoterResumePlate() {
         const now = new Date();
-        this.currentDateTime = now.toLocaleString();
+        this.currentDateTime.set(now.toLocaleString());
         const payload = {};
         payload["event_vote"] = this.data.voting.id;
         this.service.loadFile("resume_report", payload)
             .subscribe(response => {
-                Utils.downloadFileFromBlob(response, `${this.data.voting.description}-${this.currentDateTime}.pdf`);
+                Utils.downloadFileFromBlob(response, `${this.data.voting.description}-${this.currentDateTime()}.pdf`);
             });
     }
 

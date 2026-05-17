@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject, input } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject, input, signal } from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../base.component";
 import {URLS} from "../../../app/app.urls";
@@ -39,7 +39,7 @@ export class CandidateComponent extends BaseComponent<Candidate> implements OnIn
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
     public candidateLogged: User;
     public candidateAssociate: boolean = false
-    public isUpdate: boolean = false;
+    public isUpdate = signal(false);
 
 
     constructor() {
@@ -95,7 +95,7 @@ export class CandidateComponent extends BaseComponent<Candidate> implements OnIn
             nzData: {
                 pk: candidate.id,
                 candidate: candidate,
-                isUpdate: this.isUpdate = true
+                isUpdate: true
             }
         });
         modal.afterClose.subscribe(() => {
@@ -138,6 +138,6 @@ export class CandidateComponent extends BaseComponent<Candidate> implements OnIn
     }
 
 
-    public changePaginator(event: any): void {
+    public changePaginator(event: unknown): void {
     }
 }

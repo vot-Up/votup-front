@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import {BaseComponent} from "../../core/base.component";
 import {URLS} from "../../app/app.urls";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -26,8 +26,8 @@ export class LoginElectorComponent extends BaseComponent<VotingUser> {
     messageService = inject(NzMessageService);
 
 
-    public votingUser: VotingUser;
-    public isVoting = false;
+    public votingUser = signal<VotingUser | null>(null);
+    public isVoting = signal(false);
 
     constructor() {
 
@@ -47,14 +47,14 @@ export class LoginElectorComponent extends BaseComponent<VotingUser> {
         this.service.postFromListRoute("voting", data)
             .pipe(take(1))
             .subscribe(response => {
-                    this.votingUser = <VotingUser>response;
-                    this.isVoting = true;
+                    this.votingUser.set(<VotingUser>response);
+                    this.isVoting.set(true);
                 }
             );
     }
 
     public newVote() {
-        this.isVoting = false
+        this.isVoting.set(false)
         this.f.phone.setValue("")
     }
 

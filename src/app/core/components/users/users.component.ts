@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, EventEmitter, OnInit, inject, input, output, signal } from '@angular/core';
 import {User} from "../../../../models/core/user";
 import {URLS} from "../../../app/app.urls";
 import {BaseComponent} from "../../base.component";
@@ -38,12 +38,13 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
     readonly user = input<User>(undefined);
     readonly valueEmitter = output<boolean>();
 
-    public items: User[] = [];
+    public items = signal<User[]>([]);
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
-    public userLogged: User;
-    public isUpdate: boolean = false;
-    public isLogged: boolean = false;
-    public superUserView: boolean = false
+    public userLogged = signal<User | null>(null);
+    public isUpdate = signal(false);
+    public isLogged = signal(false);
+    public superUserView = signal(false);
+    public userLoggedActive = computed(() => (user: User) => this.authService.user.email === user.email);
 
 
     constructor() {
@@ -53,12 +54,8 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
     }
 
     ngOnInit(): void {
-        super.ngOnInit(() => this.userLogged = this.authService.user);
-        this.superUserView = this.authService.user.is_superuser;
-    }
-
-    public userLoggedActive(user: User) {
-        return this.authService.user.email === user.email;
+        super.ngOnInit(() => this.userLogged.set(this.authService.user));
+        this.superUserView.set(this.authService.user.is_superuser);
     }
 
     public createFormGroup(): void {
@@ -102,7 +99,7 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
             nzData: {
                 pk: user.id,
                 user: user,
-                isUpdate: this.isUpdate = true
+                isUpdate: this.isUpdate.set(true)
             }
         });
         modal.afterClose.subscribe(() => {
@@ -136,7 +133,7 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
     }
 
 
-    public changePaginator(event: any): void {
+    public changePaginator(event: unknown): void {
         console.log(event)
     }
 }

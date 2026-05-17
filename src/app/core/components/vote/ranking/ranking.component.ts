@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import {BaseComponent} from "../../../base.component";
 import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
@@ -15,7 +15,7 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 import { NzColDirective } from 'ng-zorro-antd/grid';
 import { NzFormControlComponent } from 'ng-zorro-antd/form';
 
-interface Ranking {
+export interface Ranking {
     plate__id: number,
     total: number;
     plate__name: string;
@@ -35,7 +35,18 @@ export class RankingComponent extends BaseComponent<null> implements OnInit {
     data = inject(NZ_MODAL_DATA);
 
 
-    public ranking: Ranking[] = [];
+    public ranking = signal<Ranking[]>([]);
+    public plateWithMostVotes = computed(() => {
+        let maxVotes = -1;
+        let plateWithMostVotes = '';
+        for (const item of this.ranking()) {
+            if (item.total > maxVotes) {
+                maxVotes = item.total;
+                plateWithMostVotes = item.plate__name;
+            }
+        }
+        return plateWithMostVotes;
+    });
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
 
     constructor() {
@@ -63,24 +74,11 @@ export class RankingComponent extends BaseComponent<null> implements OnInit {
         this.service.clearParameter()
         this.service.getFromDetailRoute(this.data.pk, "ranking").pipe(takeUntil(this.unsubscribe))
             .subscribe((response: Ranking[]) => {
-                this.ranking = response;
+                this.ranking.set(response);
             })
     }
 
-    public getPlateWithMostVotes(): string {
-        let maxVotes = -1;
-        let plateWithMostVotes = '';
-        for (const item of this.ranking) {
-            if (item.total > maxVotes) {
-                maxVotes = item.total;
-                plateWithMostVotes = item.plate__name;
-            }
-        }
-        return plateWithMostVotes;
-    }
-
-
-    public openModal(plate): void {
+    public openModal(plate: Ranking): void {
         const modal = this.modalService.create({
             nzWidth: '30%',
             nzCentered: true,

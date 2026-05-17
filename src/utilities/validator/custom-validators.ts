@@ -2,8 +2,8 @@ import {AbstractControl, FormControl, ValidationErrors, ValidatorFn, Validators}
 
 // import * as moment from "moment";
 
-function isEmptyInputValue(value: any): boolean {
-    return value == null || value.length === 0;
+function isEmptyInputValue(value: unknown): boolean {
+    return value == null || ((typeof value === 'string' || Array.isArray(value)) && value.length === 0);
 }
 
 export class CustomValidators extends Validators {
@@ -11,7 +11,7 @@ export class CustomValidators extends Validators {
     public static required(control: AbstractControl): ValidationErrors | null {
         try {
             return isEmptyInputValue(control.value) || !control.value.toString().match(/^(?!\s*$).+/g) ? {required: true} : null;
-        } catch (e) {
+        } catch {
             return isEmptyInputValue(control.value) ? {required: true} : null;
         }
     }
@@ -111,7 +111,7 @@ export class CustomValidators extends Validators {
     //     };
     // }
     public static yearNonLt(): ValidatorFn {
-        return (control: AbstractControl): { [key: string]: any } | null => {
+        return (control: AbstractControl): ValidationErrors | null => {
             const today = new Date().getTime();
 
             if (!(control && control.value)) {
@@ -204,7 +204,7 @@ export class CustomValidators extends Validators {
             if (isEmptyInputValue(control.value)) {
                 return null;
             }
-            const confirmPass = control.root.get(controlName).value;
+            const confirmPass = control.root.get(controlName)?.value;
 
             return control.value !== confirmPass ? {passwordNotMatch: true} : null;
         };

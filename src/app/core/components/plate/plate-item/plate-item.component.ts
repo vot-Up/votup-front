@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import { CdkDragDrop, transferArrayItem, CdkDropListGroup, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
 import {Plate} from "../../../../../models/core/plate";
 import {URLS} from "../../../../app/app.urls";
@@ -37,14 +37,14 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
 
     public type: string;
 
-    public candidates: Candidate[] = [];
-    public presidents: Candidate[] = [];
-    public vice_presidents: Candidate[] = [];
+    public candidates = signal<Candidate[]>([]);
+    public presidents = signal<Candidate[]>([]);
+    public vice_presidents = signal<Candidate[]>([]);
 
     public candidateService: BaseService<Candidate>;
     public plateUserService: BaseService<PlateUser>;
-    public hide = true;
-    public searchUser: string;
+    public hide = signal(true);
+    public searchUser = signal('');
 
     constructor() {
 
@@ -57,7 +57,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     ngOnInit() {
         if (this.data) {
             this.object.set(this.data.plate);
-            this.hide = !this.hide;
+            this.hide.update(value => !value);
             this.getPresidents();
             this.getVicePresidents();
             this.getCandidates();
@@ -126,17 +126,20 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
             event.previousIndex,
             event.currentIndex,
         );
+        this.candidates.set([...this.candidates()]);
+        this.presidents.set([...this.presidents()]);
+        this.vice_presidents.set([...this.vice_presidents()]);
     }
 
     public getCandidates(): void {
         this.candidateService.clearParameter();
         this.candidateService.addParameter("active", true);
         this.candidateService.addParameter("exists", this.object().id);
-        if (this.searchUser) this.candidateService.addParameter("name", this.searchUser);
+        if (this.searchUser()) this.candidateService.addParameter("name", this.searchUser());
         this.candidateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
-                this.candidates = response;
+                this.candidates.set(response);
             });
     }
 
@@ -148,7 +151,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
                 if (response) {
-                    this.presidents = response;
+                    this.presidents.set(response);
                 }
             })
     }
@@ -161,7 +164,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
                 if (response) {
-                    this.vice_presidents = response;
+                    this.vice_presidents.set(response);
                 }
             })
     }
@@ -184,7 +187,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
         if (!this.object().id) {
             super.saveOrUpdate(() => {
                 this.getCandidates();
-                this.hide = false;
+                this.hide.set(false);
                 this.messageService.create(
                     'success',
                     `Chapa criada, associe o presidente e o vice-presidente`

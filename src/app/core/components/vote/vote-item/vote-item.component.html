@@ -21,7 +21,7 @@
 
 
     </div>
-    <div nz-row nzFlex="4" nzAlign="middle" style="margin-top: 5px" [hidden]="hide">
+    <div nz-row nzFlex="4" nzAlign="middle" style="margin-top: 5px" [hidden]="hide()">
       @if (!object().url) {
         <button class="success"
           nz-button nzType="primary"
@@ -48,12 +48,12 @@
           <div
             cdkDropList
             #plateList="cdkDropList"
-            [cdkDropListData]="plates"
+            [cdkDropListData]="plates()"
             [cdkDropListConnectedTo]="[addedList]"
             class="list"
             (cdkDropListDropped)="drop($event, dropTypes.ALL)"
             [cdkDropListDisabled]="!object().active">
-            @for (item of plates; track item) {
+            @for (item of plates(); track item) {
               <div nz-row nzAlign="middle" class="list-item" cdkDrag
                 [cdkDragData]="item">
                 <div nz-col nzFlex="24">
@@ -105,7 +105,7 @@
                       </div>
                     </div>
                   </div>
-                  @if (plates.length === 0) {
+                  @if (plates().length === 0) {
                     <div nz-col nzAlign="middle" class="no-data-message">
                       <img src="../../../../../assets/images/no-data.svg" width="64px" alt="">
                       <span>Nenhum item selecionado</span>
@@ -123,12 +123,12 @@
           <div
             cdkDropList
             #addedList="cdkDropList"
-            [cdkDropListData]="plate_added"
+            [cdkDropListData]="plate_added()"
             [cdkDropListConnectedTo]="[plateList]"
             class="list"
             (cdkDropListDropped)="drop($event, dropTypes.ADDED)"
             [cdkDropListDisabled]="!object().active">
-            @for (item of plate_added; track item) {
+            @for (item of plate_added(); track item) {
               <div nz-row nzAlign="middle" class="list-item" cdkDrag
                 [cdkDragData]="item">
                 <div nz-col nzFlex="24">
@@ -181,7 +181,7 @@
                     </div>
                   </div>
                 </div>
-                @if (plate_added.length === 0) {
+                @if (plate_added().length === 0) {
                   <div nz-col nzAlign="middle" class="no-data-message">
                     <img src="../../../../../assets/images/no-data.svg" width="64px" alt="">
                     <span>Nenhum item selecionado</span>

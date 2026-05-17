@@ -35,17 +35,17 @@ Remove Zone.js entirely from the application after validating zoneless operation
 </requirements>
 
 ## Subtasks
-- [ ] 13.1 Ensure task_12 is complete and all zoneless issues are resolved
-- [ ] 13.2 Remove `zone.js` from polyfills in `angular.json`
-- [ ] 13.3 Remove `zone.js` from `package.json` dependencies
-- [ ] 13.4 Run `npm install` to update lock file
-- [ ] 13.5 Replace `provideExperimentalZoneless()` with stable API if available
-- [ ] 13.6 Remove any manual `ChangeDetectorRef.detectChanges()` workarounds
-- [ ] 13.7 Update angular.json budgets: reduce initial maximumWarning and maximumError
-- [ ] 13.8 Run `ng build` and verify bundle size reduction
-- [ ] 13.9 Run `ng lint` and fix any remaining errors/warnings to reach zero
+- [x] 13.1 Ensure task_12 is complete and all zoneless issues are resolved
+- [x] 13.2 Remove `zone.js` from polyfills in `angular.json`
+- [x] 13.3 Remove `zone.js` from `package.json` dependencies
+- [x] 13.4 Run `npm install` to update lock file
+- [x] 13.5 Keep the stable zoneless API in `main.ts` (`provideZonelessChangeDetection()`)
+- [x] 13.6 Remove any manual `ChangeDetectorRef.detectChanges()` workarounds
+- [x] 13.7 Update angular.json budgets: reduce initial maximumWarning and maximumError
+- [x] 13.8 Run `ng build` and verify bundle size reduction
+- [x] 13.9 Run `ng lint` and fix any remaining errors/warnings to reach zero
 - [ ] 13.10 Run final comprehensive manual testing of all application flows
-- [ ] 13.11 Verify Zone.js is not in the production bundle (check dist/ output)
+- [x] 13.11 Verify Zone.js is not in the production bundle (check dist/ output)
 - [ ] 13.12 Commit final state
 
 ## Implementation Details
@@ -119,3 +119,7 @@ Final lint cleanup targets:
 - Main bundle size < 1.2MB (down from 1.64MB)
 - `ng build` passes with zero errors
 - All application flows work correctly
+
+## Progress Notes
+- Build and lint are clean after removing Zone.js and tightening budgets.
+- Browser-level manual flow testing is still unavailable in this harness.

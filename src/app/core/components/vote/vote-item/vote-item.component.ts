@@ -7,7 +7,7 @@ import {CustomValidators} from "../../../../../utilities/validator/custom-valida
 import {BaseService} from "../../../../../services/base.service";
 import {Voting} from "../../../../../models/core/voting";
 import {Observable, of, takeUntil} from "rxjs";
-import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject } from "@angular/core";
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject, signal } from "@angular/core";
 import {VotingPlate} from "../../../../../models/core/voting-plate";
 import {Plate} from "../../../../../models/core/plate";
 import {DatePipe} from "@angular/common";
@@ -43,15 +43,15 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
 
     public plateService: BaseService<Plate>;
     public votingPlateService: BaseService<VotingPlate>;
-    public plate_added: Plate[] = [];
-    public items: Voting[] = [];
-    public plates: Plate[] = [];
+    public plate_added = signal<Plate[]>([]);
+    public items = signal<Voting[]>([]);
+    public plates = signal<Plate[]>([]);
     public dropTypes = DropListTypes;
-    public hide: boolean = false;
-    public test: Plate[] = []
+    public hide = signal(false);
+    public test = signal<Plate[]>([])
     private datePipe: DatePipe;
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
-    private disableInput = true;
+    public disableInput = signal(true);
 
 
     constructor() {
@@ -72,7 +72,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
         super.ngOnInit();
         if (this.data.voting) {
             this.object.set(this.data.voting);
-            this.hide = !this.hide;
+            this.hide.update(value => !value);
             this.getPlates();
             this.getPlatesAssociate();
         }
@@ -97,7 +97,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
                 if (response) {
-                    this.plates = response;
+                    this.plates.set(response);
                 }
             });
     }
@@ -116,7 +116,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
                 if (response) {
-                    this.plate_added = response;
+                    this.plate_added.set(response);
                 }
             })
     }
@@ -134,6 +134,8 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
                 event.previousIndex,
                 event.currentIndex,
             )
+            this.plates.set([...this.plates()]);
+            this.plate_added.set([...this.plate_added()]);
 
             if (target == DropListTypes.ALL) {
                 votingPlate.plate = event.container.data[event.currentIndex].id;
@@ -175,7 +177,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
         if (!this.object().id) {
             super.saveOrUpdate(() => {
                 this.getPlates();
-                this.hide = false;
+                this.hide.set(false);
                 this.messageService.create(
                     'success',
                     `Votacao criada, associe o presidente e o vice-presidente`

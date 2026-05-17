@@ -15,7 +15,7 @@ class PhoneHostComponent {
 
 @Component({
     imports: [LowercaseDirective],
-    template: '<input lowercase [value]="value">',
+    template: '<input appLowercase [value]="value">',
 })
 class LowercaseHostComponent {
     value = 'ABC';
@@ -23,7 +23,7 @@ class LowercaseHostComponent {
 
 @Component({
     imports: [UppercaseDirective],
-    template: '<input uppercase [value]="value">',
+    template: '<input appUppercase [value]="value">',
 })
 class UppercaseHostComponent {
     value = 'abc';

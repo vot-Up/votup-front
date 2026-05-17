@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, Input, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, Input, OnInit, inject, signal } from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../base.component";
 import {URLS} from "../../../app/app.urls";
@@ -37,7 +37,7 @@ export class VoterComponent extends BaseComponent<Voter> implements OnInit {
 
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
     public voterLogged: Voter;
-    public isUpdate: boolean = false;
+    public isUpdate = signal(false);
 
 
     constructor() {
@@ -83,6 +83,7 @@ export class VoterComponent extends BaseComponent<Voter> implements OnInit {
     }
 
     public editElector(voter: Voter): void {
+        this.isUpdate.set(true);
         const modal = this.modalService.create({
             nzWidth: '40%',
             nzCentered: true,
@@ -92,7 +93,7 @@ export class VoterComponent extends BaseComponent<Voter> implements OnInit {
             nzData: {
                 pk: voter.id,
                 voter: voter,
-                isUpdate: this.isUpdate = true
+                isUpdate: true
             }
         });
         modal.afterClose.subscribe(() => {
@@ -128,7 +129,7 @@ export class VoterComponent extends BaseComponent<Voter> implements OnInit {
     }
 
 
-    public changePaginator(event: any): void {
+    public changePaginator(event: unknown): void {
         console.log(event)
     }
 }

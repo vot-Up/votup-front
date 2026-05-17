@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import {VoteItemComponent} from "./vote-item/vote-item.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {Voting} from "../../../../models/core/voting";
@@ -43,7 +43,7 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
     toast = inject(NzMessageService);
 
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
-    public isVoteActive = false;
+    public isVoteActive = signal(false);
     public plateService: BaseService<Plate>;
     public hasPermissionValue: boolean
 
@@ -90,7 +90,7 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
         }
         super.search(() => {
             this.modalClosedEmitter = new EventEmitter<void>();
-            this.isVoteActive = (this.tableData().find(vote => vote.active === true) != undefined)
+            this.isVoteActive.set(this.tableData().find(vote => vote.active === true) != undefined)
         })
     }
 
@@ -104,7 +104,7 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
     }
 
     public showModal(voting?: Voting): void {
-        const data = {isVoteActive: this.isVoteActive};
+        const data = {isVoteActive: this.isVoteActive()};
 
         if (voting !== undefined) {
             data['pk'] = voting.id;

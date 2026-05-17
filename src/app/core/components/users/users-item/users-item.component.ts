@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import {BaseComponent} from "../../../base.component";
 import {User} from "../../../../../models/core/user";
 import {URLS} from "../../../../app/app.urls";
@@ -44,14 +44,14 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
     data = inject<DialogData>(NZ_MODAL_DATA);
 
 
-    public items: User[] = [];
-    public avatar: SafeUrl;
+    public items = signal<User[]>([]);
+    public avatar = signal<SafeUrl | null>(null);
     public typeImage = ["image/jpeg", "image/png", "image/jpg"];
-    public imageCurrent = false;
-    public hasImage = false;
-    public hide: boolean = true;
-    public isEdit: boolean = false;
-    public isLogged: boolean = false
+    public imageCurrent = signal(false);
+    public hasImage = signal(false);
+    public hide = signal(true);
+    public isEdit = signal(false);
+    public isLogged = signal(false);
 
     constructor() {
 
@@ -63,8 +63,8 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
         super.ngOnInit(() => {
             if (this.data) {
                 this.formGroup.reset(this.data.user);
-                this.isLogged = true;
-                this.avatar = this.data.user.avatar;
+                this.isLogged.set(true);
+                this.avatar.set(this.data.user.avatar);
             } else {
                 this.loadFile();
             }
@@ -98,7 +98,7 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
         this.service.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe(response => {
-                this.items = response;
+                this.items.set(response);
             });
     }
 
@@ -109,10 +109,10 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => {
-                    this.imageCurrent = true;
+                    this.imageCurrent.set(true);
                     this.f.avatar.setValue(file);
-                    this.avatar = reader.result;
-                    this.hasImage = true;
+                    this.avatar.set(reader.result);
+                    this.hasImage.set(true);
                 };
             }
         }
@@ -120,22 +120,23 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
 
     public loadFile(): void {
         if (this.object().avatar) {
-            this.avatar = Utils.convertBase64ToImage(this.object().avatar);
-            const file = Utils.convertImageToBlob(this.avatar, "jpg");
+            const avatar = Utils.convertBase64ToImage(this.object().avatar);
+            this.avatar.set(avatar);
+            const file = Utils.convertImageToBlob(avatar, "jpg");
             this.f.avatar.patchValue(file);
         }
     }
 
     public clearFile(): void {
-        this.imageCurrent = false;
-        this.avatar = null;
+        this.imageCurrent.set(false);
+        this.avatar.set(null);
         this.f.avatar.reset();
         this.object.update(obj => ({ ...obj, avatar: null }));
     }
 
 
     public saveOrUpdate(): void {
-        if (this.object().avatar && !this.hasImage) {
+        if (this.object().avatar && !this.hasImage()) {
             this.formGroup.removeControl("avatar");
         }
 

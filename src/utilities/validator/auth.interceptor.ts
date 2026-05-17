@@ -1,11 +1,11 @@
-import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponse } from "@angular/common/http";
+import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
 import {Observable} from "rxjs";
 import {tap} from "rxjs/operators";
 import {inject} from "@angular/core";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {AuthService} from "../../services/auth.service";
 
-export const authInterceptorFn: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> => {
+export const authInterceptorFn: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
   const toast = inject(NzMessageService);
   const authService = inject(AuthService);
 
@@ -17,7 +17,7 @@ export const authInterceptorFn: HttpInterceptorFn = (req: HttpRequest<any>, next
   );
 };
 
-function addHeader(req: HttpRequest<any>): HttpRequest<any> {
+function addHeader(req: HttpRequest<unknown>): HttpRequest<unknown> {
   return req.clone({
     setHeaders: {
       "Accept-Language": "pt-BR"
@@ -48,27 +48,32 @@ function handleError(err: HttpErrorResponse, toast: NzMessageService, authServic
   });
 }
 
-function showErrors(value: any, toast: NzMessageService): void {
-  Object.keys(value).forEach((key: any) => {
-    toast.create("error", value[key]);
+function showErrors(value: Record<string, unknown>, toast: NzMessageService): void {
+  Object.keys(value).forEach((key: string) => {
+    const error = value[key];
+    if (Array.isArray(error)) {
+      error.forEach((message) => toast.create("error", String(message)));
+      return;
+    }
+    toast.create("error", String(error));
   });
 }
 
-function captureError(value: any): any[] {
-  if (value instanceof Array) {
-    return value;
+function captureError(value: unknown): Array<Record<string, unknown>> {
+  if (Array.isArray(value)) {
+    return value as Array<Record<string, unknown>>;
   } else if (isJson(value)) {
-    return [value];
+    return [value as Record<string, unknown>];
   }
-  return [{detail: value}];
+  return [{ detail: value }];
 }
 
-function isJson(item: any): boolean {
-  item = typeof item !== "string" ? JSON.stringify(item) : item;
+function isJson(item: unknown): item is Record<string, unknown> {
+  const value = typeof item !== "string" ? JSON.stringify(item) : item;
   try {
-    item = JSON.parse(item);
-  } catch (e) {
+    JSON.parse(value);
+  } catch {
     return false;
   }
-  return typeof item === "object" && item !== null;
+  return true;
 }

@@ -1,4 +1,4 @@
-import { Directive, HostListener, Input } from "@angular/core";
+import { Directive, HostListener, input } from "@angular/core";
 
 @Directive({
     selector: `input[lowercase]`,
@@ -6,7 +6,7 @@ import { Directive, HostListener, Input } from "@angular/core";
 })
 export class LowercaseDirective {
 
-    @Input() lowerCase: string;
+    readonly lowerCase = input<string>(undefined);
 
     private getCaret(element) {
         return {
@@ -34,7 +34,7 @@ export class LowercaseDirective {
 
     @HostListener("input", ["$event.target", "$event.target.value"])
     onInput(el: any, value: string): void {
-        if (!this.lowerCase && "function" === typeof value.toLowerCase && value.toLowerCase() !== value) {
+        if (!this.lowerCase() && "function" === typeof value.toLowerCase && value.toLowerCase() !== value) {
             let { start, end } = this.getCaret(el);
             if (value[0] === " " && start === 1 && end === 1) {
                 start = 0;

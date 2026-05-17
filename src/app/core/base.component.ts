@@ -1,5 +1,5 @@
 import {BaseService} from "../../services/base.service";
-import {Directive, InjectionToken, Injector, OnDestroy, OnInit, ViewChild} from "@angular/core";
+import {Directive, InjectionToken, Injector, OnDestroy, OnInit, viewChild} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {interval, Observable, Subject, switchMap, takeWhile} from "rxjs";
 import {ActivatedRoute, ActivatedRouteSnapshot, NavigationExtras, Params, Router} from "@angular/router";
@@ -51,7 +51,7 @@ export abstract class BaseComponent<T> implements OnInit, OnDestroy {
     public rawObject: T | object;
     public activatedRoute: ActivatedRoute;
     public pageLength = 0;
-    @ViewChild(NzPaginationComponent, {static: true}) paginator: NzPaginationComponent;
+    readonly paginator = viewChild(NzPaginationComponent);
 
     public pk: string;
 
@@ -66,7 +66,7 @@ export abstract class BaseComponent<T> implements OnInit, OnDestroy {
 
     public ngOnInit(callback?: () => void) {
         this.createFormGroup();
-        if (this.paginator) {
+        if (this.paginator()) {
             this._createPaginator();
         }
 
@@ -82,9 +82,10 @@ export abstract class BaseComponent<T> implements OnInit, OnDestroy {
 
 
     private _createPaginator(): void {
-        if (this.paginator) {
-            this.paginator.nzPageIndex = 1;
-            this.paginator.nzPageSize = 10;
+        const paginator = this.paginator();
+        if (paginator) {
+            paginator.nzPageIndex = 1;
+            paginator.nzPageSize = 10;
             // this.paginator.pageSizeOptions = [5, 10, 25, 50];
             // this.paginator.showFirstLastButtons = true;
         }
@@ -323,9 +324,10 @@ export abstract class BaseComponent<T> implements OnInit, OnDestroy {
     }
 
     public beforeSearch(): Observable<T[]> {
-        if (this.paginator) {
-            this.service.addParameter("limit", this.paginator.nzPageSize);
-            this.service.addParameter("offset", ((this.paginator.nzPageIndex - 1) * this.paginator.nzPageSize));
+        const paginator = this.paginator();
+        if (paginator) {
+            this.service.addParameter("limit", paginator.nzPageSize);
+            this.service.addParameter("offset", ((paginator.nzPageIndex - 1) * paginator.nzPageSize));
 
             return this.service.getPaginated(this.options.searchRoute).pipe(
                 map((data: PaginatedResult<T>) => {

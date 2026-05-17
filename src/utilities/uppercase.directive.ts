@@ -1,4 +1,4 @@
-import {Directive, HostListener, Input} from "@angular/core";
+import {Directive, HostListener, input} from "@angular/core";
 
 @Directive({
     selector: `input[uppercase]`,
@@ -6,7 +6,7 @@ import {Directive, HostListener, Input} from "@angular/core";
 })
 export class UppercaseDirective {
 
-    @Input() upperCase: string;
+    readonly upperCase = input<string>(undefined);
 
     private getCaret(element) {
         return {
@@ -35,7 +35,7 @@ export class UppercaseDirective {
     @HostListener("input", ["$event.target", "$event.target.value"])
     onInput(el: any, value: string): void {
 
-        if (!this.upperCase && "function" === typeof value.toUpperCase && value.toUpperCase() !== value) {
+        if (!this.upperCase() && "function" === typeof value.toUpperCase && value.toUpperCase() !== value) {
             let {start, end} = this.getCaret(el);
             if (value[0] === " " && start === 1 && end === 1) {
                 start = 0;

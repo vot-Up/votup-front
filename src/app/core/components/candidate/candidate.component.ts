@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Injector, OnInit, inject, input } from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../base.component";
 import {URLS} from "../../../app/app.urls";
@@ -34,7 +34,7 @@ export class CandidateComponent extends BaseComponent<Candidate> implements OnIn
     private modalService = inject(NzModalService);
     authService = inject(AuthService);
 
-    @Input() candidate: Candidate
+    readonly candidate = input<Candidate>(undefined);
 
     public object: Candidate = new Candidate();
     public tableData: Candidate[] = [];

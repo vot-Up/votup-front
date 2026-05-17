@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, Injector, OnInit, inject, input, output } from '@angular/core';
 import {BaseComponent} from "../../base.component";
 import {Plate} from "../../../../models/core/plate";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -28,9 +28,9 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
     messageService = inject(NzMessageService);
 
 
-    @Input() votingUser: VotingUser;
+    readonly votingUser = input<VotingUser>(undefined);
 
-    @Output() finishVote: EventEmitter<any> = new EventEmitter<any>();
+    readonly finishVote = output<any>();
 
     public object_plate: any;
     public listPlates: Plate[];
@@ -64,7 +64,7 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
         this.service.clearParameter();
         this.service.addParameter("is_active", true);
         this.service.addParameter("expand", ["plate"])
-        this.service.addParameter("voting", this.votingUser.voting);
+        this.service.addParameter("voting", this.votingUser().voting);
         this.service.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
@@ -83,7 +83,7 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
         const payload = {
             "plate": this.v.plate.url
         }
-        this.serviceVotingUser.update(this.votingUser.id, payload)
+        this.serviceVotingUser.update(this.votingUser().id, payload)
             .pipe()
             .subscribe(() => {
                 this.messageService.create(
@@ -105,7 +105,8 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
 
 
     public redirect() {
-        this.finishVote.emit()
+        // TODO: The 'emit' function requires a mandatory any argument
+        this.finishVote.emit(undefined)
     }
 
     public getCandidatePlateIndividual(type: string, plate: Plate) {

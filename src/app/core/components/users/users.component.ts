@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, EventEmitter, Injector, OnInit, inject, input, output } from '@angular/core';
 import {User} from "../../../../models/core/user";
 import {URLS} from "../../../app/app.urls";
 import {BaseComponent} from "../../base.component";
@@ -37,8 +37,8 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
     authService = inject(AuthService);
 
 
-    @Input() user: User
-    @Output() valueEmitter = new EventEmitter<boolean>();
+    readonly user = input<User>(undefined);
+    readonly valueEmitter = output<boolean>();
 
     public object: User = new User();
     public tableData: User[] = [];

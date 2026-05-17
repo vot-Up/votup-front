@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, input, output } from '@angular/core';
 import {BaseComponent} from "../../base.component";
 import {Plate} from "../../../../models/core/plate";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -18,6 +18,7 @@ import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-voting',
     templateUrl: './voting.component.html',
     styleUrls: ['./voting.component.less'],

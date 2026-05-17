@@ -1,5 +1,5 @@
 ---
-status: pending
+status: completed
 title: Rewrite AuthInterceptor as functional interceptor
 type: refactor
 complexity: medium

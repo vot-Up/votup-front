@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import {BaseComponent} from "../../core/base.component";
 import {URLS} from "../../app/app.urls";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -16,6 +16,7 @@ import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 import { VotingComponent } from '../../core/components/voting/voting.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-login-elector',
     templateUrl: './login-elector.component.html',
     styleUrls: ['./login-elector.component.less'],

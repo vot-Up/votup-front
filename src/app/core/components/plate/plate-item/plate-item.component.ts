@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { CdkDragDrop, transferArrayItem, CdkDropListGroup, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
 import {Plate} from "../../../../../models/core/plate";
 import {URLS} from "../../../../app/app.urls";
@@ -23,6 +23,7 @@ import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-plate-item',
     templateUrl: './plate-item.component.html',
     styleUrls: ['./plate-item.component.less'],

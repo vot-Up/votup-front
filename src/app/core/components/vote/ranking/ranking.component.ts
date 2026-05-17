@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject } from '@angular/core';
 import {BaseComponent} from "../../../base.component";
 import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
@@ -23,6 +23,7 @@ interface Ranking {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-ranking',
     templateUrl: './ranking.component.html',
     styleUrls: ['./ranking.component.less'],

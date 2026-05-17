@@ -1,3 +1,3 @@
 export class DetailResponse {
-  detail: string;
+  detail: string | Record<string, string[]>;
 }

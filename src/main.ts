@@ -12,7 +12,6 @@ import { AuthService } from './services/auth.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
 import { DatePipe } from '@angular/common';
-import { UserService } from './services/user.service';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -94,6 +93,5 @@ bootstrapApplication(AppComponent, {
     NzMessageService,
     NzDatePickerComponent,
     DatePipe,
-    UserService,
   ]
 }).catch(err => console.error(err));

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -21,6 +21,7 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-candidate-item',
     templateUrl: './candidate-item.component.html',
     styleUrls: ['./candidate-item.component.less'],

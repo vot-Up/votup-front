@@ -7,7 +7,7 @@ import {CustomValidators} from "../../../../../utilities/validator/custom-valida
 import {BaseService} from "../../../../../services/base.service";
 import {Voting} from "../../../../../models/core/voting";
 import {Observable, of, takeUntil} from "rxjs";
-import { Component, EventEmitter, OnInit, inject } from "@angular/core";
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject } from "@angular/core";
 import {VotingPlate} from "../../../../../models/core/voting-plate";
 import {Plate} from "../../../../../models/core/plate";
 import {DatePipe} from "@angular/common";
@@ -30,6 +30,7 @@ enum DropListTypes {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-vote-item',
     templateUrl: './vote-item.component.html',
     styleUrls: ['./vote-item.component.less'],

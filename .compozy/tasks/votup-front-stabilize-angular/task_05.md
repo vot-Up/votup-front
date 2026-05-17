@@ -1,5 +1,5 @@
 ---
-status: pending
+status: completed
 title: Run signal-input, output, and signal-queries schematics
 type: refactor
 complexity: medium

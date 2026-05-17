@@ -1,11 +1,10 @@
-import { Component, EventEmitter, OnInit, inject, input, output } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject, input, output } from '@angular/core';
 import {User} from "../../../../models/core/user";
 import {URLS} from "../../../app/app.urls";
 import {BaseComponent} from "../../base.component";
 import {takeUntil} from "rxjs";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {UsersItemComponent} from "./users-item/users-item.component";
-import {UserService} from "../../../../services/user.service";
 import {AuthService} from "../../../../services/auth.service";
 import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
 import { NzSpaceCompactItemDirective, NzSpaceComponent, NzSpaceItemDirective } from 'ng-zorro-antd/space';
@@ -25,6 +24,7 @@ import { PhonePipe } from '../../../shared/phone-pipe/phone.pipe';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-voters',
     templateUrl: './users.component.html',
     styleUrls: ['./users.component.less'],
@@ -32,8 +32,7 @@ import { PhonePipe } from '../../../shared/phone-pipe/phone.pipe';
 })
 export class UsersComponent extends BaseComponent<User> implements OnInit {
     private modalService = inject(NzModalService);
-    userService = inject(UserService);
-    authService = inject(AuthService);
+      authService = inject(AuthService);
 
 
     readonly user = input<User>(undefined);

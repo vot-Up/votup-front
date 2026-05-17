@@ -1,5 +1,5 @@
 ---
-status: pending
+status: completed
 title: Rewrite AppGuard as functional guard
 type: refactor
 complexity: low

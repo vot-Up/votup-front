@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import {Voter} from "../../../../../models/core/voter";
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
@@ -20,6 +20,7 @@ import { NgxMaskDirective } from 'ngx-mask';
 import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-voter-item',
     templateUrl: './voter-item.component.html',
     styleUrls: ['./voter-item.component.less'],

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject } from '@angular/core';
 import {VoteItemComponent} from "./vote-item/vote-item.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {Voting} from "../../../../models/core/voting";
@@ -30,6 +30,7 @@ import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-vote',
     templateUrl: './vote.component.html',
     styleUrls: ['./vote.component.less'],

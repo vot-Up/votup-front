@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CustomValidators} from "../../../utilities/validator/custom-validators";
@@ -14,6 +14,7 @@ import { NzAlertComponent } from 'ng-zorro-antd/alert';
 import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.less'],

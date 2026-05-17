@@ -27,7 +27,10 @@
 - VoterComponent @Input() voter incompatible with signal input (task_09/10)
 
 ## Handoffs
-- Task 06: Convert AuthInterceptor class → authInterceptorFn, then switch to `withInterceptors([authInterceptorFn])`
-- Task 07: Convert AppGuard class → authGuard CanActivateFn
+- Task 06: Convert AuthInterceptor class → authInterceptorFn, then switch to `withInterceptors([authInterceptorFn])` — DONE
+- Task 07: Convert AppGuard class → authGuard CanActivateFn — DONE
 - Task 08: Refactor BaseService (eliminate any, typed generics, inject(HttpClient))
 - Task 09: Refactor BaseComponent (inject(), signal state, eliminate Injector pattern)
+
+## Completed Since Last Memory Update
+- Task 11: Deleted 5 dead service files (user.service.ts, candidate.service.ts, voter.service.ts, message.service.ts, resume-voting.ts). Fixed 3 avatar: any → string | Blob | null. Fixed DetailResponse.detail. Removed UserService import from users.component.ts and main.ts provider list. Lint: 28→25 warnings. Build passes.

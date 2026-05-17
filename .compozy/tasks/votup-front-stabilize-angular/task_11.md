@@ -1,5 +1,5 @@
 ---
-status: pending
+status: completed
 title: Clean up dead service files and model `any` types
 type: chore
 complexity: low
@@ -33,17 +33,17 @@ Remove dead/unused service files from `src/services/` that contain empty shell c
 </requirements>
 
 ## Subtasks
-- [ ] 11.1 Search codebase for imports of each dead service file to confirm they are unused
-- [ ] 11.2 Delete `src/services/user.service.ts`
-- [ ] 11.3 Delete `src/services/candidate.service.ts`
-- [ ] 11.4 Delete `src/services/voter.service.ts`
-- [ ] 11.5 Delete `src/services/message.service.ts`
-- [ ] 11.6 Delete `src/services/resume-voting.ts`
-- [ ] 11.7 Fix `avatar: any` → `avatar: string | Blob | null` in Candidate, User, Voter models
-- [ ] 11.8 Fix `DetailResponse.detail: any` → proper type
-- [ ] 11.9 Verify `ng build` passes with zero errors
-- [ ] 11.10 Run `ng lint` and verify reduced warning count
-- [ ] 11.11 Commit changes
+- [x] 11.1 Search codebase for imports of each dead service file to confirm they are unused
+- [x] 11.2 Delete `src/services/user.service.ts`
+- [x] 11.3 Delete `src/services/candidate.service.ts`
+- [x] 11.4 Delete `src/services/voter.service.ts`
+- [x] 11.5 Delete `src/services/message.service.ts`
+- [x] 11.6 Delete `src/services/resume-voting.ts`
+- [x] 11.7 Fix `avatar: any` → `avatar: string | Blob | null` in Candidate, User, Voter models
+- [x] 11.8 Fix `DetailResponse.detail: any` → proper type
+- [x] 11.9 Verify `ng build` passes with zero errors
+- [x] 11.10 Run `ng lint` and verify reduced warning count
+- [x] 11.11 Commit changes
 
 ## Implementation Details
 

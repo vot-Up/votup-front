@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject } from '@angular/core';
 import {URLS} from "../../../app/app.urls";
 import {takeUntil} from "rxjs";
 import {BaseComponent} from "../../base.component";
@@ -22,6 +22,7 @@ import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
 
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-plate',
     templateUrl: "./plate.component.html",
     styleUrls: ['./plate.component.less'],

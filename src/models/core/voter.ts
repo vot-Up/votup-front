@@ -10,5 +10,5 @@ export class Voter extends ModelBase{
     is_staff: boolean
     avatar: any
     file_name: string
-    active: boolean
+    declare active: boolean
 }

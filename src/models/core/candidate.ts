@@ -10,6 +10,6 @@ export class Candidate extends ModelBase {
     is_staff: boolean
     avatar: any
     file_name: string
-    active: boolean
+    declare active: boolean
     disabled: boolean
 }

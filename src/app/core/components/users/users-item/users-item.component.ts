@@ -19,6 +19,7 @@ interface DialogData {
 
 
 @Component({
+  standalone: false,
     selector: 'app-users-item',
     templateUrl: './users-item.component.html',
     styleUrls: ['./users-item.component.less']

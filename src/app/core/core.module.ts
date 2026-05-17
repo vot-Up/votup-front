@@ -13,7 +13,7 @@ import {NzTableModule} from "ng-zorro-antd/table";
 import {NzSwitchModule} from "ng-zorro-antd/switch";
 import {NzSpaceModule} from "ng-zorro-antd/space";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NzToolTipModule} from "ng-zorro-antd/tooltip";
+import {NzTooltipModule} from "ng-zorro-antd/tooltip";
 import {NzDatePickerComponent, NzDatePickerModule} from "ng-zorro-antd/date-picker";
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
@@ -75,7 +75,7 @@ import {NzCollapseModule} from "ng-zorro-antd/collapse";
         NzIconModule,
         NzTableModule,
         NzDividerModule,
-        NzToolTipModule,
+        NzTooltipModule,
         NzInputModule,
         NzFormModule,
         NzDatePickerModule,

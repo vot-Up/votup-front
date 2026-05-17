@@ -8,6 +8,7 @@ import {Voter} from "../../../../models/core/voter";
 import {VoterItemComponent} from "./voter-item/voter-item.component";
 
 @Component({
+  standalone: false,
     selector: 'app-voter',
     templateUrl: './voter.component.html',
     styleUrls: ['./voter.component.less']

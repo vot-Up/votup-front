@@ -5,10 +5,10 @@ import {LoginElectorComponent} from "./components/login-elector/login-elector.co
 import {ResetPasswordComponent} from "./components/reset-password/reset-password.component";
 
 export const ROUTES: Routes = [
-    {path: 'login', component: LoginComponent},
-    {path: "core", loadChildren: () => import("./core/core.module").then(m => m.CoreModule)},
-    {path: "", redirectTo: "main", pathMatch: "full"},
-    {path: 'main', component: MainComponent},
-    {path: 'login-elector', component: LoginElectorComponent},
-    {path: 'reset-password', component: ResetPasswordComponent},
+  {path: 'login', component: LoginComponent},
+  {path: "core", loadChildren: () => import("./core/core.routes").then(m => m.ROUTES)},
+  {path: "", redirectTo: "main", pathMatch: "full"},
+  {path: 'main', component: MainComponent},
+  {path: 'login-elector', component: LoginElectorComponent},
+  {path: 'reset-password', component: ResetPasswordComponent},
 ];

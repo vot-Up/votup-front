@@ -1,0 +1,9 @@
+<section class="demo">
+    <swiper-container effect="cards" grab-cursor="true" slides-per-view="1">
+        @for (card of cards; track card) {
+            <swiper-slide>
+                <article class="card">{{ card }}</article>
+            </swiper-slide>
+        }
+    </swiper-container>
+</section>

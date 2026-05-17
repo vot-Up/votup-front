@@ -4,6 +4,7 @@ import {MainComponent} from "./components/main/main.component";
 import {LoginElectorComponent} from "./components/login-elector/login-elector.component";
 import {ResetPasswordComponent} from "./components/reset-password/reset-password.component";
 import {authGuard} from "./app/auth.guard";
+import {SwiperPrototypeComponent} from "./shared/swiper-prototype/swiper-prototype.component";
 
 export const ROUTES: Routes = [
   {path: 'login', component: LoginComponent},
@@ -12,4 +13,5 @@ export const ROUTES: Routes = [
   {path: 'main', component: MainComponent},
   {path: 'login-elector', component: LoginElectorComponent},
   {path: 'reset-password', component: ResetPasswordComponent},
+  {path: 'swiper-demo', component: SwiperPrototypeComponent},
 ];

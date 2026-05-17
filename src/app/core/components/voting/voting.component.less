@@ -1,132 +1,235 @@
-.ant-radio-group {
-    width: 100%;
-}
+@import (reference) "../../../../theme.less";
 
-.radio-group-style {
-    background-color: #ffffff;
-    border: 2px solid #ffffff;
-    border-radius: 12px;
-    padding: 16px 24px;
-    width: 100%;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-
-    &:hover, &.ant-radio-wrapper-checked {
-        border: 2px solid #00875A;
-        background-color: #f5f5f5;
-    }
-
-}
-
-span {
-    line-height: normal;
-}
-
-.div-option {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    align-self: stretch;
-    width: 100%;
-}
-
-.div-option-persona {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    gap: 8px;
-    width: 33%;
-}
-
-h4 {
-    margin-bottom: 24px;
-}
-
-h2, h4, .radio-group-style {
-    color: #5B6075;
-}
-
-.confirm-button {
-    margin-top: 24px;
-    text-align: center;
-}
-
-.success {
-    min-width: 190px;
-    padding: 12px 28px;
-    font-size: 15px;
-    height: auto;
-}
-
-.plate-name {
-    width: 33%;
-    display: flex;
-    flex: 1;
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.plate-type {
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.plate-type-max {
-    font-size: 18px;
-    font-weight: bold;
+.voting-shell {
+    min-height: 100vh;
+    padding: @spacing-xl @spacing-lg calc(@spacing-3xl + 96px);
+    background: #f3f6f1;
 }
 
 .header-voting {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    background-color: #ffffff;
-    padding: 20px 108px;
+    display: flex;
+    justify-content: center;
+    padding-bottom: @spacing-lg;
 }
 
-.back-to-start {
+.logo {
+    display: inline-flex;
+    align-items: center;
+    gap: @spacing-sm;
+    color: @colors-ink;
+    font-size: @typography-body-sm;
+    font-weight: @font-weight-semibold;
+}
+
+.voting-content {
+    display: grid;
+    gap: @spacing-lg;
     width: 100%;
-    justify-content: center;
-    margin-top: 8px;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.voting-intro {
+    display: grid;
+    gap: @spacing-xs;
+}
+
+.voting-intro h1 {
+    margin: 0;
+    color: @colors-ink;
+    font-size: @typography-display-xs;
+    font-weight: @font-weight-display;
+    line-height: 1.1;
+}
+
+.voting-intro p {
+    margin: 0;
+    color: @colors-body;
+}
+
+.plates-swiper {
+    width: 100%;
+    height: 360px;
+    overflow: visible;
+}
+
+swiper-slide {
+    display: flex;
+}
+
+.plate-card,
+.empty-state {
+    width: 100%;
+    background: @colors-canvas;
+    border: 1px solid @colors-border-muted;
+    border-radius: @rounded-xl;
+    box-shadow: 0 16px 34px rgba(14, 15, 12, .08);
+}
+
+.plate-card {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-lg;
+    height: 100%;
+    padding: @spacing-xl;
+    cursor: pointer;
+    transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.plate-card--selected {
+    border-color: @colors-positive;
+    box-shadow: 0 18px 36px rgba(46, 173, 75, .18);
+}
+
+.plate-card-header {
+    display: flex;
+    justify-content: space-between;
+    gap: @spacing-md;
+}
+
+.plate-label {
+    display: block;
+    margin-bottom: @spacing-xs;
+    color: @colors-mute;
+    font-size: @typography-caption;
+    font-weight: @font-weight-semibold;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.plate-name {
+    color: @colors-ink;
+    font-size: @typography-body-lg;
+    font-weight: @font-weight-display;
+    line-height: 1.2;
+}
+
+.selected-pill {
+    align-self: flex-start;
+    padding: @spacing-xs @spacing-sm;
+    border-radius: @rounded-pill;
+    background: rgba(46, 173, 75, .12);
+    color: @colors-positive;
+    font-size: @typography-caption;
+    font-weight: @font-weight-semibold;
+}
+
+.candidate-list {
+    display: grid;
+    gap: @spacing-md;
+}
+
+.candidate-row {
+    display: flex;
+    align-items: center;
+    gap: @spacing-md;
+    min-width: 0;
+    padding: @spacing-sm 0;
+    color: @colors-body;
+}
+
+.candidate-avatar {
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+}
+
+.candidate-name {
+    color: @colors-ink;
+    font-weight: @font-weight-semibold;
+    overflow-wrap: anywhere;
+}
+
+.candidate-role {
+    font-size: @typography-caption;
+    color: @colors-mute;
+}
+
+.select-help {
+    margin: auto 0 0;
+    padding-top: @spacing-sm;
+    border-top: 1px solid @colors-border-subtle;
+    color: @colors-mute;
+    font-size: @typography-caption;
+}
+
+.confirm-bar {
+    position: fixed;
+    left: @spacing-lg;
+    right: @spacing-lg;
+    bottom: @spacing-lg;
+    z-index: 20;
+    max-width: 420px;
+    margin: 0 auto;
+}
+
+.success {
+    width: 100%;
+    min-height: 52px;
+    border: 0;
+    border-radius: @rounded-pill;
+    background: @colors-positive;
+    box-shadow: 0 12px 24px rgba(46, 173, 75, .24);
+    color: @colors-canvas;
+    font-weight: @font-weight-semibold;
+}
+
+.success[disabled] {
+    background: @colors-canvas;
+    border: 1px solid @colors-border-muted;
+    box-shadow: none;
+    color: @colors-placeholder;
+}
+
+.empty-state {
+    display: grid;
+    justify-items: center;
+    gap: @spacing-sm;
+    padding: @spacing-xl;
+    text-align: center;
+    color: @colors-body;
 }
 
 .success-message {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center
+    min-height: 70vh;
+    display: grid;
+    place-items: center;
+    gap: @spacing-lg;
+    text-align: center;
+
+    img {
+        animation: pulse 1.4s ease-in-out infinite;
+    }
 }
 
-.grow-voting {
-        background-color: #ffffff;
-        border: 2px solid #ffffff;
-        border-radius: 12px;
-        padding: 16px 24px;
-        width: 100%;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-
-
-        .ant-avatar  {
-            width: 9rem !important;
-            height: 9rem !important;
-        }
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
 }
 
-.plate-max {
-    width: 22%;
-    display: flex;
-    flex: 1;
-    font-size: 24px;
-    font-weight: bold;
-}
+@media (min-width: 768px) {
+    .voting-shell {
+        padding: @spacing-2xl @spacing-2xl calc(@spacing-3xl + 112px);
+    }
 
-.name-max {
-    width: 33%;
-    display: flex;
-    flex: 1;
-    font-size: 24px;
+    .voting-content,
+    .confirm-bar {
+        max-width: 460px;
+    }
+
+    .voting-intro h1 {
+        font-size: @typography-display-sm;
+    }
+
+    .plates-swiper {
+        height: 380px;
+    }
+
+    .confirm-bar {
+        left: 50%;
+        right: auto;
+        bottom: @spacing-2xl;
+        width: 460px;
+        transform: translateX(-50%);
+    }
 }

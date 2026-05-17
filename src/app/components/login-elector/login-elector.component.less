@@ -1,87 +1,104 @@
-.login-main {
-    height: 100vh;
-    margin: -96px -110px;
+@import (reference) "../../../theme.less";
+
+.login-elector-page {
+    min-height: 100vh;
     display: flex;
+    flex-direction: column;
+    gap: @spacing-2xl;
+    background: @colors-canvas-soft;
+    padding: @spacing-xl @spacing-lg;
+}
+
+.login-elector-panel,
+.login-elector-visual {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-elector-panel {
+    gap: @spacing-lg;
 }
 
 .logo {
-    margin-bottom: 32px;
-    margin-right: 0;
-    font-size: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: @spacing-sm;
+    color: @colors-ink;
+    font-size: @typography-body-sm;
+    font-weight: @font-weight-semibold;
 
     img {
-        margin-top: -8px;
+        margin-top: -@spacing-xs;
     }
 }
 
-.login-image {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    background-color: #00875A;
+h1 {
+    margin: 0;
+    color: @colors-ink;
+    font-size: clamp(32px, 7vw, @typography-display-md);
+    font-weight: @font-weight-display;
+    line-height: .95;
 }
 
-.login-form-content {
-    width: 50%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    .labels {
-        width: 300px;
-        margin-bottom: 8px;
-        color: #5B6075;
-    }
+p {
+    margin: 0;
+    color: @colors-body;
+    font-size: @typography-body-md;
 }
 
 .login-form {
-    width: 300px;
+    width: 100%;
+    max-width: 420px;
 }
 
-.login-form-margin {
-    margin-bottom: 16px;
+.actions {
+    display: grid;
+    gap: @spacing-sm;
 }
 
-.login-form-forgot {
-    float: right;
-}
-
-.login-form-button {
+.primary-action,
+.secondary-action {
+    min-height: 48px;
+    border-radius: @rounded-xl;
+    font-weight: @font-weight-semibold;
     width: 100%;
 }
 
-.login-email {
-    width: 150px;
-}
-.button-voter {
-    margin-right: 10px;
-}
-.login-span {
-    height: 60px;
+.secondary-action {
+    border: 1px solid @colors-primary;
+    color: @colors-primary;
+    background: transparent;
 }
 
-.login-voting {
-    justify-content: center;
+.login-elector-visual {
+    align-items: center;
+
+    img {
+        max-width: min(100%, 520px);
+        width: 100%;
+        height: auto;
+        display: block;
+    }
 }
 
-.login-alight {
-    margin-top: 160px;
-    margin-left: 100px;
-}
+@media (min-width: 768px) {
+    .login-elector-page {
+        flex-direction: row;
+        align-items: center;
+        padding: @spacing-3xl @spacing-2xl;
+    }
 
-.login-text {
-    background-color: #00875A;
-    margin-top: 20px;
+    .login-elector-panel,
+    .login-elector-visual {
+        width: 50%;
+    }
 
-}
+    .login-elector-visual {
+        justify-content: flex-end;
+    }
 
-.back-to-top {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1000;
+    .actions {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: 420px;
+    }
 }

@@ -1,82 +1,74 @@
-import { Injectable, inject } from "@angular/core";
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
+import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest, HttpResponse } from "@angular/common/http";
 import {Observable} from "rxjs";
-
-
 import {tap} from "rxjs/operators";
+import {inject} from "@angular/core";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {AuthService} from "../../services/auth.service";
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-    toast = inject(NzMessageService);
-    authService = inject(AuthService);
+export const authInterceptorFn: HttpInterceptorFn = (req: HttpRequest<any>, next: HttpHandlerFn): Observable<HttpEvent<any>> => {
+  const toast = inject(NzMessageService);
+  const authService = inject(AuthService);
 
+  req = addHeader(req);
+  return next(req).pipe(
+    tap({
+      error: (err: HttpErrorResponse) => handleError(err, toast, authService)
+    })
+  );
+};
 
-    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        req = this._addHeader(req);
-        return next.handle(req).pipe(tap((event: HttpEvent<any>) => {
-            if (event instanceof HttpResponse) {
-            }
-        }, (errorResponse: HttpErrorResponse) => {
-            this.handleError(errorResponse);
-        }));
+function addHeader(req: HttpRequest<any>): HttpRequest<any> {
+  return req.clone({
+    setHeaders: {
+      "Accept-Language": "pt-BR"
     }
+  });
+}
 
-    private handleError(err: HttpErrorResponse): void {
-        if (err.status === 0) {
-            this.toast.create("error", "Error desconhecido!");
-            return;
-        } else if (err.status === 401) {
-            this.authService.logout(false, true);
-            return;
-        }
+function handleError(err: HttpErrorResponse, toast: NzMessageService, authService: AuthService): void {
+  if (err.status === 0) {
+    toast.create("error", "Error desconhecido!");
+    return;
+  } else if (err.status === 401) {
+    authService.logout(false, true);
+    return;
+  }
 
-        const errors = AuthInterceptor.captureError(err.error);
-        errors.forEach(t => {
-            if (t instanceof Blob) {
-                const reader = new FileReader();
-                reader.addEventListener("loadend", () => {
-                    this.showErrors(JSON.parse(reader.result.toString()));
-                });
-                reader.readAsText(t);
-            } else {
-                this.showErrors(t);
-            }
-        });
+  const errors = captureError(err.error);
+  errors.forEach(t => {
+    if (t instanceof Blob) {
+      const reader = new FileReader();
+      reader.addEventListener("loadend", () => {
+        showErrors(JSON.parse(reader.result.toString()), toast);
+      });
+      reader.readAsText(t);
+    } else {
+      showErrors(t, toast);
     }
+  });
+}
 
-    _addHeader(req: HttpRequest<any>) {
-        return req.clone({
-            setHeaders: {
-                "Accept-Language": `pt-BR`
-            }
-        });
-    }
+function showErrors(value: any, toast: NzMessageService): void {
+  Object.keys(value).forEach((key: any) => {
+    toast.create("error", value[key]);
+  });
+}
 
-    private showErrors(value: any): void {
-        Object.keys(value).forEach((key: any) => {
-            this.toast.create("error", value[key]);
-        });
-    }
+function captureError(value: any): any[] {
+  if (value instanceof Array) {
+    return value;
+  } else if (isJson(value)) {
+    return [value];
+  }
+  return [{detail: value}];
+}
 
-    // Function to capture errors
-    private static captureError(value: any): any[] {
-        if (value instanceof Array) {
-            return value;
-        } else if (AuthInterceptor.isJson(value)) {
-            return [value];
-        }
-        return [{detail: value}];
-    }
-
-    private static isJson(item) {
-        item = typeof item !== "string" ? JSON.stringify(item) : item;
-        try {
-            item = JSON.parse(item);
-        } catch (e) {
-            return false;
-        }
-        return typeof item === "object" && item !== null;
-    }
+function isJson(item: any): boolean {
+  item = typeof item !== "string" ? JSON.stringify(item) : item;
+  try {
+    item = JSON.parse(item);
+  } catch (e) {
+    return false;
+  }
+  return typeof item === "object" && item !== null;
 }

@@ -1,24 +1,33 @@
 # Workflow Memory
 
 ## Current State
-- Task 01: COMPLETED — standalone conversion done, SharedModule deleted, components are standalone
-- Task 02: COMPLETED — prune-ng-modules schematic ran (no additional changes needed; AppModule/CoreModule kept for task_03)
-- Next task: Task 03 (standalone bootstrap)
+- Tasks 01-05: COMPLETED (standalone conversion, prune, bootstrap, inject, signal-input/output/queries)
+- Tasks 06-13: PENDING
+- Next: Task 06 (AuthInterceptor → functional interceptor)
+- Build: passes, 2.22 MB initial total, main 1.54 MB, lazy core chunk 87 KB
+- Lint: 46 problems (2 errors in BaseComponent prefer-inject + 44 warnings no-explicit-any)
 
 ## Shared Decisions
-- Proceed incrementally per ADR-001; validate build after each step
-- Test creation is out of scope per PRD non-goals; existing .spec.ts files are untracked/experimental
+- ng-zorro-antd `nzAfterClose` requires `EventEmitter<R>` — keep `modalClosedEmitter` as EventEmitter, not Subject/output()
+- `@Input() voter` in VoterComponent kept because it's reassigned programmatically (task_09/10 scope)
+- `withInterceptorsFromDi()` kept until task_06 converts AuthInterceptor to functional
+- ng-zorro NgModules stay as `importProvidersFrom()` until standalone provider APIs available
 
 ## Shared Learnings
-- `ng generate @angular/core:standalone --mode=<mode>` requires explicit `--mode=` flag; interactive piping is unreliable
-- Only 2 real @NgModule remain: AppModule (bootstrap + providers) and CoreModule (RouterModule.forChild)
-- app-routing.module.ts and core-routing.module.ts just export Routes arrays, not @NgModule classes
-- Lint baseline: 74 errors (prefer-inject) + 52 warnings (no-explicit-any); these are for tasks 04+
-- Build baseline: 2.32 MB initial total, main chunk 1.64 MB
+- Angular schematics need `NG_DEBUG=1` env var to actually execute (otherwise silently report "Nothing to be done")
+- Output schematic removes EventEmitter from imports — must re-add if EventEmitter used for non-@Output purposes
+- `output<void>().emit()` requires an argument (use `emit(undefined)`)
+- viewChild() migration auto-updates templates from `prop.x` to `prop().x`
+- Bundle improved through standalone/lazy: main 1.64MB → 1.54MB, total 2.32MB → 2.22MB
 
 ## Open Risks
-- `npm test` fails with TS18003 because tsconfig.spec.json matches no inputs and repo has zero .spec.ts files
-- ng-zorro-antd zoneless compatibility untested until task 12
+- `npm test` fails (TS18003 — no .spec.ts files, tsconfig.spec.json issue)
+- ng-zorro-antd zoneless compatibility untested (task 12)
+- BaseComponent's manual Injector pattern still has 2 prefer-inject errors (task_09)
+- VoterComponent @Input() voter incompatible with signal input (task_09/10)
 
 ## Handoffs
-- Task 03 will convert bootstrap to standalone, delete AppModule, convert CoreModule lazy loading to standalone routes
+- Task 06: Convert AuthInterceptor class → authInterceptorFn, then switch to `withInterceptors([authInterceptorFn])`
+- Task 07: Convert AppGuard class → authGuard CanActivateFn
+- Task 08: Refactor BaseService (eliminate any, typed generics, inject(HttpClient))
+- Task 09: Refactor BaseComponent (inject(), signal state, eliminate Injector pattern)

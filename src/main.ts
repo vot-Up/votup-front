@@ -1,13 +1,12 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { importProvidersFrom } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideNgxMask } from 'ngx-mask';
 
 import { NZ_I18N, en_US } from 'ng-zorro-antd/i18n';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './utilities/validator/auth.interceptor';
+import { authInterceptorFn } from './utilities/validator/auth.interceptor';
 import { AppVariables } from './app/app/app.variables';
 import { AppGuard } from './app/app/app.guard';
 import { AuthService } from './services/auth.service';
@@ -53,7 +52,7 @@ import { AppComponent } from './app/app.component';
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(ROUTES, withComponentInputBinding()),
-    provideHttpClient(withInterceptorsFromDi()),
+    provideHttpClient(withInterceptors([authInterceptorFn])),
     provideAnimations(),
     provideNgxMask(),
     importProvidersFrom(
@@ -91,7 +90,6 @@ bootstrapApplication(AppComponent, {
       NgxMaskPipe
     ),
     { provide: NZ_I18N, useValue: en_US },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     AppVariables,
     AppGuard,
     AuthService,

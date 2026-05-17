@@ -1,9 +1,6 @@
 import {Pipe, PipeTransform} from "@angular/core";
 
-@Pipe({
-  standalone: false,
-    name: "cellphone"
-})
+@Pipe({ name: "cellphone" })
 export class CellphoneFormatePipe implements PipeTransform {
     public part1:string;
     public part2:string;

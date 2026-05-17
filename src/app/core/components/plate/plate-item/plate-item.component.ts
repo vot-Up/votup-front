@@ -1,5 +1,5 @@
 import {Component, Inject, Injector, OnInit} from '@angular/core';
-import {CdkDragDrop, transferArrayItem} from "@angular/cdk/drag-drop";
+import { CdkDragDrop, transferArrayItem, CdkDropListGroup, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
 import {Plate} from "../../../../../models/core/plate";
 import {URLS} from "../../../../app/app.urls";
 import {takeUntil} from "rxjs";
@@ -7,16 +7,26 @@ import {BaseComponent} from "../../../base.component";
 import {BaseService} from "../../../../../services/base.service";
 import {PlateUser} from "../../../../../models/core/plate-user";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {CustomValidators} from "../../../../../utilities/validator/custom-validators";
 import {Candidate} from "../../../../../models/core/candidate";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormControlComponent, NzFormLabelComponent } from 'ng-zorro-antd/form';
+import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
 
 
 @Component({
-  standalone: false,
     selector: 'app-plate-item',
     templateUrl: './plate-item.component.html',
-    styleUrls: ['./plate-item.component.less']
+    styleUrls: ['./plate-item.component.less'],
+    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormControlComponent, NzFormLabelComponent, NzSpaceCompactItemDirective, NzInputDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, CdkDropListGroup, NzRowDirective, NzInputGroupComponent, CdkDropList, CdkDrag, NzAvatarComponent, NzModalFooterDirective]
 })
 export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
 

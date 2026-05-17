@@ -7,12 +7,21 @@ import {VotingUser} from "../../../../models/core/voting-user";
 import {takeUntil} from "rxjs";
 import {BaseService} from "../../../../services/base.service";
 import {Candidate} from "../../../../models/core/candidate";
+import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
+import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzRadioGroupComponent, NzRadioComponent } from 'ng-zorro-antd/radio';
+import { NzFormItemComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
 
 @Component({
-  standalone: false,
     selector: 'app-voting',
     templateUrl: './voting.component.html',
-    styleUrls: ['./voting.component.less']
+    styleUrls: ['./voting.component.less'],
+    imports: [NzColDirective, NzAvatarComponent, FormsModule, ReactiveFormsModule, NzRadioGroupComponent, NzRadioComponent, NzRowDirective, NzFormItemComponent, NzFormControlComponent, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective]
 })
 export class VotingComponent extends BaseComponent<Plate> implements OnInit {
 

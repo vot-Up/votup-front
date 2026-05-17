@@ -39,7 +39,7 @@ import {AuthInterceptor} from "../utilities/validator/auth.interceptor";
 import {LoginElectorComponent} from "./components/login-elector/login-elector.component";
 import {CoreModule} from "./core/core.module";
 import {NgxMaskDirective, NgxMaskPipe, provideNgxMask} from "ngx-mask";
-import {SharedModule} from "./shared/shared.module";
+
 import {ResetPasswordComponent} from './components/reset-password/reset-password.component';
 import { VoterComponent } from './core/components/voter/voter.component';
 import { CandidateComponent } from './core/components/candidate/candidate.component';
@@ -48,47 +48,43 @@ import {NzPaginationModule} from "ng-zorro-antd/pagination";
 
 registerLocaleData(pt);
 
-@NgModule({ declarations: [
-        AppComponent,
-        LoginComponent,
-        MainComponent,
-        LoginElectorComponent,
-        CellphoneFormatePipe,
-        ResetPasswordComponent,
-        VoterComponent,
-        CandidateComponent
-    ],
-    exports: [
+@NgModule({ exports: [
         CellphoneFormatePipe
     ],
     bootstrap: [AppComponent], imports: [FormsModule,
-        BrowserAnimationsModule,
-        NzLayoutModule,
-        NzMenuModule,
-        NzBreadCrumbModule,
-        NzGridModule,
-        NzButtonModule,
-        NzIconModule,
-        NzTableModule,
-        NzDividerModule,
-        NzTooltipModule,
-        NzInputModule,
-        NzFormModule,
-        NzDatePickerModule,
-        NzSelectModule,
-        NzSwitchModule,
-        NzSpaceModule,
-        NzModalModule,
-        DragDropModule,
-        ReactiveFormsModule,
-        NzTypographyModule,
-        RouterModule.forRoot(ROUTES),
-        NzAlertModule,
-        CoreModule,
-        NgxMaskDirective,
-        NgxMaskPipe,
-        SharedModule,
-        NzPaginationModule], providers: [
+    BrowserAnimationsModule,
+    NzLayoutModule,
+    NzMenuModule,
+    NzBreadCrumbModule,
+    NzGridModule,
+    NzButtonModule,
+    NzIconModule,
+    NzTableModule,
+    NzDividerModule,
+    NzTooltipModule,
+    NzInputModule,
+    NzFormModule,
+    NzDatePickerModule,
+    NzSelectModule,
+    NzSwitchModule,
+    NzSpaceModule,
+    NzModalModule,
+    DragDropModule,
+    ReactiveFormsModule,
+    NzTypographyModule,
+    RouterModule.forRoot(ROUTES),
+    NzAlertModule,
+    CoreModule,
+    NgxMaskDirective,
+    NgxMaskPipe,
+    NzPaginationModule, AppComponent,
+    LoginComponent,
+    MainComponent,
+    LoginElectorComponent,
+    CellphoneFormatePipe,
+    ResetPasswordComponent,
+    VoterComponent,
+    CandidateComponent], providers: [
         { provide: NZ_I18N, useValue: en_US },
         {
             provide: HTTP_INTERCEPTORS,

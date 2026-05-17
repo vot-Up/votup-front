@@ -1,6 +1,6 @@
 import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {BaseComponent} from "../../../base.component";
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
 import {takeUntil} from "rxjs";
 import {CustomValidators} from "../../../../../utilities/validator/custom-validators";
@@ -11,6 +11,16 @@ import {Plate} from "../../../../../models/core/plate";
 import {Voting} from "../../../../../models/core/voting";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {Utils} from "../../../../../utilities/utils";
+import { NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent } from 'ng-zorro-antd/table';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { FormsModule } from '@angular/forms';
+import { NzColDirective } from 'ng-zorro-antd/grid';
+import { NzFormControlComponent } from 'ng-zorro-antd/form';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 
 interface DialogData {
@@ -18,10 +28,10 @@ interface DialogData {
 }
 
 @Component({
-  standalone: false,
     selector: 'app-resume-vote',
     templateUrl: './resume-vote.component.html',
-    styleUrls: ['./resume-vote.component.less']
+    styleUrls: ['./resume-vote.component.less'],
+    imports: [NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSpaceCompactItemDirective, NzInputDirective, FormsModule, NzModalFooterDirective, NzColDirective, NzFormControlComponent, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective]
 })
 export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements OnInit {
     public votingPlateList: VotingPlate[] = [];

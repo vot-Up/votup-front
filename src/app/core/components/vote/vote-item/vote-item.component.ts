@@ -1,6 +1,6 @@
-import {CdkDragDrop, transferArrayItem} from "@angular/cdk/drag-drop";
+import { CdkDragDrop, transferArrayItem, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
 import {BaseComponent} from "../../../base.component";
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {URLS} from "../../../../app/app.urls";
 import {CustomValidators} from "../../../../../utilities/validator/custom-validators";
@@ -12,6 +12,17 @@ import {VotingPlate} from "../../../../../models/core/voting-plate";
 import {Plate} from "../../../../../models/core/plate";
 import {DatePipe} from "@angular/common";
 import {Candidate} from "../../../../../models/core/candidate";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NzFormDirective, NzFormItemComponent, NzFormLabelComponent, NzFormControlComponent } from "ng-zorro-antd/form";
+import { NzRowDirective, NzColDirective } from "ng-zorro-antd/grid";
+import { NzSpaceCompactItemDirective } from "ng-zorro-antd/space";
+import { NzDatePickerComponent } from "ng-zorro-antd/date-picker";
+import { NzInputDirective } from "ng-zorro-antd/input";
+import { NzButtonComponent } from "ng-zorro-antd/button";
+import { NzWaveDirective } from "ng-zorro-antd/core/wave";
+import { ɵNzTransitionPatchDirective } from "ng-zorro-antd/core/transition-patch";
+import { NzIconDirective } from "ng-zorro-antd/icon";
+import { NzAvatarComponent } from "ng-zorro-antd/avatar";
 
 
 enum DropListTypes {
@@ -19,10 +30,10 @@ enum DropListTypes {
 }
 
 @Component({
-  standalone: false,
     selector: 'app-vote-item',
     templateUrl: './vote-item.component.html',
-    styleUrls: ['./vote-item.component.less']
+    styleUrls: ['./vote-item.component.less'],
+    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzColDirective, NzFormItemComponent, NzFormLabelComponent, NzSpaceCompactItemDirective, NzDatePickerComponent, NzFormControlComponent, NzInputDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, CdkDropList, CdkDrag, NzAvatarComponent, NzModalFooterDirective]
 })
 export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
     public plateService: BaseService<Plate>;

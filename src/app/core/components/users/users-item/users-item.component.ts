@@ -4,11 +4,23 @@ import {User} from "../../../../../models/core/user";
 import {URLS} from "../../../../app/app.urls";
 import {takeUntil} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {SafeUrl} from "@angular/platform-browser";
 import {CustomValidators} from "../../../../../utilities/validator/custom-validators";
 import {Utils} from "../../../../../utilities/utils";
 import {AuthService} from "../../../../../services/auth.service";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormItemComponent, NzFormLabelComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
+import { LowercaseDirective } from '../../../../../utilities/lowercase.directive';
+import { NgxMaskDirective } from 'ngx-mask';
+import { NzSwitchComponent } from 'ng-zorro-antd/switch';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 
 interface DialogData {
@@ -19,10 +31,10 @@ interface DialogData {
 
 
 @Component({
-  standalone: false,
     selector: 'app-users-item',
     templateUrl: './users-item.component.html',
-    styleUrls: ['./users-item.component.less']
+    styleUrls: ['./users-item.component.less'],
+    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzFormItemComponent, NzColDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, LowercaseDirective, NgxMaskDirective, NzSwitchComponent, NzInputGroupComponent, NzModalFooterDirective, NzIconDirective]
 })
 export class UsersItemComponent extends BaseComponent<User> implements OnInit {
 

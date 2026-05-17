@@ -1,10 +1,19 @@
 import {Component, EventEmitter, Inject, Injector, OnInit} from '@angular/core';
 import {BaseComponent} from "../../../base.component";
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
 import {Observable, of, takeUntil} from "rxjs";
 import {Utils} from "../../../../../utilities/utils";
 import {RankingItemComponent} from "./ranking-item/ranking-item.component";
+import { NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent } from 'ng-zorro-antd/table';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { NzColDirective } from 'ng-zorro-antd/grid';
+import { NzFormControlComponent } from 'ng-zorro-antd/form';
 
 interface Ranking {
     plate__id: number,
@@ -14,10 +23,10 @@ interface Ranking {
 }
 
 @Component({
-  standalone: false,
     selector: 'app-ranking',
     templateUrl: './ranking.component.html',
-    styleUrls: ['./ranking.component.less']
+    styleUrls: ['./ranking.component.less'],
+    imports: [NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzTooltipDirective, NzIconDirective, NzModalFooterDirective, NzColDirective, NzFormControlComponent]
 })
 export class RankingComponent extends BaseComponent<null> implements OnInit {
 

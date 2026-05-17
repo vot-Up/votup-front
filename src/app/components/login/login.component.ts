@@ -1,15 +1,23 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CustomValidators} from "../../../utilities/validator/custom-validators";
 import {take} from "rxjs/operators";
 import {AuthService} from "../../../services/auth.service";
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzFormDirective, NzFormItemComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzInputGroupComponent, NzInputDirective } from 'ng-zorro-antd/input';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzAlertComponent } from 'ng-zorro-antd/alert';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 
 @Component({
-  standalone: false,
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.less']
+    styleUrls: ['./login.component.less'],
+    imports: [NzRowDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzColDirective, NzFormControlComponent, ɵNzTransitionPatchDirective, NzSpaceCompactItemDirective, NzInputGroupComponent, NzInputDirective, NzButtonComponent, NzAlertComponent, NzWaveDirective]
 })
 export class LoginComponent implements OnInit {
 

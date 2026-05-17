@@ -2,19 +2,29 @@ import {Component, Inject, Injector, OnInit} from '@angular/core';
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
 import {CustomValidators} from "../../../../../utilities/validator/custom-validators";
 import {Utils} from "../../../../../utilities/utils";
 import {BaseComponent} from "../../../base.component";
 import {Candidate} from "../../../../../models/core/candidate";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormItemComponent, NzFormLabelComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { NgxMaskDirective } from 'ngx-mask';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 
 @Component({
-  standalone: false,
     selector: 'app-candidate-item',
     templateUrl: './candidate-item.component.html',
-    styleUrls: ['./candidate-item.component.less']
+    styleUrls: ['./candidate-item.component.less'],
+    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzFormItemComponent, NzColDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, NgxMaskDirective, NzModalFooterDirective, NzIconDirective]
 })
 export class CandidateItemComponent extends BaseComponent<Candidate> implements OnInit {
     public object: Candidate = new Candidate();

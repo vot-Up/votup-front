@@ -7,7 +7,7 @@
             <nz-form-label nzRequired>Nome</nz-form-label>
           </div>
           <input nz-input type="text" formControlName="name" maxlength="54" style="margin-left: 10px"/>
-          <div nz-col nzFlex="4" [hidden]="!hide">
+          <div nz-col nzFlex="4" [hidden]="!hide()">
             <button class="success" nz-button nzType="primary" (click)="savePlate(true)"
               [disabled]="!formGroup.valid" style="margin-left: 10px">
               <span nz-icon nzType="check" nzTheme="outline"></span>
@@ -19,7 +19,7 @@
     </div>
   </div>
 </form>
-<div nz-col [hidden]="hide">
+<div nz-col [hidden]="hide()">
   <div nz-col>
     <h4>Arraste o presidente e o vice-presidente da chapa:</h4>
   </div>
@@ -28,11 +28,11 @@
     <div nz-col nzFlex="6">
       <div class="list-head" nz-row nzJustify="space-between">
         <div><strong>Disponíveis</strong></div>
-        <div><strong>{{candidates.length}} pessoas</strong></div>
+        <div><strong>{{candidates().length}} pessoas</strong></div>
       </div>
       <div class="search-bar">
         <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-          <input nz-input placeholder="Buscar" [(ngModel)]="searchUser" type="text"/>
+          <input nz-input placeholder="Buscar" [ngModel]="searchUser()" (ngModelChange)="searchUser.set($event)" type="text"/>
         </nz-input-group>
       </div>
       <ng-template #suffixIconButton>
@@ -43,9 +43,9 @@
 
 
       <div cdkDropList #userList="cdkDropList" class="list" id="U"
-        [cdkDropListData]="candidates" (cdkDropListDropped)="dropItem($event)"
+        [cdkDropListData]="candidates()" (cdkDropListDropped)="dropItem($event)"
         [cdkDropListConnectedTo]="[presidentList, vicePresidentList]">
-        @for (item of candidates; track item) {
+        @for (item of candidates(); track item) {
           <div nz-row nzAlign="middle" class="list-item" cdkDrag>
             <span nz-icon nzType="holder" nzTheme="outline"></span>
             <div nz-col nzFlex="24">
@@ -77,10 +77,10 @@
       </div>
 
       <div cdkDropList #presidentList="cdkDropList" class="list" id="P"
-        [cdkDropListData]="presidents" (cdkDropListDropped)="dropItem($event)"
+        [cdkDropListData]="presidents()" (cdkDropListDropped)="dropItem($event)"
         [cdkDropListConnectedTo]="[userList, vicePresidentList]"
         style="margin-bottom: 16px; height: 100px;">
-        @for (item of presidents; track item) {
+        @for (item of presidents(); track item) {
           <div nz-row nzAlign="middle" class="list-item" cdkDrag>
             <span nz-icon nzType="holder" nzTheme="outline"></span>
             <div nz-col nzFlex="24">
@@ -109,9 +109,9 @@
         <div><strong>Vice-presidente</strong></div>
       </div>
       <div cdkDropList #vicePresidentList="cdkDropList" class="list" id="V"
-        [cdkDropListData]="vice_presidents" (cdkDropListDropped)="dropItem($event)"
+        [cdkDropListData]="vice_presidents()" (cdkDropListDropped)="dropItem($event)"
         [cdkDropListConnectedTo]="[userList, presidentList]" style="height: 100px!important;">
-        @for (item of vice_presidents; track item) {
+        @for (item of vice_presidents(); track item) {
           <div nz-row nzAlign="middle" class="list-item" cdkDrag>
             <span nz-icon nzType="holder" nzTheme="outline"></span>
             <div nz-col nzFlex="24">
@@ -146,7 +146,7 @@
   </button>
   <button class="success"
     type="submit"
-    [hidden]="hide"
+    [hidden]="hide()"
     nz-button nzType="success"
     [disabled]="!formGroup.valid"
     (click)="savePlate(true)">

@@ -37,7 +37,7 @@ export class Utils {
         return new Blob([ab], {type: type});
     }
 
-    public static downloadFileFromBlob(file: Blob, filename: string): any {
+    public static downloadFileFromBlob(file: Blob, filename: string): void {
         const fileUrl = (window.URL || window["webkitURL"]).createObjectURL(file);
         const anchor = document.createElement("a");
         anchor.download = filename;

@@ -1,26 +1,39 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../../../base.component";
 import {URLS} from "../../../../../app/app.urls";
 import {takeUntil} from "rxjs";
 import {Utils} from "../../../../../../utilities/utils";
+import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
+import { NzColDirective } from 'ng-zorro-antd/grid';
+import { NzFormControlComponent } from 'ng-zorro-antd/form';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
 
-class Ranking {
+interface RankingVoter {
+    name: string;
 }
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-ranking-item',
     templateUrl: './ranking-item.component.html',
-    styleUrls: ['./ranking-item.component.less']
+    styleUrls: ['./ranking-item.component.less'],
+    imports: [NzListComponent, NzListItemComponent, NzModalFooterDirective, NzColDirective, NzFormControlComponent, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective]
 })
-export class RankingItemComponent extends BaseComponent<Ranking> implements OnInit {
-    public list_user: any = []
+export class RankingItemComponent extends BaseComponent<RankingVoter> implements OnInit {
+    modal = inject(NzModalService);
+    data = inject(NZ_MODAL_DATA);
 
-    constructor(public injector: Injector,
-                public modal: NzModalService,
-                @Inject(NZ_MODAL_DATA) public data: any) {
-        super(injector, {pk: "id", endpoint: URLS.VOTING_USER, retrieveOnInit: true})
+    public list_user = signal<RankingVoter[]>([])
+
+    constructor() {
+
+        super({pk: "id", endpoint: URLS.VOTING_USER, retrieveOnInit: true})
+    
     }
 
     ngOnInit(): void {
@@ -38,7 +51,7 @@ export class RankingItemComponent extends BaseComponent<Ranking> implements OnIn
         this.service.getFromListRoute('get_voter_plate').pipe(
             takeUntil(this.unsubscribe)
         ).subscribe(response => {
-            this.list_user = response['data']
+            this.list_user.set(response['data'])
         });
     }
 

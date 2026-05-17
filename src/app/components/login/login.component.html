@@ -25,7 +25,7 @@
                         <input nz-input
                                placeholder="Senha"
                                type="password"
-                               [type]="hide ? 'password': 'text'"
+                               [type]="hide() ? 'password': 'text'"
                                formControlName="password"
                                minlength="4"
                                maxlength="64"
@@ -43,7 +43,7 @@
                 </a>
             </div>
 
-            @if (test) {
+            @if (test()) {
                 <nz-alert nzType="warning"
                           class="login-alert"
                           nzMessage="Usuario não encontrado"

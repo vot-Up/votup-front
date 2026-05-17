@@ -1,36 +1,42 @@
-import {Component, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup} from "@angular/forms";
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CustomValidators} from "../../../utilities/validator/custom-validators";
 import {take} from "rxjs/operators";
 import {AuthService} from "../../../services/auth.service";
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzFormDirective, NzFormItemComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzInputGroupComponent, NzInputDirective } from 'ng-zorro-antd/input';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzAlertComponent } from 'ng-zorro-antd/alert';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-login',
     templateUrl: './login.component.html',
-    styleUrls: ['./login.component.less']
+    styleUrls: ['./login.component.less'],
+    imports: [NzRowDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzColDirective, NzFormControlComponent, ɵNzTransitionPatchDirective, NzSpaceCompactItemDirective, NzInputGroupComponent, NzInputDirective, NzButtonComponent, NzAlertComponent, NzWaveDirective]
 })
 export class LoginComponent implements OnInit {
+    formBuilder = inject(FormBuilder);
+    router = inject(Router);
+    authService = inject(AuthService);
+    route = inject(ActivatedRoute);
 
-    public url: string;
-    public message: string;
+
+    public url = signal<string>("/");
+    public message = signal<string>("sign-in");
     public formGroup: FormGroup
-    public hide: boolean = true;
-    public test: boolean = false;
-
-    constructor(
-        public formBuilder: FormBuilder,
-        public router: Router,
-        public authService: AuthService,
-        public route: ActivatedRoute,
-    ) {
-    }
+    public hide = signal(true);
+    public test = signal(false);
 
     ngOnInit(): void {
         this.createFormGroup();
-        this.message = "sign-in";
-        this.url = this.route.snapshot.queryParams["u"] || "/";
+        this.message.set("sign-in");
+        this.url.set(this.route.snapshot.queryParams["u"] || "/");
     }
 
     public createFormGroup(): void {
@@ -41,7 +47,7 @@ export class LoginComponent implements OnInit {
     }
 
     public login(): void {
-        this.message = "processing";
+        this.message.set("processing");
         const rawValue = this.formGroup.getRawValue();
 
         this.authService.login(rawValue.email, rawValue.password)
@@ -53,8 +59,8 @@ export class LoginComponent implements OnInit {
                     }
                 },
                 () => {
-                    this.message = "sign-in";
-                    this.test = true;
+                    this.message.set("sign-in");
+                    this.test.set(true);
                     this.formGroup.reset()
                 }
             );

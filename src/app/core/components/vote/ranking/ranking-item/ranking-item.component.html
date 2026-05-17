@@ -1,5 +1,5 @@
 <div>
-  @for (voter of list_user; track voter) {
+  @for (voter of list_user(); track voter) {
     <nz-list>
       <nz-list-item>
         {{voter.name}}

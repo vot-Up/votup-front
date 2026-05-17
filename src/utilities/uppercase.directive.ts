@@ -1,42 +1,41 @@
-import {Directive, HostListener, Input} from "@angular/core";
+import {Directive, HostListener, input} from "@angular/core";
 
 @Directive({
-  standalone: false,
-    selector: `input[uppercase]`,
-    exportAs: "uppercase",
+    selector: `input[appUppercase]`,
+    exportAs: "appUppercase",
 })
 export class UppercaseDirective {
 
-    @Input() upperCase: string;
+    readonly upperCase = input<string>(undefined);
 
-    private getCaret(element) {
+    private getCaret(element: HTMLInputElement) {
         return {
             start: element.selectionStart,
             end: element.selectionEnd,
         };
     }
 
-    private setCaret(element, start, end) {
+    private setCaret(element: HTMLInputElement, start: number, end: number) {
         element.selectionStart = start;
         element.selectionEnd = end;
         element.focus();
     }
 
-    private dispatchEvent(el, eventType) {
+    private dispatchEvent(el: HTMLInputElement, eventType: string) {
         const event = document.createEvent("Event");
         event.initEvent(eventType, false, false);
         el.dispatchEvent(event);
     }
 
-    private convertValue(el, value) {
+    private convertValue(el: HTMLInputElement, value: string) {
         el.value = value.toUpperCase();
         this.dispatchEvent(el, "input");
     }
 
     @HostListener("input", ["$event.target", "$event.target.value"])
-    onInput(el: any, value: string): void {
+    onInput(el: HTMLInputElement, value: string): void {
 
-        if (!this.upperCase && "function" === typeof value.toUpperCase && value.toUpperCase() !== value) {
+        if (!this.upperCase() && "function" === typeof value.toUpperCase && value.toUpperCase() !== value) {
             let {start, end} = this.getCaret(el);
             if (value[0] === " " && start === 1 && end === 1) {
                 start = 0;

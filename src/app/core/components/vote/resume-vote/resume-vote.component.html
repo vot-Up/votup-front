@@ -1,5 +1,5 @@
 <nz-table
-  #basicTable [nzData]="tableData"
+  #basicTable [nzData]="tableData()"
   [nzFrontPagination]="false"
   [nzShowPagination]="false">
   <thead>
@@ -10,7 +10,7 @@
     </tr>
   </thead>
   <tbody>
-    @for (items of tableData; track items) {
+    @for (items of tableData(); track items) {
       <tr style="position: relative;">
         <td>{{items.plate?.name}}</td>
         <td>

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, OnInit} from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import {VoteItemComponent} from "./vote-item/vote-item.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {Voting} from "../../../../models/core/voting";
@@ -13,28 +13,45 @@ import {ResumeVoteComponent} from "./resume-vote/resume-vote.component";
 import {BaseService} from "../../../../services/base.service";
 import {Plate} from "../../../../models/core/plate";
 import {AuthService} from "../../../../services/auth.service";
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormItemComponent } from 'ng-zorro-antd/form';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
+import { NzSelectComponent, NzOptionComponent } from 'ng-zorro-antd/select';
+import { NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent } from 'ng-zorro-antd/table';
+import { NzSwitchComponent } from 'ng-zorro-antd/switch';
+import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
+import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-vote',
     templateUrl: './vote.component.html',
-    styleUrls: ['./vote.component.less']
+    styleUrls: ['./vote.component.less'],
+    imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzDatePickerComponent, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzTooltipDirective, NzPaginationComponent, DatePipe]
 })
 export class VoteComponent extends BaseComponent<Voting> implements OnInit {
+    private modalService = inject(NzModalService);
+    private datePipe = inject(DatePipe);
+    authService = inject(AuthService);
+    toast = inject(NzMessageService);
+
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
-    public isVoteActive = false;
+    public isVoteActive = signal(false);
     public plateService: BaseService<Plate>;
-    public object: Voting = new Voting()
     public hasPermissionValue: boolean
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-                private datePipe: DatePipe,
-                public authService: AuthService,
-                public toast: NzMessageService,
-    ) {
-        super(injector, {endpoint: URLS.VOTING, searchOnInit: true});
-        this.plateService = this.createService(Plate, URLS.PLATE);
+    constructor() {
+
+        super({endpoint: URLS.VOTING, searchOnInit: true});
+
+        this.plateService = this.createService(URLS.PLATE);
     }
 
 
@@ -73,7 +90,7 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
         }
         super.search(() => {
             this.modalClosedEmitter = new EventEmitter<void>();
-            this.isVoteActive = (this.tableData.find(vote => vote.active === true) != undefined)
+            this.isVoteActive.set(this.tableData().find(vote => vote.active === true) != undefined)
         })
     }
 
@@ -87,7 +104,7 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
     }
 
     public showModal(voting?: Voting): void {
-        const data = {isVoteActive: this.isVoteActive};
+        const data = {isVoteActive: this.isVoteActive()};
 
         if (voting !== undefined) {
             data['pk'] = voting.id;

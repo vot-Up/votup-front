@@ -1,26 +1,39 @@
-import {Component} from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
 import {AuthService} from "../services/auth.service";
-import {Router} from "@angular/router";
+import {NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
+import {NzButtonModule} from "ng-zorro-antd/button";
+import {NzLayoutModule} from "ng-zorro-antd/layout";
+import {NzMenuModule} from "ng-zorro-antd/menu";
+import {filter} from "rxjs/operators";
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.less']
+    styleUrls: ['./app.component.less'],
+    imports: [NzLayoutModule, NzMenuModule, RouterLink, RouterLinkActive, NzButtonModule, RouterOutlet]
 })
 export class AppComponent {
-    constructor(public authService: AuthService,
-                public router: Router,) {
-    }
+    authService = inject(AuthService);
+    router = inject(Router);
 
-    public isHiddenMenu() {
-        const list = ["/main", "/login", "/login-elector", "/reset-password"]
+    private readonly publicRoutes = ["/main", "/login", "/login-elector", "/reset-password"];
+    private readonly currentPath = signal(window.location.pathname);
 
-        if (!list.includes(window.location.pathname) && !this.authService.isLoggedIn()) {
+    public readonly hiddenMenu = computed(() => {
+        const path = this.currentPath();
+
+        if (!this.publicRoutes.includes(path) && !this.authService.isLoggedIn()) {
             this.router.navigate(["main"]).then();
         }
 
-        return !list.includes(window.location.pathname)
+        return !this.publicRoutes.includes(path);
+    });
+
+    constructor() {
+        this.router.events
+            .pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd))
+            .subscribe(event => this.currentPath.set(event.urlAfterRedirects.split('?')[0]));
     }
 
 }

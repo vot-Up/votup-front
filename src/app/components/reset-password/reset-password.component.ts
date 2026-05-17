@@ -1,4 +1,4 @@
-import {Component, Injector} from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import {CustomValidators} from "../../../utilities/validator/custom-validators";
 import {User} from "../../../models/core/user";
 import {BaseComponent} from "../../core/base.component";
@@ -6,23 +6,36 @@ import {URLS} from "../../app/app.urls";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {BaseService} from "../../../services/base.service";
 import {takeUntil} from "rxjs";
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormItemComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzSpaceCompactItemDirective, NzSpaceComponent, NzSpaceItemDirective } from 'ng-zorro-antd/space';
+import { NzInputGroupComponent, NzInputDirective } from 'ng-zorro-antd/input';
+import { LowercaseDirective } from '../../../utilities/lowercase.directive';
+import { NgxMaskDirective } from 'ngx-mask';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
-    styleUrls: ['./reset-password.component.less']
+    styleUrls: ['./reset-password.component.less'],
+    imports: [NzRowDirective, NzColDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzFormControlComponent, ɵNzTransitionPatchDirective, NzSpaceCompactItemDirective, NzInputGroupComponent, NzInputDirective, LowercaseDirective, NgxMaskDirective, NzSpaceComponent, NzSpaceItemDirective, NzButtonComponent, NzWaveDirective]
 })
 export class ResetPasswordComponent extends BaseComponent<User> {
-    public isResetPassword = false;
-    public serviceUser: BaseService<User>
-    public hide: boolean = true;
+    messageService = inject(NzMessageService);
 
-    constructor(
-        public injector: Injector,
-        public messageService: NzMessageService,) {
-        super(injector, {endpoint: URLS.USER});
-        this.serviceUser = this.createService(User, URLS.USER);
+    public isResetPassword = signal(false);
+    public serviceUser: BaseService<User>
+    public hide = signal(true);
+
+    constructor() {
+
+        super({endpoint: URLS.USER});
+
+        this.serviceUser = this.createService(URLS.USER);
     }
 
     public createFormGroup(): void {

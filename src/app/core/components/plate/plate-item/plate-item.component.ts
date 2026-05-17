@@ -1,5 +1,5 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
-import {CdkDragDrop, transferArrayItem} from "@angular/cdk/drag-drop";
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
+import { CdkDragDrop, transferArrayItem, CdkDropListGroup, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
 import {Plate} from "../../../../../models/core/plate";
 import {URLS} from "../../../../app/app.urls";
 import {takeUntil} from "rxjs";
@@ -7,45 +7,57 @@ import {BaseComponent} from "../../../base.component";
 import {BaseService} from "../../../../../services/base.service";
 import {PlateUser} from "../../../../../models/core/plate-user";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {CustomValidators} from "../../../../../utilities/validator/custom-validators";
 import {Candidate} from "../../../../../models/core/candidate";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormControlComponent, NzFormLabelComponent } from 'ng-zorro-antd/form';
+import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
 
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-plate-item',
     templateUrl: './plate-item.component.html',
-    styleUrls: ['./plate-item.component.less']
+    styleUrls: ['./plate-item.component.less'],
+    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormControlComponent, NzFormLabelComponent, NzSpaceCompactItemDirective, NzInputDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, CdkDropListGroup, NzRowDirective, NzInputGroupComponent, CdkDropList, CdkDrag, NzAvatarComponent, NzModalFooterDirective]
 })
 export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
+    private modalService = inject(NzModalService);
+    messageService = inject(NzMessageService);
+    data = inject(NZ_MODAL_DATA);
+
 
     public type: string;
-    public object = new Plate();
 
-    public candidates: Candidate[] = [];
-    public presidents: Candidate[] = [];
-    public vice_presidents: Candidate[] = [];
+    public candidates = signal<Candidate[]>([]);
+    public presidents = signal<Candidate[]>([]);
+    public vice_presidents = signal<Candidate[]>([]);
 
     public candidateService: BaseService<Candidate>;
     public plateUserService: BaseService<PlateUser>;
-    public hide = true;
-    public searchUser: string;
+    public hide = signal(true);
+    public searchUser = signal('');
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-                public messageService: NzMessageService,
-                @Inject(NZ_MODAL_DATA) public data: any
-    ) {
-        super(injector, {pk: "id", endpoint: URLS.PLATE, retrieveOnInit: true});
-        this.candidateService = this.createService(Candidate, URLS.CANDIDATE);
-        this.plateUserService = this.createService(PlateUser, URLS.PLATE_USER)
+    constructor() {
+
+        super({pk: "id", endpoint: URLS.PLATE, retrieveOnInit: true});
+
+        this.candidateService = this.createService(URLS.CANDIDATE);
+        this.plateUserService = this.createService(URLS.PLATE_USER)
     }
 
     ngOnInit() {
         if (this.data) {
-            this.object = this.data.plate;
-            this.hide = !this.hide;
+            this.object.set(this.data.plate);
+            this.hide.update(value => !value);
             this.getPresidents();
             this.getVicePresidents();
             this.getCandidates();
@@ -78,11 +90,11 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
         const plateUser: PlateUser = new PlateUser();
 
         if (destination === 'U') {
-            plateUser.plate = this.object.id;
+            plateUser.plate = this.object().id;
             plateUser.candidate = event.container.data[event.currentIndex].id;
             this.deletePlateUser(plateUser);
         } else {
-            plateUser.plate = this.object.url;
+            plateUser.plate = this.object().url;
             plateUser.type = destination;
             plateUser.candidate = event.container.data[event.currentIndex].url;
             this.savePlateUser(plateUser);
@@ -114,29 +126,32 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
             event.previousIndex,
             event.currentIndex,
         );
+        this.candidates.set([...this.candidates()]);
+        this.presidents.set([...this.presidents()]);
+        this.vice_presidents.set([...this.vice_presidents()]);
     }
 
     public getCandidates(): void {
         this.candidateService.clearParameter();
         this.candidateService.addParameter("active", true);
-        this.candidateService.addParameter("exists", this.object.id);
-        if (this.searchUser) this.candidateService.addParameter("name", this.searchUser);
+        this.candidateService.addParameter("exists", this.object().id);
+        if (this.searchUser()) this.candidateService.addParameter("name", this.searchUser());
         this.candidateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
-                this.candidates = response;
+                this.candidates.set(response);
             });
     }
 
     public getPresidents(): void {
         this.candidateService.clearParameter();
         this.candidateService.addParameter("active", true);
-        this.candidateService.addParameter("plate_president", this.object.id);
+        this.candidateService.addParameter("plate_president", this.object().id);
         this.candidateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
                 if (response) {
-                    this.presidents = response;
+                    this.presidents.set(response);
                 }
             })
     }
@@ -144,12 +159,12 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     public getVicePresidents(): void {
         this.candidateService.clearParameter();
         this.candidateService.addParameter("is_active", true);
-        this.candidateService.addParameter("plate_vice", this.object.id);
+        this.candidateService.addParameter("plate_vice", this.object().id);
         this.candidateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
                 if (response) {
-                    this.vice_presidents = response;
+                    this.vice_presidents.set(response);
                 }
             })
     }
@@ -169,10 +184,10 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     }
 
     public savePlate(isClose = false) {
-        if (!this.object.id) {
+        if (!this.object().id) {
             super.saveOrUpdate(() => {
                 this.getCandidates();
-                this.hide = false;
+                this.hide.set(false);
                 this.messageService.create(
                     'success',
                     `Chapa criada, associe o presidente e o vice-presidente`

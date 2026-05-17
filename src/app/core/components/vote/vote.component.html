@@ -44,7 +44,7 @@
   <nz-table #tableDataVoting
     [nzFrontPagination]="false"
     [nzShowPagination]="false"
-    [nzData]="tableData">
+    [nzData]="tableData()">
     <thead>
       <tr>
         <th>Nome da votação</th>
@@ -131,11 +131,11 @@
   </tbody>
 </nz-table>
 <div style="margin-top: 10px; flex-direction: row-reverse; display: flex">
-  <nz-pagination [nzPageIndex]="paginator.nzPageIndex"
-    [nzTotal]="pageLength"
+  <nz-pagination [nzPageIndex]="paginator().nzPageIndex"
+    [nzTotal]="pageLength()"
     (nzPageIndexChange)="search()"
     (nzPageSizeChange)="search()"
     nzShowSizeChanger
-  [nzPageSize]="paginator.nzPageSize"></nz-pagination>
+  [nzPageSize]="paginator().nzPageSize"></nz-pagination>
 </div>
 </div>

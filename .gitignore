@@ -41,7 +41,12 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.agents
 .claude
 
 .pi
+.ralph
+.agents
+.compozy
+.compozy_
+.ralph
+.ralph_

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, input, output, signal } from '@angular/core';
 import {BaseComponent} from "../../base.component";
 import {Plate} from "../../../../models/core/plate";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -7,31 +7,44 @@ import {VotingUser} from "../../../../models/core/voting-user";
 import {takeUntil} from "rxjs";
 import {BaseService} from "../../../../services/base.service";
 import {Candidate} from "../../../../models/core/candidate";
+import { NzColDirective, NzRowDirective } from 'ng-zorro-antd/grid';
+import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzRadioGroupComponent, NzRadioComponent } from 'ng-zorro-antd/radio';
+import { NzFormItemComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-voting',
     templateUrl: './voting.component.html',
-    styleUrls: ['./voting.component.less']
+    styleUrls: ['./voting.component.less'],
+    imports: [NzColDirective, NzAvatarComponent, FormsModule, ReactiveFormsModule, NzRadioGroupComponent, NzRadioComponent, NzRowDirective, NzFormItemComponent, NzFormControlComponent, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective]
 })
 export class VotingComponent extends BaseComponent<Plate> implements OnInit {
+    messageService = inject(NzMessageService);
 
-    @Input() votingUser: VotingUser;
 
-    @Output() finishVote: EventEmitter<any> = new EventEmitter<any>();
+    readonly votingUser = input<VotingUser>(undefined);
 
-    public object_plate: any;
-    public listPlates: Plate[];
+    readonly finishVote = output<void>();
+
+    public object_plate = signal<Plate | null>(null);
+    public listPlates = signal<Plate[]>([]);
 
     public serviceVotingUser: BaseService<VotingUser>;
 
-    public hiddenSuccess = false;
-    public pressed: boolean = false
+    public hiddenSuccess = signal(false);
+    public pressed = signal(false)
 
-    constructor(public injector: Injector,
-                public messageService: NzMessageService,) {
-        super(injector, {endpoint: URLS.PLATE});
-        this.serviceVotingUser = this.createService(VotingUser, URLS.VOTING_USER)
+    constructor() {
+
+        super({endpoint: URLS.PLATE});
+
+        this.serviceVotingUser = this.createService(URLS.VOTING_USER)
     }
 
     ngOnInit(): void {
@@ -48,12 +61,13 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
     public getPlates() {
         this.service.clearParameter();
         this.service.addParameter("is_active", true);
-        this.service.addParameter("expand", ["plate"])
-        this.service.addParameter("voting", this.votingUser.voting);
+        this.service.addParameter("expand", "plate")
+        const voting = this.votingUser().voting;
+        this.service.addParameter("voting", typeof voting === 'object' ? voting.id : voting);
         this.service.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
-                this.listPlates = response;
+                this.listPlates.set(response);
             });
     }
 
@@ -68,14 +82,14 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
         const payload = {
             "plate": this.v.plate.url
         }
-        this.serviceVotingUser.update(this.votingUser.id, payload)
+        this.serviceVotingUser.update(this.votingUser().id, payload)
             .pipe()
             .subscribe(() => {
                 this.messageService.create(
                     'success',
                     'Voto realizado com sucesso'
                 );
-                this.hiddenSuccess = true;
+                this.hiddenSuccess.set(true);
                 this.playSound();
                 setTimeout(() => {
                     this.redirect()}, 5000
@@ -90,7 +104,8 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
 
 
     public redirect() {
-        this.finishVote.emit()
+        // TODO: The 'emit' function requires a mandatory any argument
+        this.finishVote.emit(undefined)
     }
 
     public getCandidatePlateIndividual(type: string, plate: Plate) {
@@ -100,7 +115,7 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
     }
 
     public eventButton(plate) {
-        this.pressed = true
-        this.object_plate = plate
+        this.pressed.set(true)
+        this.object_plate.set(plate)
     }
 }

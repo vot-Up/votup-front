@@ -1,16 +1,26 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from "@angular/router";
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceComponent, NzSpaceItemDirective, NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
 
 @Component({
-  standalone: false,
-  selector: 'app-login-elector',
-  templateUrl: './main.component.html',
-  styleUrls: ['./main.component.less']
+  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-login-elector',
+    templateUrl: './main.component.html',
+    styleUrls: ['./main.component.less'],
+    imports: [NzRowDirective, NzColDirective, NzSpaceComponent, NzSpaceItemDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective]
 })
 export class MainComponent implements OnInit {
+  private fb = inject(UntypedFormBuilder);
+  route = inject(ActivatedRoute);
+  router = inject(Router);
+
   validateForm!: UntypedFormGroup;
-    public url: string;
+    public url = signal<string>("/");
 
   submitForm(): void {
       if (!this.validateForm.valid) {
@@ -23,17 +33,12 @@ export class MainComponent implements OnInit {
       }
   }
 
-  constructor(private fb: UntypedFormBuilder,
-              public route: ActivatedRoute,
-              public router: Router,
-              ){}
-
   ngOnInit(): void {
     this.validateForm = this.fb.group({
       userName: [null, [Validators.required]],
       password: [null, [Validators.required]],
       remember: [true]
     });
-      this.url = this.route.snapshot.queryParams["u"] || "/";
+      this.url.set(this.route.snapshot.queryParams["u"] || "/");
   }
 }

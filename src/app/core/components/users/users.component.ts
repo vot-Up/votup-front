@@ -1,49 +1,61 @@
-import {Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, EventEmitter, OnInit, inject, input, output, signal } from '@angular/core';
 import {User} from "../../../../models/core/user";
 import {URLS} from "../../../app/app.urls";
 import {BaseComponent} from "../../base.component";
 import {takeUntil} from "rxjs";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {UsersItemComponent} from "./users-item/users-item.component";
-import {UserService} from "../../../../services/user.service";
 import {AuthService} from "../../../../services/auth.service";
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceCompactItemDirective, NzSpaceComponent, NzSpaceItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormItemComponent } from 'ng-zorro-antd/form';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { NzSelectComponent, NzOptionComponent } from 'ng-zorro-antd/select';
+import { NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent } from 'ng-zorro-antd/table';
+import { NzSwitchComponent } from 'ng-zorro-antd/switch';
+import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
+import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
+import { PhonePipe } from '../../../shared/phone-pipe/phone.pipe';
 
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-voters',
     templateUrl: './users.component.html',
-    styleUrls: ['./users.component.less']
+    styleUrls: ['./users.component.less'],
+    imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzSpaceComponent, NzSpaceItemDirective, NzTooltipDirective, NzPaginationComponent, PhonePipe]
 })
 export class UsersComponent extends BaseComponent<User> implements OnInit {
+    private modalService = inject(NzModalService);
+      authService = inject(AuthService);
 
-    @Input() user: User
-    @Output() valueEmitter = new EventEmitter<boolean>();
 
-    public object: User = new User();
-    public tableData: User[] = [];
-    public items: User[] = [];
+    readonly user = input<User>(undefined);
+    readonly valueEmitter = output<boolean>();
+
+    public items = signal<User[]>([]);
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
-    public userLogged: User;
-    public isUpdate: boolean = false;
-    public isLogged: boolean = false;
-    public superUserView: boolean = false
+    public userLogged = signal<User | null>(null);
+    public isUpdate = signal(false);
+    public isLogged = signal(false);
+    public superUserView = signal(false);
+    public userLoggedActive = computed(() => (user: User) => this.authService.user.email === user.email);
 
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-                public userService: UserService,
-                public authService: AuthService,) {
-        super(injector, {endpoint: URLS.USER, retrieveOnInit: true, searchOnInit: true});
+    constructor() {
+
+        super({endpoint: URLS.USER, retrieveOnInit: true, searchOnInit: true});
+    
     }
 
     ngOnInit(): void {
-        super.ngOnInit(() => this.userLogged = this.authService.user);
-        this.superUserView = this.authService.user.is_superuser;
-    }
-
-    public userLoggedActive(user: User) {
-        return this.authService.user.email === user.email;
+        super.ngOnInit(() => this.userLogged.set(this.authService.user));
+        this.superUserView.set(this.authService.user.is_superuser);
     }
 
     public createFormGroup(): void {
@@ -87,7 +99,7 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
             nzData: {
                 pk: user.id,
                 user: user,
-                isUpdate: this.isUpdate = true
+                isUpdate: this.isUpdate.set(true)
             }
         });
         modal.afterClose.subscribe(() => {
@@ -121,7 +133,7 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
     }
 
 
-    public changePaginator(event: any): void {
+    public changePaginator(event: unknown): void {
         console.log(event)
     }
 }

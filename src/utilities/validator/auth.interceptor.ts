@@ -1,83 +1,79 @@
-import {Injectable} from "@angular/core";
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
+import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
 import {Observable} from "rxjs";
-
-
 import {tap} from "rxjs/operators";
+import {inject} from "@angular/core";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {AuthService} from "../../services/auth.service";
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
+export const authInterceptorFn: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
+  const toast = inject(NzMessageService);
+  const authService = inject(AuthService);
 
-    constructor(public toast: NzMessageService,
-                public authService: AuthService) {
+  req = addHeader(req);
+  return next(req).pipe(
+    tap({
+      error: (err: HttpErrorResponse) => handleError(err, toast, authService)
+    })
+  );
+};
+
+function addHeader(req: HttpRequest<unknown>): HttpRequest<unknown> {
+  return req.clone({
+    setHeaders: {
+      "Accept-Language": "pt-BR"
     }
+  });
+}
 
-    public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        req = this._addHeader(req);
-        return next.handle(req).pipe(tap((event: HttpEvent<any>) => {
-            if (event instanceof HttpResponse) {
-            }
-        }, (errorResponse: HttpErrorResponse) => {
-            this.handleError(errorResponse);
-        }));
+function handleError(err: HttpErrorResponse, toast: NzMessageService, authService: AuthService): void {
+  if (err.status === 0) {
+    toast.create("error", "Error desconhecido!");
+    return;
+  } else if (err.status === 401) {
+    authService.logout(false, true);
+    return;
+  }
+
+  const errors = captureError(err.error);
+  errors.forEach(t => {
+    if (t instanceof Blob) {
+      const reader = new FileReader();
+      reader.addEventListener("loadend", () => {
+        showErrors(JSON.parse(reader.result.toString()), toast);
+      });
+      reader.readAsText(t);
+    } else {
+      showErrors(t, toast);
     }
+  });
+}
 
-    private handleError(err: HttpErrorResponse): void {
-        if (err.status === 0) {
-            this.toast.create("error", "Error desconhecido!");
-            return;
-        } else if (err.status === 401) {
-            this.authService.logout(false, true);
-            return;
-        }
-
-        const errors = AuthInterceptor.captureError(err.error);
-        errors.forEach(t => {
-            if (t instanceof Blob) {
-                const reader = new FileReader();
-                reader.addEventListener("loadend", () => {
-                    this.showErrors(JSON.parse(reader.result.toString()));
-                });
-                reader.readAsText(t);
-            } else {
-                this.showErrors(t);
-            }
-        });
+function showErrors(value: Record<string, unknown>, toast: NzMessageService): void {
+  Object.keys(value).forEach((key: string) => {
+    const error = value[key];
+    if (Array.isArray(error)) {
+      error.forEach((message) => toast.create("error", String(message)));
+      return;
     }
+    toast.create("error", String(error));
+  });
+}
 
-    _addHeader(req: HttpRequest<any>) {
-        return req.clone({
-            setHeaders: {
-                "Accept-Language": `pt-BR`
-            }
-        });
-    }
+function captureError(value: unknown): Array<Record<string, unknown>> {
+  if (Array.isArray(value)) {
+    return value as Array<Record<string, unknown>>;
+  } else if (isJson(value)) {
+    return [value as Record<string, unknown>];
+  }
+  return [{ detail: value }];
+}
 
-    private showErrors(value: any): void {
-        Object.keys(value).forEach((key: any) => {
-            this.toast.create("error", value[key]);
-        });
-    }
-
-    // Function to capture errors
-    private static captureError(value: any): any[] {
-        if (value instanceof Array) {
-            return value;
-        } else if (AuthInterceptor.isJson(value)) {
-            return [value];
-        }
-        return [{detail: value}];
-    }
-
-    private static isJson(item) {
-        item = typeof item !== "string" ? JSON.stringify(item) : item;
-        try {
-            item = JSON.parse(item);
-        } catch (e) {
-            return false;
-        }
-        return typeof item === "object" && item !== null;
-    }
+function isJson(item: unknown): item is Record<string, unknown> {
+  const value = typeof item !== "string" ? JSON.stringify(item) : item;
+  try {
+    JSON.parse(value);
+  } catch {
+    return false;
+  }
+  return true;
 }

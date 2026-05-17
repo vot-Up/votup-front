@@ -36,7 +36,7 @@
     #tableDataUser
     [nzFrontPagination]="false"
     [nzShowPagination]="false"
-    [nzData]="tableData"
+    [nzData]="tableData()"
     (nzCurrentPageDataChange)="changePaginator($event)">
     <thead>
       <tr>
@@ -50,8 +50,9 @@
     <tbody>
       @for (data of tableDataUser.data; track data) {
         <tr style="position: relative;"
-          (dblclick)="editCandidate(data); isUpdate=true" class="clicavel">
-          @if (data?.avatar_url) {
+          (dblclick)="editCandidate(data); isUpdate.set(true)" class="clicavel">
+          @if (data?.avatar) {
+
             <td>
               <div class="image-mask image-small">
                 <img src="{{data.avatar_url}}" alt="">
@@ -72,7 +73,7 @@
           <td>
             <nz-space [nzSize]="'small'">
               <button *nzSpaceItem nz-button nzType="default" nz-tooltip
-                nzTooltipTitle="Editar" (click)="editCandidate(data); isUpdate=true">
+                nzTooltipTitle="Editar" (click)="editCandidate(data); isUpdate.set(true)">
                 <span nz-icon nzType="edit"></span>
               </button>
               <button *nzSpaceItem
@@ -89,11 +90,11 @@
     </tbody>
   </nz-table>
   <div style="margin-top: 10px; flex-direction: row-reverse; display: flex">
-    <nz-pagination [nzPageIndex]="paginator.nzPageIndex"
-      [nzTotal]="pageLength"
+    <nz-pagination [nzPageIndex]="paginator().nzPageIndex"
+      [nzTotal]="pageLength()"
       (nzPageIndexChange)="search()"
       (nzPageSizeChange)="search()"
       nzShowSizeChanger
-    [nzPageSize]="paginator.nzPageSize"></nz-pagination>
+    [nzPageSize]="paginator().nzPageSize"></nz-pagination>
   </div>
 </div>

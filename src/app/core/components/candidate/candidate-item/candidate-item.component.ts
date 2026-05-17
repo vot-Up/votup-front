@@ -1,4 +1,4 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
+import { Component, Injector, OnInit, inject } from '@angular/core';
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -27,6 +27,11 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
     imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzFormItemComponent, NzColDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, NgxMaskDirective, NzModalFooterDirective, NzIconDirective]
 })
 export class CandidateItemComponent extends BaseComponent<Candidate> implements OnInit {
+    injector: Injector;
+    messageService = inject(NzMessageService);
+    modal = inject(NzModalService);
+    data = inject(NZ_MODAL_DATA);
+
     public object: Candidate = new Candidate();
     public items: Candidate[] = [];
     public avatar: SafeUrl;
@@ -35,11 +40,12 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
     public hasImage = false;
 
 
-    constructor(public injector: Injector,
-                public messageService: NzMessageService,
-                public modal: NzModalService,
-                @Inject(NZ_MODAL_DATA) public data: any) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {pk: "id", endpoint: URLS.CANDIDATE, retrieveOnInit: true});
+    
+        this.injector = injector;
     }
 
     public beforeRetrieve(): Observable<number | string> {

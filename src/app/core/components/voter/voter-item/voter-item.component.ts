@@ -1,4 +1,4 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
+import { Component, Injector, OnInit, inject } from '@angular/core';
 import {Voter} from "../../../../../models/core/voter";
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
@@ -26,6 +26,11 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
     imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzFormItemComponent, NzColDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, NgxMaskDirective, NzModalFooterDirective, NzIconDirective]
 })
 export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
+    injector: Injector;
+    messageService = inject(NzMessageService);
+    modal = inject(NzModalService);
+    data = inject(NZ_MODAL_DATA);
+
     public object: Voter = new Voter();
     public items: Voter[] = [];
     public avatar: SafeUrl;
@@ -34,11 +39,12 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
     public hasImage = false;
 
 
-    constructor(public injector: Injector,
-                public messageService: NzMessageService,
-                public modal: NzModalService,
-                @Inject(NZ_MODAL_DATA) public data: any) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {pk: "id", endpoint: URLS.VOTE, retrieveOnInit: true});
+    
+        this.injector = injector;
     }
 
     public beforeRetrieve(): Observable<number | string> {

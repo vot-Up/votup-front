@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnInit, Output, inject } from '@angular/core';
 import {BaseComponent} from "../../base.component";
 import {Plate} from "../../../../models/core/plate";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -24,6 +24,9 @@ import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patc
     imports: [NzColDirective, NzAvatarComponent, FormsModule, ReactiveFormsModule, NzRadioGroupComponent, NzRadioComponent, NzRowDirective, NzFormItemComponent, NzFormControlComponent, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective]
 })
 export class VotingComponent extends BaseComponent<Plate> implements OnInit {
+    injector: Injector;
+    messageService = inject(NzMessageService);
+
 
     @Input() votingUser: VotingUser;
 
@@ -37,9 +40,12 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
     public hiddenSuccess = false;
     public pressed: boolean = false
 
-    constructor(public injector: Injector,
-                public messageService: NzMessageService,) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {endpoint: URLS.PLATE});
+        this.injector = injector;
+
         this.serviceVotingUser = this.createService(VotingUser, URLS.VOTING_USER)
     }
 

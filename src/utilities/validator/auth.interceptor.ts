@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
 import {Observable} from "rxjs";
 
@@ -9,10 +9,9 @@ import {AuthService} from "../../services/auth.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+    toast = inject(NzMessageService);
+    authService = inject(AuthService);
 
-    constructor(public toast: NzMessageService,
-                public authService: AuthService) {
-    }
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         req = this._addHeader(req);

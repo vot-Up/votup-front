@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CustomValidators} from "../../../utilities/validator/custom-validators";
@@ -20,20 +20,17 @@ import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
     imports: [NzRowDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzColDirective, NzFormControlComponent, ɵNzTransitionPatchDirective, NzSpaceCompactItemDirective, NzInputGroupComponent, NzInputDirective, NzButtonComponent, NzAlertComponent, NzWaveDirective]
 })
 export class LoginComponent implements OnInit {
+    formBuilder = inject(FormBuilder);
+    router = inject(Router);
+    authService = inject(AuthService);
+    route = inject(ActivatedRoute);
+
 
     public url: string;
     public message: string;
     public formGroup: FormGroup
     public hide: boolean = true;
     public test: boolean = false;
-
-    constructor(
-        public formBuilder: FormBuilder,
-        public router: Router,
-        public authService: AuthService,
-        public route: ActivatedRoute,
-    ) {
-    }
 
     ngOnInit(): void {
         this.createFormGroup();

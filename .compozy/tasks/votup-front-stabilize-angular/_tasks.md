@@ -7,7 +7,7 @@
 | 01 | Run standalone schematic: convert declarations to standalone | completed | medium | — |
 | 02 | Run standalone schematic: prune NgModules | completed | medium | task_01 |
 | 03 | Run standalone schematic: standalone bootstrap | completed | high | task_02 |
-| 04 | Run inject migration schematic | pending | medium | task_03 |
+| 04 | Run inject migration schematic | completed | medium | task_03 |
 | 05 | Run signal-input, output, and signal-queries schematics | pending | medium | task_04 |
 | 06 | Rewrite AuthInterceptor as functional interceptor | pending | medium | task_04 |
 | 07 | Rewrite AppGuard as functional guard | pending | low | task_04 |

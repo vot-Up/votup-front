@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {AuthService} from "../services/auth.service";
 import {Router, RouterLink, RouterLinkActive, RouterOutlet} from "@angular/router";
 import {NzButtonModule} from "ng-zorro-antd/button";
@@ -12,9 +12,9 @@ import {NzMenuModule} from "ng-zorro-antd/menu";
     imports: [NzLayoutModule, NzMenuModule, RouterLink, RouterLinkActive, NzButtonModule, RouterOutlet]
 })
 export class AppComponent {
-    constructor(public authService: AuthService,
-                public router: Router,) {
-    }
+    authService = inject(AuthService);
+    router = inject(Router);
+
 
     public isHiddenMenu() {
         const list = ["/main", "/login", "/login-elector", "/reset-password"]

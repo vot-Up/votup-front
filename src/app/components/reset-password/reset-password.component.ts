@@ -1,4 +1,4 @@
-import {Component, Injector} from '@angular/core';
+import { Component, Injector, inject } from '@angular/core';
 import {CustomValidators} from "../../../utilities/validator/custom-validators";
 import {User} from "../../../models/core/user";
 import {BaseComponent} from "../../core/base.component";
@@ -24,14 +24,19 @@ import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
     imports: [NzRowDirective, NzColDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzFormControlComponent, ɵNzTransitionPatchDirective, NzSpaceCompactItemDirective, NzInputGroupComponent, NzInputDirective, LowercaseDirective, NgxMaskDirective, NzSpaceComponent, NzSpaceItemDirective, NzButtonComponent, NzWaveDirective]
 })
 export class ResetPasswordComponent extends BaseComponent<User> {
+    injector: Injector;
+    messageService = inject(NzMessageService);
+
     public isResetPassword = false;
     public serviceUser: BaseService<User>
     public hide: boolean = true;
 
-    constructor(
-        public injector: Injector,
-        public messageService: NzMessageService,) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {endpoint: URLS.USER});
+        this.injector = injector;
+
         this.serviceUser = this.createService(User, URLS.USER);
     }
 

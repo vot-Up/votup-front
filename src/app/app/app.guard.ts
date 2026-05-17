@@ -7,17 +7,16 @@ import {
     Router,
     RouterStateSnapshot
 } from "@angular/router";
-import {Injectable} from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import {AuthService} from "../../services/auth.service";
 import {AppVariables} from "./app.variables";
 
 @Injectable()
 export class AppGuard implements CanActivate, CanLoad, CanDeactivate<any> {
+    variables = inject(AppVariables);
+    authService = inject(AuthService);
+    router = inject(Router);
 
-    constructor(public variables: AppVariables,
-                public authService: AuthService,
-                public router: Router) {
-    }
 
     canLoad(route: Route) {
         return this.checkAuthentication();

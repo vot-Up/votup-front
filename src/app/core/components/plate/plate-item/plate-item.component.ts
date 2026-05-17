@@ -1,4 +1,4 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
+import { Component, Injector, OnInit, inject } from '@angular/core';
 import { CdkDragDrop, transferArrayItem, CdkDropListGroup, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
 import {Plate} from "../../../../../models/core/plate";
 import {URLS} from "../../../../app/app.urls";
@@ -29,6 +29,11 @@ import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
     imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormControlComponent, NzFormLabelComponent, NzSpaceCompactItemDirective, NzInputDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, CdkDropListGroup, NzRowDirective, NzInputGroupComponent, CdkDropList, CdkDrag, NzAvatarComponent, NzModalFooterDirective]
 })
 export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
+    injector: Injector;
+    private modalService = inject(NzModalService);
+    messageService = inject(NzMessageService);
+    data = inject(NZ_MODAL_DATA);
+
 
     public type: string;
     public object = new Plate();
@@ -42,12 +47,12 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     public hide = true;
     public searchUser: string;
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-                public messageService: NzMessageService,
-                @Inject(NZ_MODAL_DATA) public data: any
-    ) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {pk: "id", endpoint: URLS.PLATE, retrieveOnInit: true});
+        this.injector = injector;
+
         this.candidateService = this.createService(Candidate, URLS.CANDIDATE);
         this.plateUserService = this.createService(PlateUser, URLS.PLATE_USER)
     }

@@ -1,4 +1,4 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
+import { Component, Injector, OnInit, inject } from '@angular/core';
 import {BaseComponent} from "../../../base.component";
 import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
@@ -34,14 +34,20 @@ interface DialogData {
     imports: [NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSpaceCompactItemDirective, NzInputDirective, FormsModule, NzModalFooterDirective, NzColDirective, NzFormControlComponent, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective]
 })
 export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements OnInit {
+    injector: Injector;
+    messageService = inject(NzMessageService);
+    modal = inject(NzModalService);
+    data = inject<DialogData>(NZ_MODAL_DATA);
+
     public votingPlateList: VotingPlate[] = [];
     public serviceVotingPlate: BaseService<VotingPlate>;
     public currentDateTime: string = ''
-    constructor(public injector: Injector,
-                public messageService: NzMessageService,
-                public modal: NzModalService,
-                @Inject(NZ_MODAL_DATA) public data: DialogData) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {endpoint: URLS.RESUME_VOTE, searchOnInit: true});
+        this.injector = injector;
+
         this.serviceVotingPlate = this.createService(VotingPlate, URLS.VOTING_PLATE);
     }
 

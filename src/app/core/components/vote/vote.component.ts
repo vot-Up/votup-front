@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, OnInit} from '@angular/core';
+import { Component, EventEmitter, Injector, OnInit, inject } from '@angular/core';
 import {VoteItemComponent} from "./vote-item/vote-item.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {Voting} from "../../../../models/core/voting";
@@ -36,19 +36,24 @@ import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
     imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzDatePickerComponent, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzTooltipDirective, NzPaginationComponent, DatePipe]
 })
 export class VoteComponent extends BaseComponent<Voting> implements OnInit {
+    injector: Injector;
+    private modalService = inject(NzModalService);
+    private datePipe = inject(DatePipe);
+    authService = inject(AuthService);
+    toast = inject(NzMessageService);
+
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
     public isVoteActive = false;
     public plateService: BaseService<Plate>;
     public object: Voting = new Voting()
     public hasPermissionValue: boolean
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-                private datePipe: DatePipe,
-                public authService: AuthService,
-                public toast: NzMessageService,
-    ) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {endpoint: URLS.VOTING, searchOnInit: true});
+        this.injector = injector;
+
         this.plateService = this.createService(Plate, URLS.PLATE);
     }
 

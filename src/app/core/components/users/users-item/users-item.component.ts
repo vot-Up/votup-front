@@ -1,4 +1,4 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
+import { Component, Injector, OnInit, inject } from '@angular/core';
 import {BaseComponent} from "../../../base.component";
 import {User} from "../../../../../models/core/user";
 import {URLS} from "../../../../app/app.urls";
@@ -37,6 +37,12 @@ interface DialogData {
     imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzFormItemComponent, NzColDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, LowercaseDirective, NgxMaskDirective, NzSwitchComponent, NzInputGroupComponent, NzModalFooterDirective, NzIconDirective]
 })
 export class UsersItemComponent extends BaseComponent<User> implements OnInit {
+    injector: Injector;
+    messageService = inject(NzMessageService);
+    modal = inject(NzModalService);
+    authService = inject(AuthService);
+    data = inject<DialogData>(NZ_MODAL_DATA);
+
 
     public object: User = new User();
     public items: User[] = [];
@@ -48,12 +54,12 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
     public isEdit: boolean = false;
     public isLogged: boolean = false
 
-    constructor(public injector: Injector,
-                public messageService: NzMessageService,
-                public modal: NzModalService,
-                public authService: AuthService,
-                @Inject(NZ_MODAL_DATA) public data: DialogData) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {pk: "id", endpoint: URLS.USER, retrieveOnInit: true});
+    
+        this.injector = injector;
     }
 
     ngOnInit(): void {

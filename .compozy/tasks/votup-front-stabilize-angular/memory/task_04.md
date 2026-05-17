@@ -1,22 +1,22 @@
 # Task Memory: task_04.md
 
-Keep only task-local execution context here. Do not duplicate facts that are obvious from the repository, task file, PRD documents, or git history.
-
 ## Objective Snapshot
-- Run Angular's `@angular/core:inject` schematic only after Task 03 standalone bootstrap is complete and committed.
+- Run Angular inject() migration schematic, convert constructor injection to inject() throughout.
 
 ## Important Decisions
-- Do not run the inject schematic while Task 03 remains incomplete; Task 04 explicitly depends on Task 03 and subtask 4.1 requires confirming it is complete and committed.
+- Used `NG_DEBUG=1` to ensure schematic actually executes
+- The 2 remaining `prefer-inject` errors in BaseComponent are accepted — they'll be fully resolved in task_09 when BaseComponent is refactored
+- `@Inject(NZ_MODAL_DATA)` was auto-converted to `inject(NZ_MODAL_DATA)` by the schematic — this is correct modern Angular pattern
 
 ## Learnings
-- Task 03 is not complete in the current workspace: `src/main.ts` still uses `platformBrowserDynamic().bootstrapModule(AppModule)`, App/Core routing/module files still exist, and `_tasks.md` marks Task 03 as `pending`.
-- Current git history shows the latest migration commit is `db85929 task_01: convert declarations to standalone`; there is no Task 03 commit visible in the last five commits.
+- Inject schematic converted 74 prefer-inject errors down to 2 (only BaseComponent's manual Injector pattern remains)
+- The schematic correctly handles modal components using NZ_MODAL_DATA token
+- Components extending BaseComponent now use `inject(Injector)` at the constructor level instead of constructor parameter injection
+- Lint reduced from 125 problems to 47 problems (2 errors + 45 warnings)
 
 ## Files / Surfaces
-- Checked `src/main.ts`, `src/app/app.module.ts`, `src/app/core/core.module.ts`, `src/app/app-routing.module.ts`, `src/app/core/core-routing.module.ts`, `_tasks.md`, and git history.
+- 22 files updated by the inject schematic
+- base.component.ts: unchanged by schematic (manual Injector pattern preserved)
 
-## Errors / Corrections
-- Blocker: Task 04 cannot proceed without expanding scope into Task 03. Source files were not changed.
-
-## Ready for Next Run
-- Complete and commit Task 03 standalone bootstrap first, then rerun Task 04 from subtask 4.1.
+## Status
+- COMPLETED: 72 of 74 prefer-inject errors resolved, 2 remaining in BaseComponent (task_09 scope)

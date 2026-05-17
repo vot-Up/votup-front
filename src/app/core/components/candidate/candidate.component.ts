@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, Input, OnInit} from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnInit, inject } from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../base.component";
 import {URLS} from "../../../app/app.urls";
@@ -30,6 +30,10 @@ import { PhonePipe } from '../../../shared/phone-pipe/phone.pipe';
     imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzSpaceComponent, NzSpaceItemDirective, NzTooltipDirective, NzPaginationComponent, PhonePipe]
 })
 export class CandidateComponent extends BaseComponent<Candidate> implements OnInit {
+    injector: Injector;
+    private modalService = inject(NzModalService);
+    authService = inject(AuthService);
+
     @Input() candidate: Candidate
 
     public object: Candidate = new Candidate();
@@ -40,10 +44,12 @@ export class CandidateComponent extends BaseComponent<Candidate> implements OnIn
     public isUpdate: boolean = false;
 
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-                public authService: AuthService,) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {endpoint: URLS.CANDIDATE, retrieveOnInit: true, searchOnInit: true});
+    
+        this.injector = injector;
     }
 
     public ngOnInit(): void {

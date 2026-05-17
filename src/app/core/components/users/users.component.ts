@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Injector, Input, OnInit, Output, inject } from '@angular/core';
 import {User} from "../../../../models/core/user";
 import {URLS} from "../../../app/app.urls";
 import {BaseComponent} from "../../base.component";
@@ -31,6 +31,11 @@ import { PhonePipe } from '../../../shared/phone-pipe/phone.pipe';
     imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzSpaceComponent, NzSpaceItemDirective, NzTooltipDirective, NzPaginationComponent, PhonePipe]
 })
 export class UsersComponent extends BaseComponent<User> implements OnInit {
+    injector: Injector;
+    private modalService = inject(NzModalService);
+    userService = inject(UserService);
+    authService = inject(AuthService);
+
 
     @Input() user: User
     @Output() valueEmitter = new EventEmitter<boolean>();
@@ -45,11 +50,12 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
     public superUserView: boolean = false
 
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-                public userService: UserService,
-                public authService: AuthService,) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {endpoint: URLS.USER, retrieveOnInit: true, searchOnInit: true});
+    
+        this.injector = injector;
     }
 
     ngOnInit(): void {

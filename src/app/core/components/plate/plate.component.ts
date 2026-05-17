@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Injector, OnInit} from '@angular/core';
+import { Component, EventEmitter, Injector, OnInit, inject } from '@angular/core';
 import {URLS} from "../../../app/app.urls";
 import {takeUntil} from "rxjs";
 import {BaseComponent} from "../../base.component";
@@ -28,14 +28,19 @@ import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
     imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzInputGroupComponent, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzSpaceComponent, NzSpaceItemDirective, NzTooltipDirective, NzPaginationComponent]
 })
 export class PlateComponent extends BaseComponent<Plate> implements OnInit {
+    injector: Injector;
+    private modalService = inject(NzModalService);
+
 
     public items: Plate[] = [];
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-    ) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {endpoint: URLS.PLATE, searchOnInit: true});
+    
+        this.injector = injector;
     }
 
 

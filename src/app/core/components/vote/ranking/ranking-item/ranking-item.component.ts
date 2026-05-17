@@ -1,4 +1,4 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
+import { Component, Injector, OnInit, inject } from '@angular/core';
 import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../../../base.component";
 import {URLS} from "../../../../../app/app.urls";
@@ -23,12 +23,18 @@ class Ranking {
     imports: [NzListComponent, NzListItemComponent, NzModalFooterDirective, NzColDirective, NzFormControlComponent, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective]
 })
 export class RankingItemComponent extends BaseComponent<Ranking> implements OnInit {
+    injector: Injector;
+    modal = inject(NzModalService);
+    data = inject(NZ_MODAL_DATA);
+
     public list_user: any = []
 
-    constructor(public injector: Injector,
-                public modal: NzModalService,
-                @Inject(NZ_MODAL_DATA) public data: any) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {pk: "id", endpoint: URLS.VOTING_USER, retrieveOnInit: true})
+    
+        this.injector = injector;
     }
 
     ngOnInit(): void {

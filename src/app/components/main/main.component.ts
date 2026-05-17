@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from "@angular/router";
 import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
@@ -14,6 +14,10 @@ import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patc
     imports: [NzRowDirective, NzColDirective, NzSpaceComponent, NzSpaceItemDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective]
 })
 export class MainComponent implements OnInit {
+  private fb = inject(UntypedFormBuilder);
+  route = inject(ActivatedRoute);
+  router = inject(Router);
+
   validateForm!: UntypedFormGroup;
     public url: string;
 
@@ -27,11 +31,6 @@ export class MainComponent implements OnInit {
           });
       }
   }
-
-  constructor(private fb: UntypedFormBuilder,
-              public route: ActivatedRoute,
-              public router: Router,
-              ){}
 
   ngOnInit(): void {
     this.validateForm = this.fb.group({

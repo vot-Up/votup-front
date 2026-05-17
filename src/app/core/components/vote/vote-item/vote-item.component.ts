@@ -7,7 +7,7 @@ import {CustomValidators} from "../../../../../utilities/validator/custom-valida
 import {BaseService} from "../../../../../services/base.service";
 import {Voting} from "../../../../../models/core/voting";
 import {Observable, of, takeUntil} from "rxjs";
-import {Component, EventEmitter, Inject, Injector, OnInit} from "@angular/core";
+import { Component, EventEmitter, Injector, OnInit, inject } from "@angular/core";
 import {VotingPlate} from "../../../../../models/core/voting-plate";
 import {Plate} from "../../../../../models/core/plate";
 import {DatePipe} from "@angular/common";
@@ -36,6 +36,11 @@ enum DropListTypes {
     imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzColDirective, NzFormItemComponent, NzFormLabelComponent, NzSpaceCompactItemDirective, NzDatePickerComponent, NzFormControlComponent, NzInputDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, CdkDropList, CdkDrag, NzAvatarComponent, NzModalFooterDirective]
 })
 export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
+    injector: Injector;
+    private modalService = inject(NzModalService);
+    messageService = inject(NzMessageService);
+    data = inject(NZ_MODAL_DATA);
+
     public plateService: BaseService<Plate>;
     public votingPlateService: BaseService<VotingPlate>;
     public object = new Voting();
@@ -50,14 +55,14 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
     private disableInput = true;
 
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-                public messageService: NzMessageService,
-                @Inject(NZ_MODAL_DATA) public data: any
-    ) {
+    constructor() {
+        const injector = inject(Injector);
+
         super(injector, {
             pk: "id", endpoint: URLS.VOTING, retrieveOnInit: true
         });
+        this.injector = injector;
+
         this.plateService = this.createService(Plate, URLS.PLATE);
         this.votingPlateService = this.createService(VotingPlate, URLS.VOTING_PLATE)
     }

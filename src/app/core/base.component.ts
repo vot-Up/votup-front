@@ -55,7 +55,7 @@ export abstract class BaseComponent<T> implements OnInit, OnDestroy {
 
   // eslint-disable-next-line @angular-eslint/prefer-inject
   protected constructor(protected options: BaseOptions) {
-    this.service = new BaseService<T>(this.http, options.endpoint);
+    this.service = new BaseService<T>(options.endpoint);
     this.pk = options.pk || "id";
   }
 
@@ -94,7 +94,7 @@ export abstract class BaseComponent<T> implements OnInit, OnDestroy {
   }
 
   public createService<K>(path: string): BaseService<K> {
-    return new BaseService<K>(this.http, path);
+    return new BaseService<K>(path);
   }
 
   public saveOrUpdate(callback?: (event: number) => void): void {
@@ -222,7 +222,7 @@ export abstract class BaseComponent<T> implements OnInit, OnDestroy {
   public retrieve(callback?: () => void): void {
     if (this.options.paramsOnInit) {
       const parameters = this.options.paramsOnInit;
-      Object.keys(parameters).forEach(t => this.service.addParameter(t, parameters[t]));
+      Object.keys(parameters).forEach(t => this.service.addParameter(t, String(parameters[t])));
     }
     this.beforeRetrieve().pipe(
       take(1),

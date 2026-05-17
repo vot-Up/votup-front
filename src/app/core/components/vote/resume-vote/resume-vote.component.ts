@@ -60,7 +60,7 @@ export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements 
     public getVotingPlate(): void {
         this.serviceVotingPlate.clearParameter();
         this.serviceVotingPlate.addParameter('voting', this.data.voting.id);
-        this.serviceVotingPlate.addParameter("expand", ["plate"]);
+        this.serviceVotingPlate.addParameter("expand", "plate");
         this.serviceVotingPlate.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response: ResumeVoting[]) => {
@@ -84,7 +84,7 @@ export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements 
     public search(): void {
         this.service.clearParameter();
         this.service.addParameter('voting', this.data.voting.id);
-        this.service.addParameter("expand", ["plate", "voting"]);
+        this.service.addParameter("expand", "plate,voting");
         super.search(() => {
             if (this.tableData().length == 0) {
                 this.getVotingPlate();

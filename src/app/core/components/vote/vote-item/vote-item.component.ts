@@ -92,7 +92,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
         this.plateService.clearParameter();
         this.plateService.addParameter("exists", this.object().id);
         this.plateService.addParameter("active", true);
-        this.plateService.addParameter("expand", ["plate"]);
+        this.plateService.addParameter("expand", "plate");
         this.plateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
@@ -111,7 +111,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
     public getPlatesAssociate(): void {
         this.plateService.clearParameter()
         this.plateService.addParameter("voting", this.object().id);
-        this.plateService.addParameter("expand", ["plate"]);
+        this.plateService.addParameter("expand", "plate");
         this.plateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {

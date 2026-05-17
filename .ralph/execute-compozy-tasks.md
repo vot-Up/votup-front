@@ -19,7 +19,7 @@ Execute pending Compozy PRD tasks (task_02 through task_13) one at a time for th
 - [ ] Task 05: Run signal-input, output, and signal-queries schematics
 - [ ] Task 06: Rewrite AuthInterceptor as functional interceptor
 - [ ] Task 07: Rewrite AppGuard as functional guard
-- [ ] Task 08: Refactor BaseService
+- [x] Task 08: Refactor BaseService
 - [ ] Task 09: Refactor BaseComponent
 - [ ] Task 10: Convert component local state to signals and apply OnPush
 - [ ] Task 11: Clean up dead service files and model any types
@@ -27,4 +27,4 @@ Execute pending Compozy PRD tasks (task_02 through task_13) one at a time for th
 - [ ] Task 13: Full zoneless: remove Zone.js, optimize bundle, final lint cleanup
 
 ## Current focus
-Start with Task 02. Execute it fully using cy-execute-task workflow before moving to task 03.
+Task 08 completed via cy-execute-task. Next focus: Task 09 (Refactor BaseComponent).

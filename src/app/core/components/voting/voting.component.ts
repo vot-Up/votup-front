@@ -61,8 +61,9 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
     public getPlates() {
         this.service.clearParameter();
         this.service.addParameter("is_active", true);
-        this.service.addParameter("expand", ["plate"])
-        this.service.addParameter("voting", this.votingUser().voting);
+        this.service.addParameter("expand", "plate")
+        const voting = this.votingUser().voting;
+        this.service.addParameter("voting", typeof voting === 'object' ? voting.id : voting);
         this.service.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {

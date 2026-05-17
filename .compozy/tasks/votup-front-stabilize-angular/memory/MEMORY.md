@@ -1,11 +1,11 @@
 # Workflow Memory
 
 ## Current State
-- Tasks 01-05: COMPLETED (standalone conversion, prune, bootstrap, inject, signal-input/output/queries)
-- Tasks 06-13: PENDING
-- Next: Task 06 (AuthInterceptor → functional interceptor)
+- Tasks 01-08 and 11: COMPLETED
+- Tasks 09, 10, 12, 13: PENDING
+- Next: Task 09 (BaseComponent inject()/signal refactor)
 - Build: passes, 2.22 MB initial total, main 1.54 MB, lazy core chunk 87 KB
-- Lint: 46 problems (2 errors in BaseComponent prefer-inject + 44 warnings no-explicit-any)
+- Lint: 25 warnings, 0 errors; BaseService has 0 no-explicit-any warnings
 
 ## Shared Decisions
 - ng-zorro-antd `nzAfterClose` requires `EventEmitter<R>` — keep `modalClosedEmitter` as EventEmitter, not Subject/output()
@@ -21,16 +21,17 @@
 - Bundle improved through standalone/lazy: main 1.64MB → 1.54MB, total 2.32MB → 2.22MB
 
 ## Open Risks
-- `npm test` fails (TS18003 — no .spec.ts files, tsconfig.spec.json issue)
+- `npm test -- --watch=false --browsers=ChromeHeadless --code-coverage` now passes after adding specs
 - ng-zorro-antd zoneless compatibility untested (task 12)
-- BaseComponent's manual Injector pattern still has 2 prefer-inject errors (task_09)
+- BaseComponent still has legacy generic/indexing patterns to address in task_09
 - VoterComponent @Input() voter incompatible with signal input (task_09/10)
 
 ## Handoffs
 - Task 06: Convert AuthInterceptor class → authInterceptorFn, then switch to `withInterceptors([authInterceptorFn])` — DONE
 - Task 07: Convert AppGuard class → authGuard CanActivateFn — DONE
-- Task 08: Refactor BaseService (eliminate any, typed generics, inject(HttpClient))
+- Task 08: Refactor BaseService (eliminate any, typed generics, inject(HttpClient)) — DONE
 - Task 09: Refactor BaseComponent (inject(), signal state, eliminate Injector pattern)
 
 ## Completed Since Last Memory Update
 - Task 11: Deleted 5 dead service files (user.service.ts, candidate.service.ts, voter.service.ts, message.service.ts, resume-voting.ts). Fixed 3 avatar: any → string | Blob | null. Fixed DetailResponse.detail. Removed UserService import from users.component.ts and main.ts provider list. Lint: 28→25 warnings. Build passes.
+- Task 08: BaseService now uses inject(HttpClient), typed HttpRequestOptions/metadata/choice interfaces, typed CRUD/FormData/blob helpers, and BaseService HTTP specs. Build passes; coverage run passes 23 specs with >=80% all reported metrics.

@@ -1,5 +1,5 @@
 ---
-status: pending
+status: completed
 title: "Refactor BaseService: eliminate `any`, add typed generics, use `inject()`"
 type: refactor
 complexity: high
@@ -38,19 +38,19 @@ Refactor `BaseService<T>` to eliminate all `any` types, add proper generic typin
 </requirements>
 
 ## Subtasks
-- [ ] 8.1 Define `HttpRequestOptions` interface to replace untyped `getOptions()` return
-- [ ] 8.2 Type `addParameter` value parameter as `string | number | boolean`
-- [ ] 8.3 Type `delete` return as `Observable<void>`
-- [ ] 8.4 Type `update` entity parameter as `Partial<T>` instead of `any`
-- [ ] 8.5 Type `deleteFromListRoute` model parameter as `Record<string, unknown>` or specific type
-- [ ] 8.6 Type `options()` return as `Observable<Record<string, ActionMetadata>>` (or similar)
-- [ ] 8.7 Type `getChoices` return as `Observable<Choice[]>` (or similar)
-- [ ] 8.8 Type `saveWithFormData` and `updateWithFormData` properly
-- [ ] 8.9 Type `loadFile` data parameter
-- [ ] 8.10 Remove `HttpUserEvent` tap casts (they add no value and force `any` casting)
-- [ ] 8.11 Verify `ng build` passes
-- [ ] 8.12 Verify `ng lint` shows 0 `no-explicit-any` warnings in base.service.ts
-- [ ] 8.13 Commit changes
+- [x] 8.1 Define `HttpRequestOptions` interface to replace untyped `getOptions()` return
+- [x] 8.2 Type `addParameter` value parameter as `string | number | boolean`
+- [x] 8.3 Type `delete` return as `Observable<void>`
+- [x] 8.4 Type `update` entity parameter as `Partial<T>` instead of `any`
+- [x] 8.5 Type `deleteFromListRoute` model parameter as `Record<string, unknown>` or specific type
+- [x] 8.6 Type `options()` return as `Observable<Record<string, ActionMetadata>>` (or similar)
+- [x] 8.7 Type `getChoices` return as `Observable<Choice[]>` (or similar)
+- [x] 8.8 Type `saveWithFormData` and `updateWithFormData` properly
+- [x] 8.9 Type `loadFile` data parameter
+- [x] 8.10 Remove `HttpUserEvent` tap casts (they add no value and force `any` casting)
+- [x] 8.11 Verify `ng build` passes
+- [x] 8.12 Verify `ng lint` shows 0 `no-explicit-any` warnings in base.service.ts
+- [x] 8.13 Commit changes
 
 ## Implementation Details
 

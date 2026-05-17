@@ -1,277 +1,234 @@
-import {HttpClient, HttpHeaders, HttpParams, HttpUserEvent} from "@angular/common/http";
-import {catchError, map, tap} from "rxjs/operators";
-import {from, Observable, throwError} from "rxjs";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
+import {inject, Injectable} from "@angular/core";
+import {catchError, map, Observable, of, throwError} from "rxjs";
 import {PaginatedResult} from "../dto/paginated-result";
 import {environment} from "../environments/environment";
 
+export type HttpParameterValue = string | number | boolean;
 
+export interface HttpRequestOptions {
+  headers?: HttpHeaders;
+  params?: HttpParams;
+  responseType?: 'json';
+}
+
+interface HttpBlobRequestOptions extends Omit<HttpRequestOptions, 'responseType'> {
+  responseType: 'blob';
+}
+
+/** DRF OPTIONS response shape */
+interface OptionsResponse {
+  actions: {
+    POST: Record<string, ActionFieldMetadata>;
+  };
+}
+
+export interface ActionFieldMetadata {
+  choices?: ChoiceItem[];
+  [key: string]: unknown;
+}
+
+export interface ChoiceItem {
+  value: HttpParameterValue;
+  display_name: string;
+}
+
+@Injectable({providedIn: 'root'})
 export class BaseService<T> {
-    public urlBase: string;
-    public urlSocket: string;
-    public fullUrl: string;
+  private readonly http: HttpClient;
 
-    private parameters: HttpParams = new HttpParams();
-    private token: string;
+  public readonly urlBase: string;
+  public readonly fullUrl: string;
+  public readonly path: string;
+  private parameters: HttpParams = new HttpParams();
+  private token: string | null = null;
 
-    constructor(public http: HttpClient,
-                public path: string) {
+  constructor(path: string, http = inject(HttpClient)) {
+    this.http = http;
+    this.path = path;
+    this.urlBase = environment.urlBase;
+    this.fullUrl = `${this.urlBase}${path}`;
+  }
 
-        this.urlBase = environment.urlBase;
-        this.fullUrl = `${this.urlBase}${path}`;
+  public clearParameter(): void {
+    this.parameters = new HttpParams();
+    this.token = null;
+  }
+
+  public addParameter(key: string, value: HttpParameterValue): void {
+    if (this.parameters.has(key)) {
+      this.parameters = this.parameters.set(key, value);
+    } else {
+      this.parameters = this.parameters.append(key, value);
     }
+  }
 
-    public clearParameter(): void {
-        this.parameters = new HttpParams();
-        this.token = null;
+  public changeToken(token: string): void {
+    this.token = token;
+  }
+
+  private getOptions(): HttpRequestOptions;
+  private getOptions(responseType: 'blob'): HttpBlobRequestOptions;
+  private getOptions(responseType?: 'blob'): HttpRequestOptions | HttpBlobRequestOptions {
+    const token = this.token ? this.token : localStorage.getItem("token");
+    const httpOptions: HttpRequestOptions | HttpBlobRequestOptions = responseType === 'blob'
+      ? {responseType: 'blob'}
+      : {};
+    if (token) {
+      httpOptions.headers = new HttpHeaders({"Authorization": "Bearer ".concat(token)});
     }
-
-    public addParameter(key: string, value: any): void {
-        if (this.parameters.has(key)) {
-            this.parameters = this.parameters.set(key, value);
-        } else {
-            this.parameters = this.parameters.append(key, value);
-        }
+    if (this.parameters) {
+      httpOptions.params = this.parameters;
     }
+    return httpOptions;
+  }
 
-    public changeToken(token: string): void {
-        this.token = token;
+  public getAll(route?: string): Observable<T[]> {
+    const url = route ? `${this.fullUrl}${route}/` : `${this.fullUrl}`;
+    return this.http.get<T[]>(url, this.getOptions())
+      .pipe(catchError(() => of([] as T[])));
+  }
+
+  public getAllFromAnotherRoute(route?: string): Observable<T[]> {
+    const url = route ? `${this.urlBase}${route}` : `${this.fullUrl}`;
+    return this.http.get<T[]>(url, this.getOptions())
+      .pipe(catchError(() => of([] as T[])));
+  }
+
+  public getPaginated(route?: string): Observable<PaginatedResult<T>> {
+    const url = route ? `${this.fullUrl}${route}/` : `${this.fullUrl}`;
+    return this.http.get<PaginatedResult<T>>(url, this.getOptions())
+      .pipe(catchError(() => of({count: 0, next: null, previous: null, results: []} as PaginatedResult<T>)));
+  }
+
+  public getPaginatedFromDetailRoute<K>(id: number, route: string): Observable<PaginatedResult<K>> {
+    const url = `${this.fullUrl}${id}/${route}/`;
+    return this.http.get<PaginatedResult<K>>(url, this.getOptions())
+      .pipe(catchError(() => of({count: 0, next: null, previous: null, results: []} as PaginatedResult<K>)));
+  }
+
+  public getPaginatedFromListRoute<K>(route: string): Observable<PaginatedResult<K>> {
+    const url = `${this.fullUrl}${route}/`;
+    return this.http.get<PaginatedResult<K>>(url, this.getOptions())
+      .pipe(catchError(() => of({count: 0, next: null, previous: null, results: []} as PaginatedResult<K>)));
+  }
+
+  public getFromDetailRoute<K>(id: number, route: string): Observable<K> {
+    const url = `${this.fullUrl}${id}/${route}/`;
+    return this.http.get<K>(url, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as K)));
+  }
+
+  public getFromListRoute<K>(route: string): Observable<K> {
+    const url = `${this.fullUrl}${route}/`;
+    return this.http.get<K>(url, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as K)));
+  }
+
+  public postFromDetailRoute<E, K>(id: number, route: string, entity: E): Observable<K> {
+    const url = `${this.fullUrl}${id}/${route}/`;
+    return this.http.post<K>(url, entity, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as K)));
+  }
+
+  public postFromListRoute<E, K>(route: string, entity: E): Observable<K> {
+    const url = `${this.fullUrl}${route}/`;
+    return this.http.post<K>(url, entity, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as K)));
+  }
+
+  public deleteFromListRoute<K, M extends object = Record<string, unknown>>(route: string, model: M): Observable<K> {
+    const url = `${this.fullUrl}${route}/`;
+    const token = this.token ? this.token : localStorage.getItem('token');
+    const httpOptions: HttpRequestOptions & { body?: M } = {};
+    if (token) {
+      httpOptions.headers = new HttpHeaders({"Authorization": "Bearer ".concat(token)});
     }
-
-    private getOptions(responseType?: any): any {
-        const token = this.token ? this.token : localStorage.getItem("token");
-        const httpOptions = {};
-
-        if (token) {
-            httpOptions["headers"] = new HttpHeaders({"Authorization": "Bearer ".concat(token)});
-        }
-        if (this.parameters) {
-            httpOptions["params"] = this.parameters;
-        }
-        if (responseType) {
-            httpOptions["responseType"] = responseType;
-        }
-        return httpOptions;
+    if (model) {
+      httpOptions.body = model;
     }
+    return this.http.delete<K>(url, httpOptions)
+      .pipe(catchError(() => of(undefined as unknown as K)));
+  }
 
-    public getAll(route?: string): Observable<T[]> {
-        const url = route ? `${this.fullUrl}${route}/` : `${this.fullUrl}`;
-        return this.http.get<T[]>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<T[]>),
-                catchError(ex => from([]))
-            );
-    }
+  public patchFromDetailRoute<E, K>(id: number, route: string, entity: E): Observable<K> {
+    const url = `${this.fullUrl}${id}/${route}/`;
+    return this.http.patch<K>(url, entity, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as K)));
+  }
 
-    public getAllFromAnotherRoute(route?: string): Observable<T[]> {
-        const url = route ? `${this.urlBase}${route}` : `${this.fullUrl}`;
-        return this.http.get<T[]>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<T[]>),
-                catchError(ex => from([]))
-            );
-    }
+  public patchFromListRoute<E, K>(route: string, entity: E): Observable<K> {
+    const url = `${this.fullUrl}${route}/`;
+    return this.http.patch<K>(url, entity, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as K)));
+  }
 
-    public getPaginated(route?: string): Observable<PaginatedResult<T>> {
-        const url = route ? `${this.fullUrl}${route}/` : `${this.fullUrl}`;
-        return this.http.get<PaginatedResult<T>>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<PaginatedResult<T>>),
-                catchError(ex => from([]))
-            );
-    }
+  public save(entity: T): Observable<T> {
+    this.clearParameter();
+    return this.http.post<T>(this.fullUrl, entity, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as T)));
+  }
 
+  public saveWithFormData(entity: FormData): Observable<T> {
+    this.clearParameter();
+    return this.http.post<T>(this.fullUrl, entity, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as T)));
+  }
 
-    public getPaginatedFromDetailRoute<K>(id: number, route: string): Observable<PaginatedResult<K>> {
-        const url = `${this.fullUrl}${id}/${route}/`;
-        return this.http.get<PaginatedResult<K>>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<PaginatedResult<K>>),
-                catchError(ex => from([]))
-            );
-    }
+  public updateWithFormData(entity: FormData): Observable<T> {
+    this.clearParameter();
+    return this.http.patch<T>(this.fullUrl, entity, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as T)));
+  }
 
-    public getPaginatedFromListRoute<K>(route: string): Observable<PaginatedResult<K>> {
-        const url = `${this.fullUrl}${route}/`;
-        return this.http.get<PaginatedResult<K>>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<PaginatedResult<K>>),
-                catchError(ex => from([]))
-            );
-    }
+  public getById(id: number | string, route?: string): Observable<T> {
+    const url = route ? `${this.fullUrl}${id}/${route}/` : `${this.fullUrl}${id}/`;
+    return this.http.get<T>(url, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as T)));
+  }
 
-    public getFromDetailRoute<K>(id: number, route: string): Observable<K> {
-        const url = `${this.fullUrl}${id}/${route}/`;
-        return this.http.get<K>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<K>),
-                catchError(ex => from([]))
-            );
-    }
+  public delete(id: number | string): Observable<void> {
+    this.clearParameter();
+    const url = `${this.fullUrl}${id}/`;
+    return this.http.delete<void>(url, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as void)));
+  }
 
-    public getFromListRoute<K>(route: string): Observable<K> {
-        const url = `${this.fullUrl}${route}/`;
-        return this.http.get<K>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<K>),
-                catchError(ex => from([]))
-            );
-    }
+  public update(id: number | string, entity: Partial<T>): Observable<T> {
+    this.clearParameter();
+    const url = `${this.fullUrl}${id}/`;
+    return this.http.patch<T>(url, entity, this.getOptions())
+      .pipe(catchError(err => throwError(() => err)));
+  }
 
-    public postFromDetailRoute<E, K>(id: number, route: string, entity: E): Observable<K> {
-        const url = `${this.fullUrl}${id}/${route}/`;
-        return this.http.post<K>(url, entity, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<K>),
-                catchError(ex => from([]))
-            );
-    }
+  public options(): Observable<Record<string, ActionFieldMetadata>> {
+    return this.http.options<OptionsResponse>(this.fullUrl, this.getOptions())
+      .pipe(
+        map(response => response.actions.POST),
+        catchError(() => of({} as Record<string, ActionFieldMetadata>))
+      );
+  }
 
-    public postFromListRoute<E, K>(route: string, entity: E): Observable<K> {
-        const url = `${this.fullUrl}${route}/`;
-        return this.http.post<K>(url, entity, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<K>),
-                catchError(ex => from([]))
-            );
-    }
+  public getChoices(field: string): Observable<ChoiceItem[]> {
+    return this.http.options<OptionsResponse>(this.fullUrl, this.getOptions())
+      .pipe(
+        map(response => response.actions.POST[field]?.choices ?? []),
+        catchError(() => of([] as ChoiceItem[]))
+      );
+  }
 
-    public deleteFromListRoute<K>(route: string, model: any): Observable<K> {
-        const url = `${this.fullUrl}${route}/`;
+  public loadUrl(url: string): Observable<T> {
+    return this.http.get<T>(url, this.getOptions())
+      .pipe(catchError(() => of(undefined as unknown as T)));
+  }
 
-        const token = this.token ? this.token : localStorage.getItem('token');
-        const httpOptions = {}
-        if (token) {
-            httpOptions["headers"] = new HttpHeaders({"Authorization": "Bearer ".concat(token)});
-        }
-        if (model) {
-            httpOptions["body"] = model
-        }
+  public loadFile(route: string, data: Record<string, unknown>): Observable<Blob> {
+    const url = `${this.fullUrl}${route}/`;
+    return this.http.post(url, data, this.getOptions('blob'));
+  }
 
-        return this.http.delete<K>(url, httpOptions)
-            .pipe(
-                tap(response => response as HttpUserEvent<K>),
-                catchError(ex => from([]))
-            );
-    }
-
-    public patchFromDetailRoute<E, K>(id: number, route: string, entity: E): Observable<K> {
-        const url = `${this.fullUrl}${id}/${route}/`;
-        return this.http.patch<K>(url, entity, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<K>),
-                catchError(ex => from([]))
-            );
-    }
-
-    public patchFromListRoute<E, K>(route: string, entity: E): Observable<K> {
-        const url = `${this.fullUrl}${route}/`;
-        return this.http.patch<K>(url, entity, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<K>),
-                catchError(ex => from([]))
-            );
-    }
-
-    public save(entity: T): Observable<T> {
-        this.clearParameter();
-        return this.http.post<T>(this.fullUrl, entity, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<T>),
-                catchError(ex => from([]))
-            );
-    }
-
-    public saveWithFormData(entity: FormData): Observable<T> {
-        this.clearParameter();
-        return this.http.post<T>(this.fullUrl, entity, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<T>),
-                catchError(ex => from([]))
-            );
-    }
-
-    public updateWithFormData(entity: FormData): Observable<T> {
-        this.clearParameter();
-        return this.http.patch<T>(this.fullUrl, entity, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<T>),
-                catchError(ex => from([]))
-            );
-    }
-
-
-    public getById(id: number | string, route?: string): Observable<T> {
-        const url = route ? `${this.fullUrl}${id}/${route}/` : `${this.fullUrl}${id}/`;
-        return this.http.get<T>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<T>),
-                catchError(ex => from([]))
-            );
-    }
-
-    public delete(id: number | string): Observable<any> {
-        this.clearParameter();
-        const url = `${this.fullUrl}${id}/`;
-        return this.http.delete<any>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<any>),
-                catchError(ex => from([]))
-            );
-    }
-
-    public update(id: number | string, entity: any): Observable<any> {
-        this.clearParameter();
-        const url = `${this.fullUrl}${id}/`;
-        return this.http.patch<T>(url, entity, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<T>),
-                catchError(ex => throwError(ex))
-            );
-    }
-
-    public options(): Observable<any> {
-        return this.http.options<T>(this.fullUrl, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<any>),
-                map(response => response["actions"]["POST"]),
-                catchError(ex => from([]))
-            );
-    }
-
-    public getChoices(field: string): Observable<any> {
-        return this.http.options<any>(this.fullUrl, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<any>),
-                map(response => response["actions"]["POST"][field]["choices"]),
-                catchError(ex => from([]))
-            );
-    }
-
-    public loadUrl(url: string): Observable<T> {
-        return this.http.get<T>(url, this.getOptions())
-            .pipe(
-                tap(response => response as HttpUserEvent<T>),
-                catchError(ex => from([]))
-            );
-    }
-
-    public loadFile(route: string, data: any): Observable<Blob> {
-        const url = `${this.fullUrl}${route}/`;
-        return this.http.post<Blob>(url, data, this.getOptions("blob"))
-            .pipe(
-                tap(response => response),
-                catchError(ex => from([]))
-            );
-    }
-
-    public getFileFromListRoute<K>(route: string): Observable<Blob> {
-        const url = `${this.fullUrl}${route}/`;
-        return this.http.get<Blob>(url, this.getOptions("blob"))
-            .pipe(
-                tap(response => response),
-                catchError(ex => from([]))
-            );
-    }
-
-
+  public getFileFromListRoute(route: string): Observable<Blob> {
+    const url = `${this.fullUrl}${route}/`;
+    return this.http.get(url, this.getOptions('blob'));
+  }
 }

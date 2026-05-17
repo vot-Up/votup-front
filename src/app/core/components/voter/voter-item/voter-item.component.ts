@@ -1,34 +1,47 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import {Voter} from "../../../../../models/core/voter";
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
 import {CustomValidators} from "../../../../../utilities/validator/custom-validators";
 import {Utils} from "../../../../../utilities/utils";
 import {BaseComponent} from "../../../base.component";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormItemComponent, NzFormLabelComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { NgxMaskDirective } from 'ngx-mask';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-voter-item',
     templateUrl: './voter-item.component.html',
-    styleUrls: ['./voter-item.component.less']
+    styleUrls: ['./voter-item.component.less'],
+    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzFormItemComponent, NzColDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, NgxMaskDirective, NzModalFooterDirective, NzIconDirective]
 })
 export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
-    public object: Voter = new Voter();
-    public items: Voter[] = [];
-    public avatar: SafeUrl;
+    messageService = inject(NzMessageService);
+    modal = inject(NzModalService);
+    data = inject(NZ_MODAL_DATA);
+
+    public items = signal<Voter[]>([]);
+    public avatar = signal<SafeUrl | null>(null);
     public typeImage = ["image/jpeg", "image/png", "image/jpg"];
-    public imageCurrent = false;
-    public hasImage = false;
+    public imageCurrent = signal(false);
+    public hasImage = signal(false);
 
 
-    constructor(public injector: Injector,
-                public messageService: NzMessageService,
-                public modal: NzModalService,
-                @Inject(NZ_MODAL_DATA) public data: any) {
-        super(injector, {pk: "id", endpoint: URLS.VOTE, retrieveOnInit: true});
+    constructor() {
+
+        super({pk: "id", endpoint: URLS.VOTE, retrieveOnInit: true});
+    
     }
 
     public beforeRetrieve(): Observable<number | string> {
@@ -38,12 +51,12 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
     ngOnInit(): void {
         super.ngOnInit(() => {
             if (this.data) {
-                this.avatar = this.object.avatar;
+                this.avatar.set(this.object().avatar);
             } else {
                 this.loadFile();
             }
             if (this.data.voter) {
-                this.object = this.data.voter;
+                this.object.set(this.data.voter);
             }
         });
     }
@@ -62,7 +75,7 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
         this.service.getAll().pipe(
             takeUntil(this.unsubscribe)
         ).subscribe(response => {
-            this.items = response
+            this.items.set(response)
         });
     }
 
@@ -73,10 +86,10 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => {
-                    this.imageCurrent = true;
+                    this.imageCurrent.set(true);
                     this.f.avatar.setValue(file);
-                    this.avatar = reader.result;
-                    this.hasImage = true;
+                    this.avatar.set(reader.result as string);
+                    this.hasImage.set(true);
                 };
             }
         }
@@ -84,31 +97,31 @@ export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
 
 
     public loadFile(): void {
-        if (this.object.avatar) {
-            this.avatar = Utils.convertBase64ToImage(this.object.avatar);
-            const file = Utils.convertImageToBlob(this.avatar, "jpg");
+        if (this.object().avatar) {
+            this.avatar.set(Utils.convertBase64ToImage(this.object().avatar));
+            const file = Utils.convertImageToBlob(this.avatar(), "jpg");
             this.f.avatar.patchValue(file);
         }
     }
 
     public convertToImage(base64) {
-        this.avatar = `data:image/jpg;base64,${base64}`;
+        this.avatar.set(`data:image/jpg;base64,${base64}`);
     }
 
     public clearFile(): void {
-        this.imageCurrent = false;
-        this.avatar = null;
+        this.imageCurrent.set(false);
+        this.avatar.set(null);
         this.f.avatar.reset();
-        this.object.avatar = null;
+        this.object.update(obj => ({ ...obj, avatar: null }));
     }
 
 
     public saveOrUpdate(): void {
-        if (this.object.avatar && !this.hasImage) {
+        if (this.object().avatar && !this.hasImage()) {
             this.formGroup.removeControl("avatar");
         }
 
-        if (this.object.id) {
+        if (this.object().id) {
             this.formGroup.removeControl("password");
         }
 

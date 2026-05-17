@@ -1,36 +1,48 @@
-import {Component, Inject, Injector, OnInit} from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
-import {NZ_MODAL_DATA, NzModalService} from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
 import {CustomValidators} from "../../../../../utilities/validator/custom-validators";
 import {Utils} from "../../../../../utilities/utils";
 import {BaseComponent} from "../../../base.component";
 import {Candidate} from "../../../../../models/core/candidate";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormItemComponent, NzFormLabelComponent, NzFormControlComponent } from 'ng-zorro-antd/form';
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceCompactItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzInputDirective } from 'ng-zorro-antd/input';
+import { NgxMaskDirective } from 'ngx-mask';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
 
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-candidate-item',
     templateUrl: './candidate-item.component.html',
-    styleUrls: ['./candidate-item.component.less']
+    styleUrls: ['./candidate-item.component.less'],
+    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzFormItemComponent, NzColDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, NgxMaskDirective, NzModalFooterDirective, NzIconDirective]
 })
 export class CandidateItemComponent extends BaseComponent<Candidate> implements OnInit {
-    public object: Candidate = new Candidate();
-    public items: Candidate[] = [];
-    public avatar: SafeUrl;
+    messageService = inject(NzMessageService);
+    modal = inject(NzModalService);
+    data = inject(NZ_MODAL_DATA);
+
+    public items = signal<Candidate[]>([]);
+    public avatar = signal<SafeUrl | null>(null);
     public typeImage = ["image/jpeg", "image/png", "image/jpg"];
-    public imageCurrent = false;
-    public hasImage = false;
-    public selectedFile: File;
+    public imageCurrent = signal(false);
+    public hasImage = signal(false);
+    private selectedFile: Blob | null = null;
 
+    constructor() {
 
-    constructor(public injector: Injector,
-                public messageService: NzMessageService,
-                public modal: NzModalService,
-                @Inject(NZ_MODAL_DATA) public data: any) {
-        super(injector, {pk: "id", endpoint: URLS.CANDIDATE, retrieveOnInit: true});
+        super({pk: "id", endpoint: URLS.CANDIDATE, retrieveOnInit: true});
+    
     }
 
     public beforeRetrieve(): Observable<number | string> {
@@ -40,12 +52,13 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
     ngOnInit(): void {
         super.ngOnInit(() => {
             if (this.data) {
-                this.avatar = this.object.avatar_url;
+                this.avatar.set(this.object().avatar);
+
             } else {
                 this.loadFile();
             }
             if(this.data.candidate) {
-                this.object = this.data.candidate;
+                this.object.set(this.data.candidate);
             }
         })
 
@@ -68,7 +81,7 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
         this.service.getAll().pipe(
             takeUntil(this.unsubscribe)
         ).subscribe(response => {
-            this.items = response
+            this.items.set(response)
         });
     }
 
@@ -79,11 +92,12 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => {
-                    this.imageCurrent = true;
+                    this.imageCurrent.set(true);
                     this.f.avatar.setValue(file);
-                    this.avatar = reader.result;
+                    this.avatar.set(reader.result as string);
+                    this.hasImage.set(true);
                     this.selectedFile = file;
-                    this.hasImage = true;
+
                 };
             }
         }
@@ -92,42 +106,45 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
 
 
     public loadFile(): void {
-        if (this.object.avatar_url) {
-            this.avatar = Utils.convertBase64ToImage(this.object.avatar_url);
-            const blob = Utils.convertImageToBlob(this.avatar, "jpg");
-            const file = new File([blob], "avatar.jpg", { type: "image/jpeg" });
+        if (this.object().avatar) {
+            this.avatar.set(Utils.convertBase64ToImage(this.object().avatar));
+            const file = Utils.convertImageToBlob(this.avatar(), "jpg");
 
             this.f.avatar.patchValue(file);
             this.selectedFile = file;
-            this.hasImage = true;
+            this.hasImage.set(true);
         }
     }
 
     public convertToImage(base64) {
-        this.avatar = `data:image/jpg;base64,${base64}`;
+        this.avatar.set(`data:image/jpg;base64,${base64}`);
     }
 
     public clearFile(): void {
-        this.imageCurrent = false;
-        this.avatar = null;
+        this.imageCurrent.set(false);
+        this.avatar.set(null);
         this.f.avatar.reset();
-        this.object.avatar_url = null;
+        this.object.update(obj => ({ ...obj, avatar: null }));
+        this.selectedFile = null;
+
     }
 
 
     public saveOrUpdate(): void {
-        if (this.object.avatar_url && !this.hasImage) {
+        if (this.object().avatar && !this.hasImage()) {
+
             this.formGroup.removeControl("avatar");
         }
 
         super.saveOrUpdateFormData((event: any) => {
             this.message('success');
 
-            const candidateId = event.body?.id || this.object.id;
+            const candidateId = this.object().id;
 
-            if (this.hasImage && this.selectedFile) {
+            if (candidateId && this.hasImage() && this.selectedFile) {
                 const formData = new FormData();
-                formData.append('avatar', this.selectedFile, this.selectedFile.name);  // ✅ CORRETO!
+                const fileName = this.selectedFile instanceof File ? this.selectedFile.name : "avatar.jpg";
+                formData.append('avatar', this.selectedFile, fileName);
 
                 this.service.postFromDetailRoute(candidateId, 'upload-avatar', formData)
                     .pipe(takeUntil(this.unsubscribe))

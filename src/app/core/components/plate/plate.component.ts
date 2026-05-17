@@ -1,27 +1,44 @@
-import {Component, EventEmitter, Injector, OnInit} from '@angular/core';
+import { Component, ChangeDetectionStrategy, EventEmitter, OnInit, inject, signal } from '@angular/core';
 import {URLS} from "../../../app/app.urls";
 import {takeUntil} from "rxjs";
 import {BaseComponent} from "../../base.component";
 import {Plate} from "../../../../models/core/plate";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {PlateItemComponent} from "./plate-item/plate-item.component";
+import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
+import { NzSpaceCompactItemDirective, NzSpaceComponent, NzSpaceItemDirective } from 'ng-zorro-antd/space';
+import { NzButtonComponent } from 'ng-zorro-antd/button';
+import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
+import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
+import { NzIconDirective } from 'ng-zorro-antd/icon';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NzFormDirective, NzFormItemComponent } from 'ng-zorro-antd/form';
+import { NzInputDirective, NzInputGroupComponent } from 'ng-zorro-antd/input';
+import { NzSelectComponent, NzOptionComponent } from 'ng-zorro-antd/select';
+import { NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent } from 'ng-zorro-antd/table';
+import { NzSwitchComponent } from 'ng-zorro-antd/switch';
+import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
+import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
 
 
 @Component({
-  standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-plate',
     templateUrl: "./plate.component.html",
-    styleUrls: ['./plate.component.less']
+    styleUrls: ['./plate.component.less'],
+    imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzInputGroupComponent, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzSpaceComponent, NzSpaceItemDirective, NzTooltipDirective, NzPaginationComponent]
 })
 export class PlateComponent extends BaseComponent<Plate> implements OnInit {
+    private modalService = inject(NzModalService);
 
-    public items: Plate[] = [];
+
+    public items = signal<Plate[]>([]);
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
 
-    constructor(public injector: Injector,
-                private modalService: NzModalService,
-    ) {
-        super(injector, {endpoint: URLS.PLATE, searchOnInit: true});
+    constructor() {
+
+        super({endpoint: URLS.PLATE, searchOnInit: true});
+    
     }
 
 

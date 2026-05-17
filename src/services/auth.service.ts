@@ -1,4 +1,4 @@
-import {Injectable} from "@angular/core";
+import { Injectable, inject } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import {shareReplay, tap} from "rxjs/operators";
 import {Router} from "@angular/router";
@@ -19,15 +19,16 @@ interface AuthPayload {
 
 @Injectable()
 export class AuthService {
+    http = inject(HttpClient);
+    router = inject(Router);
+    variables = inject(AppVariables);
+
 
     private storage = localStorage;
     private readonly urlBase: string;
     private urlToken: string;
 
-    constructor(public http: HttpClient,
-                public router: Router,
-                public variables: AppVariables,
-    ) {
+    constructor() {
         this.urlBase = environment.urlBase;
         this.urlToken = `${this.urlBase}${URLS.TOKEN}`;
     }

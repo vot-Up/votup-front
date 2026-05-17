@@ -8,7 +8,7 @@ export class Voter extends ModelBase{
     last_login: Date
     is_superuser: boolean
     is_staff: boolean
-    avatar: any
+    avatar: string | Blob | null
     file_name: string
     declare active: boolean
 }

@@ -52,13 +52,14 @@
         <tr style="position: relative;"
           (dblclick)="editCandidate(data); isUpdate.set(true)" class="clicavel">
           @if (data?.avatar) {
+
             <td>
               <div class="image-mask image-small">
-                <img src="{{data.avatar}}" alt="">
+                <img src="{{data.avatar_url}}" alt="">
               </div>
             </td>
           }
-          @if (!data.avatar) {
+          @if (!data.avatar_url) {
             <td>
               <img src="../../../../assets/images/avatar.svg" width="32px" height="32px" alt="">
             </td>

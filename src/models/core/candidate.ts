@@ -9,6 +9,7 @@ export class Candidate extends ModelBase {
     is_superuser: boolean
     is_staff: boolean
     avatar: string | Blob | null
+
     file_name: string
     declare active: boolean
     disabled: boolean

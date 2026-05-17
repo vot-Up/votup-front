@@ -38,7 +38,6 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
     public imageCurrent = signal(false);
     public hasImage = signal(false);
 
-
     constructor() {
 
         super({pk: "id", endpoint: URLS.CANDIDATE, retrieveOnInit: true});
@@ -53,6 +52,7 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
         super.ngOnInit(() => {
             if (this.data) {
                 this.avatar.set(this.object().avatar);
+
             } else {
                 this.loadFile();
             }
@@ -86,8 +86,8 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
 
     public changeFile(event): void {
         if (event.target.files && event.target.files.length > 0) {
-            if (this.typeImage.includes(event.target.files[0].type)) {
-                const [file] = event.target.files;
+            const [file] = event.target.files;
+            if (this.typeImage.includes(file.type)) {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => {
@@ -95,17 +95,22 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
                     this.f.avatar.setValue(file);
                     this.avatar.set(reader.result as string);
                     this.hasImage.set(true);
+
                 };
             }
         }
     }
 
 
+
     public loadFile(): void {
         if (this.object().avatar) {
             this.avatar.set(Utils.convertBase64ToImage(this.object().avatar));
             const file = Utils.convertImageToBlob(this.avatar(), "jpg");
+
             this.f.avatar.patchValue(file);
+            this.selectedFile = file;
+            this.hasImage = true;
         }
     }
 
@@ -118,21 +123,35 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
         this.avatar.set(null);
         this.f.avatar.reset();
         this.object.update(obj => ({ ...obj, avatar: null }));
+
     }
 
 
     public saveOrUpdate(): void {
-
         if (this.object().avatar && !this.hasImage()) {
+
             this.formGroup.removeControl("avatar");
         }
 
-        super.saveOrUpdateFormData((event) => {
-            this.message('success')
-            this.modal.closeAll();
+        super.saveOrUpdateFormData((event: any) => {
+            this.message('success');
+
+            const candidateId = event.body?.id || this.object.id;
+
+            if (this.hasImage && this.selectedFile) {
+                const formData = new FormData();
+                formData.append('avatar', this.selectedFile, this.selectedFile.name);  // ✅ CORRETO!
+
+                this.service.postFromDetailRoute(candidateId, 'upload-avatar', formData)
+                    .pipe(takeUntil(this.unsubscribe))
+                    .subscribe(() => {
+                        this.modal.closeAll();
+                    });
+            } else {
+                this.modal.closeAll();
+            }
         });
     }
-
 
     public cancel(): void {
         this.modal.closeAll();

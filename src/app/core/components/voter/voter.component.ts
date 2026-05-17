@@ -1,13 +1,12 @@
 import { Component, ChangeDetectionStrategy, EventEmitter, Input, OnInit, inject, signal } from '@angular/core';
-import {NzModalService} from "ng-zorro-antd/modal";
-import {BaseComponent} from "../../base.component";
-import {URLS} from "../../../app/app.urls";
-import {takeUntil} from "rxjs";
-import {AuthService} from "../../../../services/auth.service";
-import {Voter} from "../../../../models/core/voter";
-import {VoterItemComponent} from "./voter-item/voter-item.component";
+import { BaseComponent } from '../../base.component';
+import { URLS } from '../../../app/app.urls';
+import { takeUntil } from 'rxjs';
+import { AuthService } from '../../../../services/auth.service';
+import { Voter } from '../../../../models/core/voter';
+import { VoterItemComponent } from './voter-item/voter-item.component';
+import { ResponsiveModalService } from '../../../../services/responsive-modal.service';
 import { NzRowDirective, NzColDirective } from 'ng-zorro-antd/grid';
-import { NzSpaceCompactItemDirective, NzSpaceComponent, NzSpaceItemDirective } from 'ng-zorro-antd/space';
 import { NzButtonComponent } from 'ng-zorro-antd/button';
 import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patch';
@@ -16,120 +15,133 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzFormDirective, NzFormItemComponent } from 'ng-zorro-antd/form';
 import { NzInputDirective } from 'ng-zorro-antd/input';
 import { NzSelectComponent, NzOptionComponent } from 'ng-zorro-antd/select';
-import { NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent } from 'ng-zorro-antd/table';
-import { NzSwitchComponent } from 'ng-zorro-antd/switch';
-import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
 import { PhonePipe } from '../../../shared/phone-pipe/phone.pipe';
+import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-    selector: 'app-voter',
-    templateUrl: './voter.component.html',
-    styleUrls: ['./voter.component.less'],
-    imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzSpaceComponent, NzSpaceItemDirective, NzTooltipDirective, NzPaginationComponent, PhonePipe]
+  selector: 'app-voter',
+  templateUrl: './voter.component.html',
+  styleUrls: ['./voter.component.less'],
+  imports: [
+    NzRowDirective,
+    NzButtonComponent,
+    NzWaveDirective,
+    ɵNzTransitionPatchDirective,
+    NzIconDirective,
+    FormsModule,
+    NzFormDirective,
+    ReactiveFormsModule,
+    NzColDirective,
+    NzFormItemComponent,
+    NzInputDirective,
+    NzSelectComponent,
+    NzOptionComponent,
+    NzPaginationComponent,
+    PhonePipe,
+    NzListComponent,
+    NzListItemComponent,
+  ],
 })
 export class VoterComponent extends BaseComponent<Voter> implements OnInit {
-    private modalService = inject(NzModalService);
-    authService = inject(AuthService);
+  private responsiveModal = inject(ResponsiveModalService);
+  authService = inject(AuthService);
 
-    @Input() voter: Voter
+  @Input() voter: Voter;
+  public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
+  public voterLogged: Voter;
+  public isUpdate = signal(false);
+  public expandedIds = signal<Set<number>>(new Set());
 
-    public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
-    public voterLogged: Voter;
-    public isUpdate = signal(false);
+  constructor() {
+    super({ endpoint: URLS.VOTE, retrieveOnInit: true, searchOnInit: true });
+  }
 
+  ngOnInit(): void {
+    super.ngOnInit(() => (this.voter = this.authService.user));
+  }
 
-    constructor() {
+  public createFormGroup(): void {
+    this.formGroup = this.formBuilder.group({
+      user: [null],
+      active: [null],
+      name: [null],
+    });
+  }
 
-        super({endpoint: URLS.VOTE, retrieveOnInit: true, searchOnInit: true});
-    
+  public search(): void {
+    this.service.clearParameter();
+    if (this.v.name) {
+      this.service.addParameter('name', this.v.name);
     }
-
-    ngOnInit(): void {
-        super.ngOnInit(() => this.voter = this.authService.user);
+    if (this.v.active) {
+      this.service.addParameter('active', this.v.active);
     }
+    super.search();
+  }
 
+  public isMobile(): boolean {
+    return this.responsiveModal.isMobile();
+  }
 
-    public createFormGroup(): void {
-        this.formGroup = this.formBuilder.group({
-            user: [null],
-            active: [null],
-            name: [null],
-        })
-    }
+  public toggleExpand(id: number): void {
+    this.expandedIds.update((set) => {
+      const newSet = new Set(set);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  }
 
-    public search(): void {
-        this.service.clearParameter();
-        if (this.v.name) {
-            this.service.addParameter("name", this.v.name);
-        }
-        if (this.v.active) {
-            this.service.addParameter("active", this.v.active)
-        }
-        super.search();
-    }
+  public toggleActive(voter: Voter): void {
+    this.toggle(voter, 'active');
+  }
 
-    public openModal(): void {
-        const modal = this.modalService.create({
-            nzWidth: '40%',
-            nzCentered: true,
-            nzTitle: 'Cadastrar eleitor',
-            nzContent: VoterItemComponent
-        })
-        modal.afterClose.subscribe(() => {
-            this.search();
-        })
-    }
+  public openModal(): void {
+    const modal = this.responsiveModal.create({
+      nzTitle: 'Cadastrar eleitor',
+      nzContent: VoterItemComponent,
+    });
+    modal.afterClose.subscribe(() => {
+      this.search();
+    });
+  }
 
-    public editElector(voter: Voter): void {
-        this.isUpdate.set(true);
-        const modal = this.modalService.create({
-            nzWidth: '40%',
-            nzCentered: true,
-            nzTitle: 'Editar dados do eleitor',
-            nzContent: VoterItemComponent,
-            nzAfterClose: this.modalClosedEmitter,
-            nzData: {
-                pk: voter.id,
-                voter: voter,
-                isUpdate: true
-            }
-        });
-        modal.afterClose.subscribe(() => {
-            this.search();
-        })
+  public editElector(voter: Voter): void {
+    this.isUpdate.set(true);
+    const modal = this.responsiveModal.create({
+      nzTitle: 'Editar dados do eleitor',
+      nzContent: VoterItemComponent,
+      nzAfterClose: this.modalClosedEmitter,
+      nzData: { pk: voter.id, voter: voter, isUpdate: true },
+    });
+    modal.afterClose.subscribe(() => {
+      this.search();
+    });
+  }
 
+  public excludeElector(value: Voter): void {
+    this.responsiveModal.createConfirm({
+      nzTitle: 'Tem certeza de que deseja excluir esse eleitor?',
+      nzOnOk: () => this.delete(value),
+    });
+  }
 
-    }
+  delete(value: Voter): void {
+    this.service.clearParameter();
+    this.service
+      .delete(value.id)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe(() => {
+        this.search();
+      });
+  }
 
-
-    public excludeElector(value): void {
-        this.modalService.confirm({
-            nzTitle: "Tem certeza de que deseja excluir esse eleitor?",
-            nzOkText: 'Sim',
-            nzOkType: 'primary',
-            nzOkDanger: true,
-            nzOnOk: () => this.delete(value),
-            nzCancelText: 'Não',
-            nzAfterClose: this.modalClosedEmitter,
-        });
-        this.modalClosedEmitter.subscribe(() => {
-            this.search();
-        })
-    }
-
-    delete(value): void {
-        this.service.clearParameter();
-        this.service.delete(value.id)
-            .pipe(takeUntil(this.unsubscribe))
-            .subscribe(() => {
-                this.search()
-            });
-    }
-
-
-    public changePaginator(event: unknown): void {
-        console.log(event)
-    }
+  public changePaginator(event: unknown): void {
+    console.log(event);
+  }
 }

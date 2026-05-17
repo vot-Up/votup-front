@@ -1,3 +1,47 @@
-.clicavel {
-    cursor: pointer;
+@import 'design-tokens';
+@import 'expandable-list';
+
+:host {
+  display: block;
+}
+
+.expandable-list-container();
+
+.expandable-list-item();
+
+.expandable-list-expanded();
+
+// Filter form responsive overrides
+.filter-form {
+  margin-bottom: @spacing-md;
+
+  .filter-row {
+    align-items: flex-end;
+  }
+
+  .filter-field {
+    margin-bottom: @spacing-sm;
+  }
+
+  .filter-search-btn {
+    .search-label {
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+  }
+}
+
+// Pagination
+.pagination-wrapper {
+  margin-top: @spacing-md;
+  display: flex;
+  justify-content: flex-end;
+}
+
+// No data message
+.no-data-message {
+  padding: @spacing-3xl @spacing-lg;
+  text-align: center;
+  color: @colors-placeholder;
 }

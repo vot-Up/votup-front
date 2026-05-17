@@ -1,40 +1,46 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { ResponsiveModalConfig } from './responsive-modal-config';
 
 @Injectable({ providedIn: 'root' })
 export class ResponsiveModalService {
-    constructor(
-        private readonly modal: NzModalService,
-        private readonly breakpointObserver: BreakpointObserver,
-    ) {}
+    private readonly modal = inject(NzModalService);
+    private readonly breakpointObserver = inject(BreakpointObserver);
 
     create(config: ResponsiveModalConfig): NzModalRef {
-        const isMobile = this.breakpointObserver.isMatched('(max-width: 767px)');
-        const shouldFullscreen = config.mobileFullScreen ?? true;
+        const { mobileFullScreen = true, ...modalConfig } = config;
+        const shouldFullscreen = mobileFullScreen && this.breakpointObserver.isMatched('(max-width: 767px)');
 
         return this.modal.create({
-            ...config,
-            nzCentered: isMobile && shouldFullscreen ? false : (config.nzCentered ?? true),
-            nzWidth: isMobile && shouldFullscreen ? '100%' : (config.nzWidth ?? '80%'),
+            ...modalConfig,
+            nzCentered: shouldFullscreen ? false : (modalConfig.nzCentered ?? true),
+            nzWidth: shouldFullscreen ? '100%' : (modalConfig.nzWidth ?? '80%'),
             nzStyle: {
-                ...(config.nzStyle || {}),
-                ...(isMobile && shouldFullscreen ? { top: '0' } : {}),
+                ...(modalConfig.nzStyle || {}),
+                ...(shouldFullscreen ? { top: '0', padding: '0', maxHeight: '100vh', borderRadius: '0' } : {}),
             },
             nzBodyStyle: {
-                ...(config.nzBodyStyle || {}),
-                ...(isMobile && shouldFullscreen ? { padding: '0', borderRadius: '0' } : {}),
+                ...(modalConfig.nzBodyStyle || {}),
+                ...(shouldFullscreen ? { padding: '16px', overflowY: 'auto', maxHeight: 'calc(100vh - 55px)' } : {}),
             },
-            nzClosable: config.nzClosable ?? true,
+            nzClosable: modalConfig.nzClosable ?? true,
         });
     }
 
-    confirm(config: ResponsiveModalConfig): NzModalRef {
+    createConfirm(config: ResponsiveModalConfig): NzModalRef {
         return this.modal.confirm({
+            nzOkText: 'Sim',
+            nzCancelText: 'Não',
+            nzOkType: 'primary',
+            nzOkDanger: true,
             ...config,
             nzCentered: true,
             nzWidth: config.nzWidth ?? '520px',
         });
+    }
+
+    confirm(config: ResponsiveModalConfig): NzModalRef {
+        return this.createConfirm(config);
     }
 }

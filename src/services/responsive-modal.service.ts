@@ -1,65 +1,47 @@
 import { Injectable, inject } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { NzModalService, NzModalRef } from 'ng-zorro-antd/modal';
+import { ModalOptions, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { Observable, map } from 'rxjs';
 
 /**
- * Configuration interface for ResponsiveModalService.create().
+ * Configuration for ResponsiveModalService.create().
  * Extends NzModalService options with a mobileFullScreen toggle.
  */
-export interface ResponsiveModalConfig {
-  /** Modal title */
-  nzTitle?: string;
-  /** Content component */
-  nzContent?: any;
-  /** Data to pass to the content component via nzData */
-  nzData?: Record<string, any>;
-  /** Width for desktop mode. Default: '80%' */
-  nzWidth?: string;
-  /** EventEmitter or subject for afterClose */
-  nzAfterClose?: any;
+export interface ResponsiveModalConfig<T = unknown, D = unknown> extends ModalOptions<T, D> {
   /** Whether to render as full-screen sheet on mobile. Default: true */
   mobileFullScreen?: boolean;
-  /** Any additional NzModalService.create() options */
-  [key: string]: any;
 }
 
 /**
  * ResponsiveModalService wraps NzModalService with breakpoint-aware config.
- * - Mobile (<768px): full-screen sheet (nzWidth: 100%, no padding, no border-radius)
- * - Desktop (≥768px): centered modal with configurable width
- * - Confirm dialogs always render as centered dialogs (never full-screen)
+ * - Mobile (<768px): full-screen sheet
+ * - Desktop (≥768px): centered modal
+ * - Confirm dialogs always render centered
  */
 @Injectable({ providedIn: 'root' })
 export class ResponsiveModalService {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly modalService = inject(NzModalService);
 
-  /** Observable that emits true when viewport is mobile (<768px) */
+  /** Observable that emits true when viewport is mobile (<768px). */
   readonly isMobile$: Observable<boolean> = this.breakpointObserver
     .observe([Breakpoints.Handset, '(max-width: 767px)'])
     .pipe(map(state => state.matches));
 
-  /**
-   * Check if the current viewport is mobile (synchronous snapshot).
-   * Useful for template rendering decisions.
-   */
+  /** Synchronous mobile breakpoint snapshot for template decisions. */
   isMobile(): boolean {
     return this.breakpointObserver.isMatched('(max-width: 767px)');
   }
 
   /**
-   * Create a responsive modal. On mobile, renders as full-screen sheet.
-   * On desktop, renders as centered modal.
-   *
-   * @param config - Modal configuration. mobileFullScreen defaults to true.
-   * @returns NzModalRef
+   * Create a responsive modal. mobileFullScreen defaults to true.
+   * nzData and nzAfterClose are forwarded untouched to NzModalService.
    */
-  create(config: ResponsiveModalConfig): NzModalRef {
+  create<T = unknown, D = unknown>(config: ResponsiveModalConfig<T, D>): NzModalRef<T, D> {
     const { mobileFullScreen = true, ...nzOptions } = config;
 
     if (mobileFullScreen && this.isMobile()) {
-      return this.modalService.create({
+      return this.modalService.create<T, D>({
         ...nzOptions,
         nzWidth: '100%',
         nzCentered: false,
@@ -80,23 +62,16 @@ export class ResponsiveModalService {
       });
     }
 
-    // Desktop mode: centered modal
-    return this.modalService.create({
+    return this.modalService.create<T, D>({
       nzWidth: '80%',
       nzCentered: true,
       ...nzOptions,
     });
   }
 
-  /**
-   * Create a confirm dialog. Always renders as centered dialog
-   * on all breakpoints — never full-screen.
-   *
-   * @param config - NzModalService.confirm() options
-   * @returns NzModalRef
-   */
-  createConfirm(config: Record<string, any>): NzModalRef {
-    return this.modalService.confirm({
+  /** Create a confirm dialog that never becomes full-screen. */
+  createConfirm<T = unknown>(config: ModalOptions<T>): NzModalRef<T> {
+    return this.modalService.confirm<T>({
       nzOkText: 'Sim',
       nzCancelText: 'Não',
       nzOkType: 'primary',

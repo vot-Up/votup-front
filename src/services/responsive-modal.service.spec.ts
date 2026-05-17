@@ -67,8 +67,8 @@ describe('ResponsiveModalService', () => {
       const callArgs = modalService.create.calls.argsFor(0)[0];
       expect(callArgs.nzWidth).toBe('100%');
       expect(callArgs.nzCentered).toBe(false);
-      expect((callArgs.nzStyle as Record<string, any>).top).toBe('0');
-      expect((callArgs.nzStyle as Record<string, any>).borderRadius).toBe('0');
+      expect((callArgs.nzStyle as Record<string, unknown>).top).toBe('0');
+      expect((callArgs.nzStyle as Record<string, unknown>).borderRadius).toBe('0');
     });
 
     it('should apply centered modal on desktop', () => {

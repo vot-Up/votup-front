@@ -35,7 +35,7 @@ export interface ChoiceItem {
 
 @Injectable({providedIn: 'root'})
 export class BaseService<T> {
-  private readonly http = inject(HttpClient);
+  private readonly http: HttpClient;
 
   public readonly urlBase: string;
   public readonly fullUrl: string;
@@ -43,7 +43,8 @@ export class BaseService<T> {
   private parameters: HttpParams = new HttpParams();
   private token: string | null = null;
 
-  constructor(path: string) {
+  constructor(path: string, http = inject(HttpClient)) {
+    this.http = http;
     this.path = path;
     this.urlBase = environment.urlBase;
     this.fullUrl = `${this.urlBase}${path}`;

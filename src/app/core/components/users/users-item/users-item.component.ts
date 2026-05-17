@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {BaseComponent} from "../../../base.component";
 import {User} from "../../../../../models/core/user";
 import {URLS} from "../../../../app/app.urls";
@@ -37,14 +37,12 @@ interface DialogData {
     imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzFormItemComponent, NzColDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, LowercaseDirective, NgxMaskDirective, NzSwitchComponent, NzInputGroupComponent, NzModalFooterDirective, NzIconDirective]
 })
 export class UsersItemComponent extends BaseComponent<User> implements OnInit {
-    injector: Injector;
     messageService = inject(NzMessageService);
     modal = inject(NzModalService);
     authService = inject(AuthService);
     data = inject<DialogData>(NZ_MODAL_DATA);
 
 
-    public object: User = new User();
     public items: User[] = [];
     public avatar: SafeUrl;
     public typeImage = ["image/jpeg", "image/png", "image/jpg"];
@@ -55,11 +53,9 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
     public isLogged: boolean = false
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {pk: "id", endpoint: URLS.USER, retrieveOnInit: true});
+        super({pk: "id", endpoint: URLS.USER, retrieveOnInit: true});
     
-        this.injector = injector;
     }
 
     ngOnInit(): void {
@@ -72,7 +68,7 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
                 this.loadFile();
             }
             if (this.data.user) {
-                this.object = this.data.user;
+                this.object.set(this.data.user);
             }
 
         });
@@ -122,8 +118,8 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
     }
 
     public loadFile(): void {
-        if (this.object.avatar) {
-            this.avatar = Utils.convertBase64ToImage(this.object.avatar);
+        if (this.object().avatar) {
+            this.avatar = Utils.convertBase64ToImage(this.object().avatar);
             const file = Utils.convertImageToBlob(this.avatar, "jpg");
             this.f.avatar.patchValue(file);
         }
@@ -133,16 +129,16 @@ export class UsersItemComponent extends BaseComponent<User> implements OnInit {
         this.imageCurrent = false;
         this.avatar = null;
         this.f.avatar.reset();
-        this.object.avatar = null;
+        this.object.update(obj => ({ ...obj, avatar: null }));
     }
 
 
     public saveOrUpdate(): void {
-        if (this.object.avatar && !this.hasImage) {
+        if (this.object().avatar && !this.hasImage) {
             this.formGroup.removeControl("avatar");
         }
 
-        if (this.object.password) {
+        if (this.object().password) {
             this.formGroup.removeControl("password");
         }
 

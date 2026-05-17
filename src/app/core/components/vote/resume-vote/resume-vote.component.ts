@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {BaseComponent} from "../../../base.component";
 import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
@@ -34,7 +34,6 @@ interface DialogData {
     imports: [NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSpaceCompactItemDirective, NzInputDirective, FormsModule, NzModalFooterDirective, NzColDirective, NzFormControlComponent, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective]
 })
 export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements OnInit {
-    injector: Injector;
     messageService = inject(NzMessageService);
     modal = inject(NzModalService);
     data = inject<DialogData>(NZ_MODAL_DATA);
@@ -43,12 +42,10 @@ export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements 
     public serviceVotingPlate: BaseService<VotingPlate>;
     public currentDateTime: string = ''
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {endpoint: URLS.RESUME_VOTE, searchOnInit: true});
-        this.injector = injector;
+        super({endpoint: URLS.RESUME_VOTE, searchOnInit: true});
 
-        this.serviceVotingPlate = this.createService(VotingPlate, URLS.VOTING_PLATE);
+        this.serviceVotingPlate = this.createService(URLS.VOTING_PLATE);
     }
 
     public createFormGroup(): void {
@@ -80,7 +77,7 @@ export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements 
             resumeVoting.quantity = 0;
             listResumeVoting.push(resumeVoting);
         });
-        this.tableData = listResumeVoting;
+        this.tableData.set(listResumeVoting);
     }
 
     public search(): void {
@@ -88,7 +85,7 @@ export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements 
         this.service.addParameter('voting', this.data.voting.id);
         this.service.addParameter("expand", ["plate", "voting"]);
         super.search(() => {
-            if (this.tableData.length == 0) {
+            if (this.tableData().length == 0) {
                 this.getVotingPlate();
             }
         });
@@ -97,7 +94,7 @@ export class ResumeVoteComponent extends BaseComponent<ResumeVoting> implements 
 
     public saveResumeVote() {
         this.service.clearParameter();
-        this.tableData.forEach(item => {
+        this.tableData().forEach(item => {
             const payload: ResumeVoting = item;
             payload.plate = (<Plate>payload.plate).url
             payload.voting = (<Voting>payload.voting).url

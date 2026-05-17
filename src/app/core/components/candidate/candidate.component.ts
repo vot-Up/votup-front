@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, OnInit, inject, input } from '@angular/core';
+import { Component, EventEmitter, OnInit, inject, input } from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../base.component";
 import {URLS} from "../../../app/app.urls";
@@ -30,14 +30,11 @@ import { PhonePipe } from '../../../shared/phone-pipe/phone.pipe';
     imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzSpaceComponent, NzSpaceItemDirective, NzTooltipDirective, NzPaginationComponent, PhonePipe]
 })
 export class CandidateComponent extends BaseComponent<Candidate> implements OnInit {
-    injector: Injector;
     private modalService = inject(NzModalService);
     authService = inject(AuthService);
 
     readonly candidate = input<Candidate>(undefined);
 
-    public object: Candidate = new Candidate();
-    public tableData: Candidate[] = [];
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
     public candidateLogged: User;
     public candidateAssociate: boolean = false
@@ -45,11 +42,9 @@ export class CandidateComponent extends BaseComponent<Candidate> implements OnIn
 
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {endpoint: URLS.CANDIDATE, retrieveOnInit: true, searchOnInit: true});
+        super({endpoint: URLS.CANDIDATE, retrieveOnInit: true, searchOnInit: true});
     
-        this.injector = injector;
     }
 
     public ngOnInit(): void {

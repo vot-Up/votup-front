@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, inject } from '@angular/core';
 import {BaseComponent} from "../../../base.component";
 import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
@@ -29,7 +29,6 @@ interface Ranking {
     imports: [NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzTooltipDirective, NzIconDirective, NzModalFooterDirective, NzColDirective, NzFormControlComponent]
 })
 export class RankingComponent extends BaseComponent<null> implements OnInit {
-    injector: Injector;
     modal = inject(NzModalService);
     private modalService = inject(NzModalService);
     data = inject(NZ_MODAL_DATA);
@@ -39,11 +38,9 @@ export class RankingComponent extends BaseComponent<null> implements OnInit {
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {endpoint: URLS.VOTING_USER, searchOnInit: true});
+        super({endpoint: URLS.VOTING_USER, searchOnInit: true});
     
-        this.injector = injector;
     }
 
     ngOnInit() {

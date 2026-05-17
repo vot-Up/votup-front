@@ -7,7 +7,7 @@ import {CustomValidators} from "../../../../../utilities/validator/custom-valida
 import {BaseService} from "../../../../../services/base.service";
 import {Voting} from "../../../../../models/core/voting";
 import {Observable, of, takeUntil} from "rxjs";
-import { Component, EventEmitter, Injector, OnInit, inject } from "@angular/core";
+import { Component, EventEmitter, OnInit, inject } from "@angular/core";
 import {VotingPlate} from "../../../../../models/core/voting-plate";
 import {Plate} from "../../../../../models/core/plate";
 import {DatePipe} from "@angular/common";
@@ -36,14 +36,12 @@ enum DropListTypes {
     imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzColDirective, NzFormItemComponent, NzFormLabelComponent, NzSpaceCompactItemDirective, NzDatePickerComponent, NzFormControlComponent, NzInputDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, CdkDropList, CdkDrag, NzAvatarComponent, NzModalFooterDirective]
 })
 export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
-    injector: Injector;
     private modalService = inject(NzModalService);
     messageService = inject(NzMessageService);
     data = inject(NZ_MODAL_DATA);
 
     public plateService: BaseService<Plate>;
     public votingPlateService: BaseService<VotingPlate>;
-    public object = new Voting();
     public plate_added: Plate[] = [];
     public items: Voting[] = [];
     public plates: Plate[] = [];
@@ -56,15 +54,13 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
 
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {
+        super({
             pk: "id", endpoint: URLS.VOTING, retrieveOnInit: true
         });
-        this.injector = injector;
 
-        this.plateService = this.createService(Plate, URLS.PLATE);
-        this.votingPlateService = this.createService(VotingPlate, URLS.VOTING_PLATE)
+        this.plateService = this.createService(URLS.PLATE);
+        this.votingPlateService = this.createService(URLS.VOTING_PLATE)
     }
 
     public beforeRetrieve(): Observable<number | string> {
@@ -74,7 +70,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
     ngOnInit() {
         super.ngOnInit();
         if (this.data.voting) {
-            this.object = this.data.voting;
+            this.object.set(this.data.voting);
             this.hide = !this.hide;
             this.getPlates();
             this.getPlatesAssociate();
@@ -84,8 +80,8 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
 
     createFormGroup(): void {
         this.formGroup = this.formBuilder.group({
-            description: [this.object.description, CustomValidators.compose([CustomValidators.required])],
-            date: [this.object.date]
+            description: [this.object().description, CustomValidators.compose([CustomValidators.required])],
+            date: [this.object().date]
         })
 
 
@@ -93,7 +89,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
 
     public getPlates(): void {
         this.plateService.clearParameter();
-        this.plateService.addParameter("exists", this.object.id);
+        this.plateService.addParameter("exists", this.object().id);
         this.plateService.addParameter("active", true);
         this.plateService.addParameter("expand", ["plate"]);
         this.plateService.getAll()
@@ -113,7 +109,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
 
     public getPlatesAssociate(): void {
         this.plateService.clearParameter()
-        this.plateService.addParameter("voting", this.object.id);
+        this.plateService.addParameter("voting", this.object().id);
         this.plateService.addParameter("expand", ["plate"]);
         this.plateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
@@ -140,12 +136,12 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
 
             if (target == DropListTypes.ALL) {
                 votingPlate.plate = event.container.data[event.currentIndex].id;
-                votingPlate.voting = this.object.id;
+                votingPlate.voting = this.object().id;
                 this.deletePlateVote(votingPlate);
 
             } else if (target == DropListTypes.ADDED) {
                 votingPlate.plate = event.container.data[event.currentIndex].url;
-                votingPlate.voting = this.object.url;
+                votingPlate.voting = this.object().url;
                 this.associatePlate(votingPlate);
             }
         }
@@ -175,7 +171,7 @@ export class VoteItemComponent extends BaseComponent<Voting> implements OnInit {
     }
 
     public savePlate(isClose = false) {
-        if (!this.object.id) {
+        if (!this.object().id) {
             super.saveOrUpdate(() => {
                 this.getPlates();
                 this.hide = false;

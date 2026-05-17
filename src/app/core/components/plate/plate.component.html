@@ -37,7 +37,7 @@
     #tableDataPlate
     [nzFrontPagination]="false"
     [nzShowPagination]="false"
-    [nzData]="tableData">
+    [nzData]="tableData()">
     <thead>
       <tr>
         <th>Nome da chapa</th>
@@ -74,7 +74,7 @@
   </nz-table>
   <div style="margin-top: 10px; flex-direction: row-reverse; display: flex">
     <nz-pagination [nzPageIndex]="paginator().nzPageIndex"
-      [nzTotal]="pageLength"
+      [nzTotal]="pageLength()"
       (nzPageIndexChange)="search()"
       (nzPageSizeChange)="search()"
       nzShowSizeChanger

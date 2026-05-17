@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -27,12 +27,10 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
     imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzRowDirective, NzFormItemComponent, NzColDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, NgxMaskDirective, NzModalFooterDirective, NzIconDirective]
 })
 export class CandidateItemComponent extends BaseComponent<Candidate> implements OnInit {
-    injector: Injector;
     messageService = inject(NzMessageService);
     modal = inject(NzModalService);
     data = inject(NZ_MODAL_DATA);
 
-    public object: Candidate = new Candidate();
     public items: Candidate[] = [];
     public avatar: SafeUrl;
     public typeImage = ["image/jpeg", "image/png", "image/jpg"];
@@ -41,11 +39,9 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
 
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {pk: "id", endpoint: URLS.CANDIDATE, retrieveOnInit: true});
+        super({pk: "id", endpoint: URLS.CANDIDATE, retrieveOnInit: true});
     
-        this.injector = injector;
     }
 
     public beforeRetrieve(): Observable<number | string> {
@@ -55,12 +51,12 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
     ngOnInit(): void {
         super.ngOnInit(() => {
             if (this.data) {
-                this.avatar = this.object.avatar;
+                this.avatar = this.object().avatar;
             } else {
                 this.loadFile();
             }
             if(this.data.candidate) {
-                this.object = this.data.candidate;
+                this.object.set(this.data.candidate);
             }
         })
 
@@ -105,8 +101,8 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
 
 
     public loadFile(): void {
-        if (this.object.avatar) {
-            this.avatar = Utils.convertBase64ToImage(this.object.avatar);
+        if (this.object().avatar) {
+            this.avatar = Utils.convertBase64ToImage(this.object().avatar);
             const file = Utils.convertImageToBlob(this.avatar, "jpg");
             this.f.avatar.patchValue(file);
         }
@@ -120,13 +116,13 @@ export class CandidateItemComponent extends BaseComponent<Candidate> implements 
         this.imageCurrent = false;
         this.avatar = null;
         this.f.avatar.reset();
-        this.object.avatar = null;
+        this.object.update(obj => ({ ...obj, avatar: null }));
     }
 
 
     public saveOrUpdate(): void {
 
-        if (this.object.avatar && !this.hasImage) {
+        if (this.object().avatar && !this.hasImage) {
             this.formGroup.removeControl("avatar");
         }
 

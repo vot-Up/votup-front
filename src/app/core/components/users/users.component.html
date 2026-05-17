@@ -38,7 +38,7 @@
     #tableDataUser
     [nzFrontPagination]="false"
     [nzShowPagination]="false"
-    [nzData]="tableData"
+    [nzData]="tableData()"
     (nzCurrentPageDataChange)="changePaginator($event)">
     <thead>
       <tr>
@@ -108,7 +108,7 @@
   </nz-table>
   <div style="margin-top: 10px; flex-direction: row-reverse; display: flex">
     <nz-pagination [nzPageIndex]="paginator().nzPageIndex"
-      [nzTotal]="pageLength"
+      [nzTotal]="pageLength()"
       (nzPageIndexChange)="search()"
       (nzPageSizeChange)="search()"
       nzShowSizeChanger

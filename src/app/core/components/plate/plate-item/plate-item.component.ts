@@ -1,4 +1,4 @@
-import { Component, Injector, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CdkDragDrop, transferArrayItem, CdkDropListGroup, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
 import {Plate} from "../../../../../models/core/plate";
 import {URLS} from "../../../../app/app.urls";
@@ -29,14 +29,12 @@ import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
     imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormControlComponent, NzFormLabelComponent, NzSpaceCompactItemDirective, NzInputDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, CdkDropListGroup, NzRowDirective, NzInputGroupComponent, CdkDropList, CdkDrag, NzAvatarComponent, NzModalFooterDirective]
 })
 export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
-    injector: Injector;
     private modalService = inject(NzModalService);
     messageService = inject(NzMessageService);
     data = inject(NZ_MODAL_DATA);
 
 
     public type: string;
-    public object = new Plate();
 
     public candidates: Candidate[] = [];
     public presidents: Candidate[] = [];
@@ -48,18 +46,16 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     public searchUser: string;
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {pk: "id", endpoint: URLS.PLATE, retrieveOnInit: true});
-        this.injector = injector;
+        super({pk: "id", endpoint: URLS.PLATE, retrieveOnInit: true});
 
-        this.candidateService = this.createService(Candidate, URLS.CANDIDATE);
-        this.plateUserService = this.createService(PlateUser, URLS.PLATE_USER)
+        this.candidateService = this.createService(URLS.CANDIDATE);
+        this.plateUserService = this.createService(URLS.PLATE_USER)
     }
 
     ngOnInit() {
         if (this.data) {
-            this.object = this.data.plate;
+            this.object.set(this.data.plate);
             this.hide = !this.hide;
             this.getPresidents();
             this.getVicePresidents();
@@ -93,11 +89,11 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
         const plateUser: PlateUser = new PlateUser();
 
         if (destination === 'U') {
-            plateUser.plate = this.object.id;
+            plateUser.plate = this.object().id;
             plateUser.candidate = event.container.data[event.currentIndex].id;
             this.deletePlateUser(plateUser);
         } else {
-            plateUser.plate = this.object.url;
+            plateUser.plate = this.object().url;
             plateUser.type = destination;
             plateUser.candidate = event.container.data[event.currentIndex].url;
             this.savePlateUser(plateUser);
@@ -134,7 +130,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     public getCandidates(): void {
         this.candidateService.clearParameter();
         this.candidateService.addParameter("active", true);
-        this.candidateService.addParameter("exists", this.object.id);
+        this.candidateService.addParameter("exists", this.object().id);
         if (this.searchUser) this.candidateService.addParameter("name", this.searchUser);
         this.candidateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
@@ -146,7 +142,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     public getPresidents(): void {
         this.candidateService.clearParameter();
         this.candidateService.addParameter("active", true);
-        this.candidateService.addParameter("plate_president", this.object.id);
+        this.candidateService.addParameter("plate_president", this.object().id);
         this.candidateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
@@ -159,7 +155,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     public getVicePresidents(): void {
         this.candidateService.clearParameter();
         this.candidateService.addParameter("is_active", true);
-        this.candidateService.addParameter("plate_vice", this.object.id);
+        this.candidateService.addParameter("plate_vice", this.object().id);
         this.candidateService.getAll()
             .pipe(takeUntil(this.unsubscribe))
             .subscribe((response) => {
@@ -184,7 +180,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     }
 
     public savePlate(isClose = false) {
-        if (!this.object.id) {
+        if (!this.object().id) {
             super.saveOrUpdate(() => {
                 this.getCandidates();
                 this.hide = false;

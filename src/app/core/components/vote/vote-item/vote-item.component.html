@@ -22,7 +22,7 @@
 
     </div>
     <div nz-row nzFlex="4" nzAlign="middle" style="margin-top: 5px" [hidden]="hide">
-      @if (!object.url) {
+      @if (!object().url) {
         <button class="success"
           nz-button nzType="primary"
           (click)="showConfirmMessageSavePlate()"
@@ -35,7 +35,7 @@
   </div>
 
 
-  @if (object.url) {
+  @if (object().url) {
     <div nz-col>
       <div nz-col>
         <h4>Arraste as chapas que partiparão da votação:</h4>
@@ -52,7 +52,7 @@
             [cdkDropListConnectedTo]="[addedList]"
             class="list"
             (cdkDropListDropped)="drop($event, dropTypes.ALL)"
-            [cdkDropListDisabled]="!object.active">
+            [cdkDropListDisabled]="!object().active">
             @for (item of plates; track item) {
               <div nz-row nzAlign="middle" class="list-item" cdkDrag
                 [cdkDragData]="item">
@@ -127,7 +127,7 @@
             [cdkDropListConnectedTo]="[plateList]"
             class="list"
             (cdkDropListDropped)="drop($event, dropTypes.ADDED)"
-            [cdkDropListDisabled]="!object.active">
+            [cdkDropListDisabled]="!object().active">
             @for (item of plate_added; track item) {
               <div nz-row nzAlign="middle" class="list-item" cdkDrag
                 [cdkDragData]="item">
@@ -198,7 +198,7 @@
 
 <div *nzModalFooter>
   <button nz-button nzType="default" (click)="close()">Fechar</button>
-  @if (object.url) {
+  @if (object().url) {
     <button class="success" nz-button nzType="primary" (click)="showConfirmMessageSavePlate(true)">
       <span nz-icon nzType="check" nzTheme="outline"></span>
       Salvar

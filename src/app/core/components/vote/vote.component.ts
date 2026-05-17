@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, OnInit, inject } from '@angular/core';
 import {VoteItemComponent} from "./vote-item/vote-item.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {Voting} from "../../../../models/core/voting";
@@ -36,7 +36,6 @@ import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
     imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzDatePickerComponent, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzTooltipDirective, NzPaginationComponent, DatePipe]
 })
 export class VoteComponent extends BaseComponent<Voting> implements OnInit {
-    injector: Injector;
     private modalService = inject(NzModalService);
     private datePipe = inject(DatePipe);
     authService = inject(AuthService);
@@ -45,16 +44,13 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
     public isVoteActive = false;
     public plateService: BaseService<Plate>;
-    public object: Voting = new Voting()
     public hasPermissionValue: boolean
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {endpoint: URLS.VOTING, searchOnInit: true});
-        this.injector = injector;
+        super({endpoint: URLS.VOTING, searchOnInit: true});
 
-        this.plateService = this.createService(Plate, URLS.PLATE);
+        this.plateService = this.createService(URLS.PLATE);
     }
 
 
@@ -93,7 +89,7 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
         }
         super.search(() => {
             this.modalClosedEmitter = new EventEmitter<void>();
-            this.isVoteActive = (this.tableData.find(vote => vote.active === true) != undefined)
+            this.isVoteActive = (this.tableData().find(vote => vote.active === true) != undefined)
         })
     }
 

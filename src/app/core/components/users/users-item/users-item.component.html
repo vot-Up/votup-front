@@ -61,7 +61,7 @@
       </nz-form-control>
     </nz-form-item>
 
-    @if (object.is_superuser || authService.user.is_superuser) {
+    @if (object().is_superuser || authService.user.is_superuser) {
       <div>
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Super usuário</nz-form-label>

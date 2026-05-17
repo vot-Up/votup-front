@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, Input, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, inject } from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import {BaseComponent} from "../../base.component";
 import {URLS} from "../../../app/app.urls";
@@ -29,25 +29,20 @@ import { PhonePipe } from '../../../shared/phone-pipe/phone.pipe';
     imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzSpaceComponent, NzSpaceItemDirective, NzTooltipDirective, NzPaginationComponent, PhonePipe]
 })
 export class VoterComponent extends BaseComponent<Voter> implements OnInit {
-    injector: Injector;
     private modalService = inject(NzModalService);
     authService = inject(AuthService);
 
     @Input() voter: Voter
 
-    public object: Voter = new Voter();
-    public tableData: Voter[] = [];
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
     public voterLogged: Voter;
     public isUpdate: boolean = false;
 
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {endpoint: URLS.VOTE, retrieveOnInit: true, searchOnInit: true});
+        super({endpoint: URLS.VOTE, retrieveOnInit: true, searchOnInit: true});
     
-        this.injector = injector;
     }
 
     ngOnInit(): void {

@@ -1,4 +1,4 @@
-import { Component, Injector, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {BaseComponent} from "../../core/base.component";
 import {URLS} from "../../app/app.urls";
 import {NzMessageService} from "ng-zorro-antd/message";
@@ -22,7 +22,6 @@ import { VotingComponent } from '../../core/components/voting/voting.component';
     imports: [NzRowDirective, NzColDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzFormControlComponent, ɵNzTransitionPatchDirective, NzSpaceCompactItemDirective, NzInputGroupComponent, NzInputDirective, NgxMaskDirective, NzSpaceComponent, NzSpaceItemDirective, NzButtonComponent, NzWaveDirective, VotingComponent]
 })
 export class LoginElectorComponent extends BaseComponent<VotingUser> {
-    injector: Injector;
     messageService = inject(NzMessageService);
 
 
@@ -30,11 +29,9 @@ export class LoginElectorComponent extends BaseComponent<VotingUser> {
     public isVoting = false;
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {endpoint: URLS.VOTING_USER});
+        super({endpoint: URLS.VOTING_USER});
     
-        this.injector = injector;
     }
 
     public createFormGroup(): void {

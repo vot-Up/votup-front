@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Injector, OnInit, inject, input, output } from '@angular/core';
+import { Component, EventEmitter, OnInit, inject, input, output } from '@angular/core';
 import {User} from "../../../../models/core/user";
 import {URLS} from "../../../app/app.urls";
 import {BaseComponent} from "../../base.component";
@@ -31,7 +31,6 @@ import { PhonePipe } from '../../../shared/phone-pipe/phone.pipe';
     imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzSpaceComponent, NzSpaceItemDirective, NzTooltipDirective, NzPaginationComponent, PhonePipe]
 })
 export class UsersComponent extends BaseComponent<User> implements OnInit {
-    injector: Injector;
     private modalService = inject(NzModalService);
     userService = inject(UserService);
     authService = inject(AuthService);
@@ -40,8 +39,6 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
     readonly user = input<User>(undefined);
     readonly valueEmitter = output<boolean>();
 
-    public object: User = new User();
-    public tableData: User[] = [];
     public items: User[] = [];
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
     public userLogged: User;
@@ -51,11 +48,9 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
 
 
     constructor() {
-        const injector = inject(Injector);
 
-        super(injector, {endpoint: URLS.USER, retrieveOnInit: true, searchOnInit: true});
+        super({endpoint: URLS.USER, retrieveOnInit: true, searchOnInit: true});
     
-        this.injector = injector;
     }
 
     ngOnInit(): void {

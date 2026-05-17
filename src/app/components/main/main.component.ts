@@ -3,6 +3,7 @@ import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
+  standalone: false,
   selector: 'app-login-elector',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.less']

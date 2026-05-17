@@ -10,6 +10,7 @@ import {Utils} from "../../../../../utilities/utils";
 import {BaseComponent} from "../../../base.component";
 
 @Component({
+  standalone: false,
     selector: 'app-voter-item',
     templateUrl: './voter-item.component.html',
     styleUrls: ['./voter-item.component.less']

@@ -19,6 +19,7 @@ enum DropListTypes {
 }
 
 @Component({
+  standalone: false,
     selector: 'app-vote-item',
     templateUrl: './vote-item.component.html',
     styleUrls: ['./vote-item.component.less']

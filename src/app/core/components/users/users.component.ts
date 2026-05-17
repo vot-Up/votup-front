@@ -10,6 +10,7 @@ import {AuthService} from "../../../../services/auth.service";
 
 
 @Component({
+  standalone: false,
     selector: 'app-voters',
     templateUrl: './users.component.html',
     styleUrls: ['./users.component.less']

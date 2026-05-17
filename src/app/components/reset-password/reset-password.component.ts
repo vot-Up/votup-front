@@ -8,6 +8,7 @@ import {BaseService} from "../../../services/base.service";
 import {takeUntil} from "rxjs";
 
 @Component({
+  standalone: false,
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
     styleUrls: ['./reset-password.component.less']

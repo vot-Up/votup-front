@@ -8,6 +8,7 @@ import {PlateItemComponent} from "./plate-item/plate-item.component";
 
 
 @Component({
+  standalone: false,
     selector: 'app-plate',
     templateUrl: "./plate.component.html",
     styleUrls: ['./plate.component.less']

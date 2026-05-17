@@ -13,6 +13,7 @@ import {Candidate} from "../../../../../models/core/candidate";
 
 
 @Component({
+  standalone: false,
     selector: 'app-plate-item',
     templateUrl: './plate-item.component.html',
     styleUrls: ['./plate-item.component.less']

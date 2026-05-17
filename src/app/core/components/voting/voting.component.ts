@@ -9,6 +9,7 @@ import {BaseService} from "../../../../services/base.service";
 import {Candidate} from "../../../../models/core/candidate";
 
 @Component({
+  standalone: false,
     selector: 'app-voting',
     templateUrl: './voting.component.html',
     styleUrls: ['./voting.component.less']

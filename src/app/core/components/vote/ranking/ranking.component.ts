@@ -14,6 +14,7 @@ interface Ranking {
 }
 
 @Component({
+  standalone: false,
     selector: 'app-ranking',
     templateUrl: './ranking.component.html',
     styleUrls: ['./ranking.component.less']

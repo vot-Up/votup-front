@@ -10,68 +10,97 @@ import {AppVariables} from "../app/app/app.variables";
 import jwtDecode from "jwt-decode";
 
 interface AuthPayload {
-    user_id: number;
-    username: string;
-    user: User;
-    exp: number;
-    orig_iat: number;
+  user_id: number;
+  username: string;
+  email: string;
+  role: 'ELEITOR' | 'CANDIDATO' | null;
+  user: User;
+  exp: number;
+  orig_iat: number;
 }
 
 @Injectable()
 export class AuthService {
-    http = inject(HttpClient);
-    router = inject(Router);
-    variables = inject(AppVariables);
+  http = inject(HttpClient);
+  router = inject(Router);
+  variables = inject(AppVariables);
+  private storage = localStorage;
+  private readonly urlBase: string;
+  private urlToken: string;
 
+  constructor() {
+    this.urlBase = environment.urlBase;
+    this.urlToken = `${this.urlBase}${URLS.TOKEN}`;
+  }
 
-    private storage = localStorage;
-    private readonly urlBase: string;
-    private urlToken: string;
-
-    constructor() {
-        this.urlBase = environment.urlBase;
-        this.urlToken = `${this.urlBase}${URLS.TOKEN}`;
+  get user(): User {
+    if (!this.variables.user) {
+      const token = this.storage.getItem("token");
+      const payload = <AuthPayload>jwtDecode(token);
+      const user = payload.user;
+      user.url = this.urlBase.concat(user.url);
+      this.variables.user = user;
     }
+    return this.variables.user;
+  }
 
-    get user(): User {
-        if (!this.variables.user) {
-            const token = this.storage.getItem("token");
-            const payload = <AuthPayload>jwtDecode(token);
-            const user = payload.user;
-            user.url = this.urlBase.concat(user.url);
-            this.variables.user = user;
-        }
-        return this.variables.user;
+  get role(): 'ELEITOR' | 'CANDIDATO' | null {
+    const token = this.storage.getItem("token");
+    if (!token) {
+      return null;
     }
+    const payload = <AuthPayload>jwtDecode(token);
+    return payload.role ?? null;
+  }
 
-    public login(email: string, password: string) {
-        const payload = {"email": email, "password": password};
-        return this.http.post(this.urlToken, payload)
-            .pipe(
-                tap((response: AuthResponse) => this.setToken(response)),
-                shareReplay(),
-            );
+  get isAdmin(): boolean {
+    const token = this.storage.getItem("token");
+    if (!token) {
+      return false;
     }
+    const payload = <AuthPayload>jwtDecode(token);
+    return payload.user?.is_staff === true;
+  }
 
-    private setToken(response: AuthResponse) {
-        if (response) {
-            this.storage.setItem("token", response.token.access);
-            // this.user;
-        }
-    }
+  public login(email: string, password: string) {
+    const payload = {"email": email, "password": password};
+    return this.http.post(this.urlToken, payload)
+      .pipe(
+        tap((response: AuthResponse) => this.setToken(response)),
+        shareReplay(),
+      );
+  }
 
-    public isLoggedIn() {
-        return !!this.storage.getItem("token");
+  public setToken(response: AuthResponse) {
+    if (response) {
+      this.storage.setItem("token", response.token.access);
+      // this.user;
     }
+  }
 
-    public logout(reload?: boolean, redirect?: boolean): void {
-        this.storage.removeItem("token");
-        this.storage.removeItem("avatar");
-        if (reload) {
-            location.reload();
-        }
-        if (redirect) {
-            this.router.navigate(["main"]).then();
-        }
+  public isLoggedIn() {
+    return !!this.storage.getItem("token");
+  }
+
+  public logout(reload?: boolean, redirect?: boolean): void {
+    this.storage.removeItem("token");
+    this.storage.removeItem("avatar");
+    this.variables.user = undefined;
+    if (reload) {
+      location.reload();
     }
+    if (redirect) {
+      this.router.navigate(["main"]).then();
+    }
+  }
+
+  public navigateByRole(): void {
+    if (this.isAdmin) {
+      this.router.navigate(["/core/vote"]).then();
+    } else if (this.role === 'CANDIDATO') {
+      this.router.navigate(["/candidate/plates"]).then();
+    } else {
+      this.router.navigate(["/login-elector"]).then();
+    }
+  }
 }

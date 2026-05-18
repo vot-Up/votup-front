@@ -1,3 +1,4 @@
+// DESIGN TOKENS (shared with component Less files)
 @import 'design-tokens';
 @import 'expandable-list';
 
@@ -5,15 +6,23 @@
   display: block;
 }
 
-.expandable-list-container();
+.inner-content {
+  display: grid;
+  gap: @spacing-lg;
+}
 
+.expandable-list-container();
 .expandable-list-item();
 
 .expandable-list-expanded();
 
 // Filter form responsive overrides
 .filter-form {
-  margin-bottom: @spacing-md;
+  padding: @spacing-lg;
+  background: @colors-canvas;
+  border: 1px solid @colors-border-subtle;
+  border-radius: @rounded-lg;
+  box-shadow: 0 18px 44px fade(@colors-shadow-subtle, 12%);
 
   .filter-row {
     align-items: flex-end;
@@ -21,6 +30,10 @@
 
   .filter-field {
     margin-bottom: @spacing-sm;
+  }
+
+  input[nz-input], nz-select {
+    width: 100%;
   }
 
   .filter-search-btn {
@@ -31,6 +44,7 @@
     }
   }
 }
+
 
 // Pagination
 .pagination-wrapper {

@@ -1,3 +1,53 @@
-.space {
-    gap: 8px;
+@import 'design-tokens';
+@import 'expandable-list';
+
+:host {
+    display: block;
+}
+
+.expandable-list-container();
+.expandable-list-item();
+.expandable-list-expanded();
+
+.filter-form {
+    margin-bottom: @spacing-md;
+
+    .filter-row {
+        align-items: flex-end;
+    }
+
+    .filter-field {
+        margin-bottom: @spacing-sm;
+    }
+}
+
+.pagination-wrapper {
+    margin-top: @spacing-md;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.no-data-message {
+    padding: @spacing-3xl @spacing-lg;
+    text-align: center;
+    color: @colors-placeholder;
+}
+
+// Variantes extras dos action-btns
+.action-warn {
+    color: @colors-negative;
+
+    &:hover {
+        border-color: @colors-negative;
+        background-color: fade(@colors-negative, 6%);
+    }
+}
+
+.action-success {
+    color: @colors-positive;
+
+    &:hover {
+        border-color: @colors-positive;
+        background-color: fade(@colors-positive, 6%);
+    }
 }

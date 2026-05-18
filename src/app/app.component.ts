@@ -17,7 +17,7 @@ export class AppComponent {
     authService = inject(AuthService);
     router = inject(Router);
 
-    protected readonly navItems = [
+    private readonly adminNavItems = [
         { label: 'Votação', icon: 'play-circle', path: '/core/vote' },
         { label: 'Chapas', icon: 'profile', path: '/core/candidate_group' },
         { label: 'Candidatos', icon: 'solution', path: '/core/candidates' },
@@ -25,7 +25,18 @@ export class AppComponent {
         { label: 'Usuários', icon: 'user', path: '/core/users' },
     ];
 
-    private readonly publicRoutes = ["/main", "/login", "/login-elector", "/reset-password"];
+    private readonly candidateNavItems = [
+        { label: 'Minha Chapa', icon: 'profile', path: '/candidate/plates' },
+    ];
+
+    protected readonly navItems = computed(() => {
+        this.currentPath();
+        if (this.authService.isAdmin) return this.adminNavItems;
+        if (this.authService.role === 'CANDIDATO') return this.candidateNavItems;
+        return [];
+    });
+
+    private readonly publicRoutes = ["/main", "/login", "/login-elector", "/reset-password", "/register"];
     private readonly currentPath = signal(window.location.pathname);
 
     public readonly hiddenMenu = computed(() => {

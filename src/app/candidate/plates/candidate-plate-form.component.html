@@ -1,0 +1,43 @@
+<form nz-form [formGroup]="formGroup" class="plate-form">
+  <nz-form-item>
+    <nz-form-label>Nome da chapa</nz-form-label>
+    <nz-form-control nzErrorTip="Por favor, digite o nome da chapa!">
+      <input nz-input formControlName="name" placeholder="Nome da chapa" autocomplete="off"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Presidente</nz-form-label>
+    <nz-form-control>
+      <nz-select nzPlaceHolder="Selecione o presidente" formControlName="president" nzAllowClear>
+        @for (c of candidates(); track c.id) {
+          <nz-option [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
+        }
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label>Vice-Presidente</nz-form-label>
+    <nz-form-control>
+      <nz-select nzPlaceHolder="Selecione o vice-presidente" formControlName="vicePresident" nzAllowClear>
+        @for (c of candidates(); track c.id) {
+          <nz-option [nzValue]="c.id" [nzLabel]="c.name"></nz-option>
+        }
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <div class="form-actions">
+    <button nz-button nzType="primary" type="submit" (click)="save()" [disabled]="!formGroup.valid || isSubmitting()">
+      @if (isSubmitting()) {
+        Salvando...
+      } @else {
+        Salvar
+      }
+    </button>
+    <button nz-button type="button" (click)="cancel()">
+      Cancelar
+    </button>
+  </div>
+</form>

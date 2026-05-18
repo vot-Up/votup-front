@@ -1,15 +1,30 @@
 @import (reference) "../../../../theme.less";
 
+:host {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: block;
+    width: 100vw;
+    height: 100dvh;
+    overflow: hidden;
+    background: #f3f6f1;
+}
+
 .voting-shell {
-    min-height: 100vh;
-    padding: @spacing-xl @spacing-lg calc(@spacing-3xl + 96px);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    padding: @spacing-xl @spacing-xl @spacing-lg;
     background: #f3f6f1;
 }
 
 .header-voting {
     display: flex;
     justify-content: center;
-    padding-bottom: @spacing-lg;
+    padding-bottom: @spacing-xl;
 }
 
 .logo {
@@ -22,11 +37,13 @@
 }
 
 .voting-content {
-    display: grid;
-    gap: @spacing-lg;
+    min-height: 0;
     width: 100%;
-    max-width: 420px;
+    max-width: 350px;
     margin: 0 auto;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: @spacing-lg;
 }
 
 .voting-intro {
@@ -39,27 +56,37 @@
     color: @colors-ink;
     font-size: @typography-display-xs;
     font-weight: @font-weight-display;
-    line-height: 1.1;
+    line-height: 1.05;
 }
 
 .voting-intro p {
     margin: 0;
     color: @colors-body;
+    font-size: @typography-body-sm;
 }
 
-.plates-swiper {
-    width: 100%;
-    height: 360px;
+swiper-container.plates-swiper {
+    display: block;
+    align-self: center;
+    justify-self: center;
+    width: min(calc(100vw - 88px), 350px);
+    max-width: 350px;
+    height: clamp(300px, 39dvh, 336px);
+    margin: 0 auto;
     overflow: visible;
+    touch-action: pan-y;
 }
 
 swiper-slide {
     display: flex;
+    box-sizing: border-box;
 }
 
 .plate-card,
 .empty-state {
+    box-sizing: border-box;
     width: 100%;
+    max-width: 100%;
     background: @colors-canvas;
     border: 1px solid @colors-border-muted;
     border-radius: @rounded-xl;
@@ -67,13 +94,18 @@ swiper-slide {
 }
 
 .plate-card {
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: @spacing-lg;
-    height: 100%;
-    padding: @spacing-xl;
-    cursor: pointer;
+    gap: @spacing-md;
+    padding: @spacing-lg;
+    cursor: grab;
+    user-select: none;
     transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.plate-card:active {
+    cursor: grabbing;
 }
 
 .plate-card--selected {
@@ -81,10 +113,23 @@ swiper-slide {
     box-shadow: 0 18px 36px rgba(46, 173, 75, .18);
 }
 
+swiper-slide:not(.swiper-slide-active) .plate-card--selected {
+    border-color: @colors-border-muted;
+    box-shadow: 0 16px 34px rgba(14, 15, 12, .08);
+}
+
+swiper-slide:not(.swiper-slide-active) .selected-pill {
+    display: none;
+}
+
 .plate-card-header {
     display: flex;
     justify-content: space-between;
     gap: @spacing-md;
+
+    > div {
+        min-width: 0;
+    }
 }
 
 .plate-label {
@@ -106,17 +151,19 @@ swiper-slide {
 
 .selected-pill {
     align-self: flex-start;
+    flex: 0 0 auto;
     padding: @spacing-xs @spacing-sm;
     border-radius: @rounded-pill;
     background: rgba(46, 173, 75, .12);
     color: @colors-positive;
     font-size: @typography-caption;
     font-weight: @font-weight-semibold;
+    white-space: nowrap;
 }
 
 .candidate-list {
     display: grid;
-    gap: @spacing-md;
+    gap: @spacing-sm;
 }
 
 .candidate-row {
@@ -124,14 +171,13 @@ swiper-slide {
     align-items: center;
     gap: @spacing-md;
     min-width: 0;
-    padding: @spacing-sm 0;
     color: @colors-body;
 }
 
 .candidate-avatar {
-    flex: 0 0 56px;
-    width: 56px;
-    height: 56px;
+    flex: 0 0 52px;
+    width: 52px;
+    height: 52px;
 }
 
 .candidate-name {
@@ -146,7 +192,7 @@ swiper-slide {
 }
 
 .select-help {
-    margin: auto 0 0;
+    margin: 0;
     padding-top: @spacing-sm;
     border-top: 1px solid @colors-border-subtle;
     color: @colors-mute;
@@ -154,22 +200,18 @@ swiper-slide {
 }
 
 .confirm-bar {
-    position: fixed;
-    left: @spacing-lg;
-    right: @spacing-lg;
-    bottom: @spacing-lg;
-    z-index: 20;
-    max-width: 420px;
-    margin: 0 auto;
+    width: min(calc(100vw - 88px), 350px);
+    max-width: 350px;
+    justify-self: center;
 }
 
 .success {
     width: 100%;
-    min-height: 52px;
+    min-height: 48px;
     border: 0;
     border-radius: @rounded-pill;
     background: @colors-positive;
-    box-shadow: 0 12px 24px rgba(46, 173, 75, .24);
+    box-shadow: 0 12px 24px rgba(46, 173, 75, .22);
     color: @colors-canvas;
     font-weight: @font-weight-semibold;
 }
@@ -184,6 +226,7 @@ swiper-slide {
 .empty-state {
     display: grid;
     justify-items: center;
+    align-self: center;
     gap: @spacing-sm;
     padding: @spacing-xl;
     text-align: center;
@@ -209,11 +252,15 @@ swiper-slide {
 
 @media (min-width: 768px) {
     .voting-shell {
-        padding: @spacing-2xl @spacing-2xl calc(@spacing-3xl + 112px);
+        padding: @spacing-xl @spacing-2xl;
     }
 
-    .voting-content,
+    .voting-content {
+        max-width: 460px;
+    }
+
     .confirm-bar {
+        width: min(100%, 460px);
         max-width: 460px;
     }
 
@@ -221,15 +268,45 @@ swiper-slide {
         font-size: @typography-display-sm;
     }
 
-    .plates-swiper {
-        height: 380px;
+    swiper-container.plates-swiper {
+        align-self: center;
+        width: min(100%, 460px);
+        max-width: 460px;
+        height: min(56dvh, 440px);
     }
 
-    .confirm-bar {
-        left: 50%;
-        right: auto;
-        bottom: @spacing-2xl;
-        width: 460px;
-        transform: translateX(-50%);
+    .plate-card {
+        gap: @spacing-lg;
+        padding: @spacing-xl;
+    }
+
+    .candidate-list {
+        gap: @spacing-md;
+    }
+
+    .candidate-avatar {
+        flex-basis: 58px;
+        width: 58px;
+        height: 58px;
+    }
+}
+
+@media (max-height: 700px) {
+    .header-voting {
+        padding-bottom: @spacing-sm;
+    }
+
+    .voting-shell {
+        padding: @spacing-md @spacing-lg;
+    }
+
+    swiper-container.plates-swiper {
+        min-height: 320px;
+        height: 52dvh;
+    }
+
+    .plate-card {
+        gap: @spacing-md;
+        padding: @spacing-lg;
     }
 }

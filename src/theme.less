@@ -4,7 +4,7 @@
 @import "../node_modules/swiper/swiper-bundle.css";
 
 // DESIGN.MD TOKENS (shared with component Less files)
-@import 'design-tokens';
+@import 'styles/design-tokens';
 
 // Additional global-only variables
 @shadow-drag-preview: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
@@ -304,5 +304,120 @@ nz-footer {
 .radio-group-style {
     span.ant-radio + * {
         width: 100%;
+    }
+}
+
+// ── Confirm/action-sheet opened from inside another modal ───────────────────
+// The wrap covers the full viewport; without a mask it is transparent but still
+// captures pointer events. We disable pointer-events on the wrap and re-enable
+// them only on the modal dialog so nested modals are fully interactive.
+.plate-confirm-above-modal {
+    z-index: 2000 !important;
+    pointer-events: none !important;
+
+    .ant-modal,
+    .ant-modal-confirm {
+        pointer-events: auto;
+    }
+}
+
+// ── Plate candidate action sheet ─────────────────────────────────────────────
+.plate-action-sheet-modal {
+    .ant-modal {
+        max-width: min(400px, 92vw);
+    }
+
+    .ant-modal-header {
+        padding: @spacing-lg @spacing-xl @spacing-sm;
+        border-bottom: none;
+    }
+
+    .ant-modal-title {
+        font-size: @typography-body-md;
+        font-weight: 700;
+        color: @colors-ink;
+    }
+
+    .ant-modal-close {
+        top: @spacing-md;
+    }
+
+    .ant-modal-body {
+        font-size: @typography-body-sm;
+        color: @colors-mute;
+    }
+
+    .ant-modal-footer {
+        padding: @spacing-sm @spacing-lg @spacing-lg;
+        border-top: none;
+        display: flex;
+        flex-direction: column;
+        gap: @spacing-sm;
+
+        button {
+            width: 100%;
+            min-height: 44px;
+            border-radius: @rounded-lg !important;
+            font-weight: 600;
+            font-size: @typography-body-sm;
+            margin-inline-start: 0 !important;
+        }
+
+        button[nztype="default"],
+        button:last-child {
+            background: @colors-surface-muted;
+            border-color: transparent;
+            color: @colors-body;
+
+            &:hover {
+                background: darken(@colors-surface-muted, 4%);
+            }
+        }
+    }
+}
+
+@media (max-width: 767px) {
+    .plate-action-sheet-modal {
+        display: flex !important;
+        align-items: flex-end !important;
+        padding: 0 !important;
+
+        &::before {
+            display: none;
+        }
+
+        .ant-modal {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            top: auto !important;
+            border-radius: @rounded-xl @rounded-xl 0 0 !important;
+            overflow: hidden;
+            padding-bottom: env(safe-area-inset-bottom);
+            box-shadow: 0 -4px 32px rgba(14, 15, 12, .16);
+
+            &::before {
+                content: '';
+                display: block;
+                width: 36px;
+                height: 4px;
+                border-radius: @rounded-full;
+                background: @colors-border-strong;
+                margin: @spacing-md auto @spacing-xs;
+            }
+        }
+
+        .ant-modal-header {
+            padding-top: @spacing-sm;
+        }
+
+        .ant-modal-footer {
+            padding: @spacing-sm @spacing-lg calc(@spacing-lg + env(safe-area-inset-bottom));
+
+            button {
+                min-height: 48px;
+                border-radius: @rounded-lg !important;
+            }
+        }
     }
 }

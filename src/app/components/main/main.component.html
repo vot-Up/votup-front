@@ -1,21 +1,24 @@
 <section class="main-page">
-    <div class="main-copy">
-        <div class="logo">
-            <img src="../../../assets/images/logo-votup.svg" height="32" alt="VotUp">
-            <span>VotUp</span>
-        </div>
-        <h1 class="title">A solução para uma eleição de sucesso!</h1>
-        <p class="subtitle">O que você deseja fazer?</p>
-        <div class="actions">
-            <button nz-button class="secondary-action" (click)="goToCreateVote()">
-                Criar uma votação
-            </button>
-            <button nz-button nzType="primary" class="primary-action" (click)="goToLoginElector()">
-                Quero votar
-            </button>
-        </div>
+  <div class="main-copy">
+    <div class="logo">
+      <img src="../../../assets/images/logo-votup.svg" height="32" alt="VotUp">
+      <span>VotUp</span>
     </div>
-    <div class="main-visual">
-        <img src="./assets/images/main.svg" alt="Ilustração de eleição">
+    <h1 class="title">A solução para uma eleição de sucesso!</h1>
+    <p class="subtitle">O que você deseja fazer?</p>
+    <div class="actions">
+      <button nz-button nzType="primary" class="primary-action" (click)="goToLoginElector()">
+        Quero votar
+      </button>
+      <button nz-button class="secondary-action" (click)="goToCreateVote()">
+        Criar uma votação
+      </button>
+      <button nz-button class="tertiary-action" (click)="goToRegister()">
+        Cadastrar-se
+      </button>
     </div>
+  </div>
+  <div class="main-visual">
+    <img src="./assets/images/main.svg" alt="Ilustração de eleição">
+  </div>
 </section>

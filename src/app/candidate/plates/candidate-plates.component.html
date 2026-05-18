@@ -1,0 +1,76 @@
+<div nz-row nzJustify="space-between" nzAlign="middle" class="page-header">
+  <h2>Minha Chapa</h2>
+  @if (!plate()) {
+    <button (click)="showCreateModal()" nz-button nzType="primary">
+      <span nz-icon nzType="plus" nzTheme="outline"></span>
+      Criar sua chapa
+    </button>
+  }
+</div>
+
+<div class="inner-content">
+  @if (!plate()) {
+    <div class="empty-state">
+      <div class="empty-icon">
+        <span nz-icon nzType="team" nzTheme="outline"></span>
+      </div>
+      <p class="empty-title">Nenhuma chapa criada</p>
+      <p class="empty-description">Crie sua chapa para participar da eleição como candidato.</p>
+      <button (click)="showCreateModal()" nz-button nzType="primary" class="empty-cta">
+        <span nz-icon nzType="plus" nzTheme="outline"></span>
+        Criar sua chapa
+      </button>
+    </div>
+  } @else {
+    <nz-list class="expandable-list-container">
+      <nz-list-item class="expandable-list-item" [class.expanded]="expanded()" (click)="toggleExpand()">
+        <div class="expandable-list-primary">{{ plate()?.name }}</div>
+        <div class="expandable-list-status">
+          @if (isLinked()) {
+            <span class="status-badge status-linked">Em votação</span>
+          } @else {
+            <span class="status-badge status-active">Ativa</span>
+          }
+        </div>
+        <div class="expandable-list-chevron">
+          <span nz-icon nzType="down" nzTheme="outline"></span>
+        </div>
+      </nz-list-item>
+
+      <div class="expandable-list-expanded" [class.open]="expanded()">
+        <div class="expandable-list-fields">
+          @if (president(); as p) {
+            <div class="expandable-list-field">
+              <span class="field-label">Presidente</span>
+              <span class="field-value">{{ p.name }}</span>
+            </div>
+          }
+          @if (vicePresident(); as vp) {
+            <div class="expandable-list-field">
+              <span class="field-label">Vice-Presidente</span>
+              <span class="field-value">{{ vp.name }}</span>
+            </div>
+          }
+        </div>
+
+        <div class="expandable-list-actions">
+          <button class="action-btn" (click)="showEditModal(); $event.stopPropagation()" [disabled]="isLinked()">
+            <span nz-icon nzType="edit"></span>
+            Editar
+          </button>
+          <button class="action-btn action-danger" (click)="confirmDelete(); $event.stopPropagation()" [disabled]="isLinked()">
+            <span nz-icon nzType="delete"></span>
+            Excluir
+          </button>
+        </div>
+
+        @if (isLinked()) {
+          <div class="lock-notice">
+            <span nz-icon nzType="lock" nzTheme="outline"></span>
+            Esta chapa está vinculada a uma votação e não pode ser alterada.
+          </div>
+        }
+      </div>
+    </nz-list>
+  }
+</div>

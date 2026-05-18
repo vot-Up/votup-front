@@ -3,7 +3,7 @@ import {Voter} from "../../../../../models/core/voter";
 import {SafeUrl} from "@angular/platform-browser";
 import {Observable, of, takeUntil} from "rxjs";
 import {NzMessageService} from "ng-zorro-antd/message";
-import { NZ_MODAL_DATA, NzModalService } from "ng-zorro-antd/modal";
+import { NZ_MODAL_DATA, NzModalService, NzModalFooterDirective } from "ng-zorro-antd/modal";
 import {URLS} from "../../../../app/app.urls";
 import {CustomValidators} from "../../../../../utilities/validator/custom-validators";
 import {Utils} from "../../../../../utilities/utils";
@@ -22,7 +22,7 @@ import { NzIconDirective } from 'ng-zorro-antd/icon';
     selector: 'app-voter-item',
     templateUrl: './voter-item.component.html',
     styleUrls: ['./voter-item.component.less'],
-    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, NgxMaskDirective, NzIconDirective]
+    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzFormLabelComponent, NzFormControlComponent, NzInputDirective, NgxMaskDirective, NzIconDirective, NzModalFooterDirective]
 })
 export class VoterItemComponent extends BaseComponent<Voter> implements OnInit {
     messageService = inject(NzMessageService);

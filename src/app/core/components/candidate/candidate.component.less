@@ -1,3 +1,45 @@
-.clicavel {
-    cursor: pointer;
+// DESIGN TOKENS (shared with component Less files)
+@import 'design-tokens';
+@import 'expandable-list';
+
+:host {
+  display: block;
+}
+
+.expandable-list-container();
+
+.expandable-list-item();
+
+.expandable-list-expanded();
+
+.filter-form {
+  margin-bottom: @spacing-md;
+
+  .filter-row {
+    align-items: flex-end;
+  }
+
+  .filter-field {
+    margin-bottom: @spacing-sm;
+  }
+
+  .filter-search-btn {
+    .search-label {
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
+  }
+}
+
+.pagination-wrapper {
+  margin-top: @spacing-md;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.no-data-message {
+  padding: @spacing-3xl @spacing-lg;
+  text-align: center;
+  color: @colors-placeholder;
 }

@@ -1,39 +1,265 @@
-.red-style {
-    color: red;
+@import 'design-tokens';
+
+.vote-item-sheet {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-md;
 }
 
-.holder {
+// ── Fields row ──────────────────────────────────────────────────────────────
+
+.fields-row {
+    display: flex;
+    gap: @spacing-md;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
+    nz-form-item {
+        margin-bottom: 0;
+    }
+}
+
+.field-date {
+    flex: 0 0 160px;
+}
+
+.field-name {
+    flex: 1 1 200px;
+    min-width: 0;
+}
+
+.field-save {
+    flex: 0 0 auto;
+    padding-bottom: 1px;
+}
+
+// ── Drag section ─────────────────────────────────────────────────────────────
+
+.drag-section {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-sm;
+}
+
+.drag-hint {
     display: flex;
     align-items: center;
-    margin-right: 16px;
+    gap: @spacing-xs;
+    font-size: 12px;
+    color: @colors-mute;
 }
 
-.ant-avatar {
-    margin-left: 8px;
+.drag-columns {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0;
+    align-items: start;
 }
 
-.f-w {
-    width: 100%;
+// ── Column ────────────────────────────────────────────────────────────────────
+
+.plate-col {
     display: flex;
+    flex-direction: column;
+    gap: @spacing-xs;
+    min-width: 0;
 }
 
-.fx-1 {
+.drag-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 @spacing-sm;
+    color: @colors-placeholder;
+    font-size: 14px;
+    margin-top: 28px; // align with list (after col-header)
+}
+
+.col-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: @spacing-xs @spacing-xs;
+    margin-bottom: 2px;
+}
+
+.col-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: @colors-body;
+}
+
+.col-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: @rounded-pill;
+    background: @colors-surface-muted;
+    font-size: 11px;
+    font-weight: 700;
+    color: @colors-mute;
+
+    &--active {
+        background: fade(@colors-primary, 18%);
+        color: darken(@colors-primary, 20%);
+    }
+}
+
+// ── Drop list ─────────────────────────────────────────────────────────────────
+
+.plate-list {
+    display: flex;
+    flex-direction: column;
+    gap: @spacing-xs;
+    min-height: 140px;
+    padding: @spacing-xs;
+    border: 1px dashed @colors-border-muted;
+    border-radius: @rounded-md;
+    transition: border-color .15s, background .15s;
+
+    &.cdk-drop-list-dragging,
+    &.cdk-drop-list-receiving {
+        border-color: @colors-primary;
+        background: fade(@colors-primary, 4%);
+    }
+
+    &--added {
+        background: fade(@colors-primary, 3%);
+        border-color: fade(@colors-primary, 30%);
+    }
+}
+
+// ── Plate card ────────────────────────────────────────────────────────────────
+
+.plate-card {
+    display: flex;
+    align-items: center;
+    gap: @spacing-xs;
+    padding: @spacing-xs @spacing-sm;
+    border-radius: @rounded-sm;
+    background: @colors-canvas;
+    border: 1px solid @colors-border-subtle;
+    cursor: grab;
+    transition: box-shadow .12s, border-color .12s;
+
+    &:hover {
+        border-color: @colors-border-strong;
+        box-shadow: 0 1px 4px @colors-shadow-subtle;
+    }
+
+    &--added {
+        border-color: fade(@colors-primary, 35%);
+        background: fade(@colors-primary, 5%);
+
+        &:hover {
+            border-color: fade(@colors-primary, 55%);
+        }
+    }
+
+    &.cdk-drag-placeholder {
+        opacity: 0.25;
+        border-style: dashed;
+        box-shadow: none;
+    }
+
+    &.cdk-drag-preview {
+        box-shadow: 0 4px 16px @colors-shadow-subtle;
+    }
+}
+
+.drag-handle {
+    flex: 0 0 auto;
+    color: @colors-placeholder;
+    font-size: 13px;
+    cursor: grab;
+}
+
+.plate-card-body {
     flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.mb-4 {
-    margin-bottom: 4px;
+.plate-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: @colors-ink;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.fs-12 {
-    font-size: 12px
+// ── Candidate chips ───────────────────────────────────────────────────────────
+
+.candidate-pair {
+    display: flex;
+    gap: @spacing-sm;
 }
 
-.ant-avatar  {
-    width: 3rem !important;
-    height: 3rem !important;
+.candidate-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+
+    nz-avatar {
+        flex: 0 0 auto;
+    }
 }
 
-.custom-cursor {
-    cursor: pointer;
+.chip-name {
+    font-size: 11px;
+    color: @colors-body;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+}
+
+.role-badge {
+    flex: 0 0 auto;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 1px 4px;
+    border-radius: 3px;
+
+    &.role-p {
+        background: rgba(22, 119, 255, 0.1);
+        color: #1677ff;
+    }
+
+    &.role-v {
+        background: rgba(250, 140, 22, 0.12);
+        color: #d46b08;
+    }
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+
+.col-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: @spacing-xs;
+    padding: @spacing-xl @spacing-md;
+    color: @colors-placeholder;
+    font-size: 12px;
+    text-align: center;
+
+    [nz-icon] {
+        font-size: 22px;
+        opacity: 0.5;
+    }
 }

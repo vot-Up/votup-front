@@ -1,109 +1,69 @@
-<form nz-form [formGroup]="formGroup" novalidate>
-  <div nz-row nzJustify="space-evenly center">
-    <nz-form-item class="full-width">
-      <ng-container>
-        <div nz-row>
-          <div nz-col class="mr-36-8">
-            <div class="image-mask">
-              @if (!avatar()) {
-                <div>
-                  <img width="80px" src='..\..\..\..\assets\images\avatar.svg' alt="avatar">
-                </div>
-              }
-              @if (avatar()) {
-                <img [src]="avatar()" alt="">
-              }
-            </div>
-            <input #image type="file" accept=".jpeg,.png,.jpg" (change)="changeFile($event)" hidden>
-          </div>
-          <div nz-row style="align-items: center;">
-            <button nz-button nzType="primary" type="button" (click)="image.click()"
-              style="margin-right: 8px;">
-              Nova foto
-            </button>
-            <button nz-button nzType="default" [disabled]="!avatar()" type="button" (click)="clearFile()">
-              Deletar
-            </button>
-          </div>
-        </div>
-      </ng-container>
-    </nz-form-item>
-  </div>
-  <div nz-col>
-
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name"> Nome</nz-form-label>
-      <nz-form-control nzErrorTip="Nome inválido!">
-        <input nz-input
-          type="text"
-          maxlength="64"
-          placeholder="Digite o nome completo"
-          formControlName="name"/>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="email"> E-mail</nz-form-label>
-      <nz-form-control nzErrorTip="E-mail inválido!">
-        <input nz-input appLowercase
-          type="email"
-          maxlength="50"
-          placeholder="Digite o e-mail"
-          formControlName="email"/>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired> Celular</nz-form-label>
-      <nz-form-control nzErrorTip="Número inválido!">
-        <input nz-input id="cell" formControlName="cellphone" maxlength="15" type="text"
-          [mask]="'(00) 00000-0000'" placeholder="Ex.: (92) 99999-9999"/>
-      </nz-form-control>
-    </nz-form-item>
-
-    @if (object().is_superuser || authService.user.is_superuser) {
-      <div>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired>Super usuário</nz-form-label>
-          <nz-form-control>
-            <nz-switch formControlName="is_superuser"></nz-switch>
-          </nz-form-control>
-        </nz-form-item>
+<form nz-form [formGroup]="formGroup" [nzLayout]="'vertical'" novalidate>
+  <nz-form-item>
+    <div class="avatar-row">
+      <div class="image-mask">
+        @if (!avatar()) {
+          <img width="80" src='..\..\..\..\assets\images\avatar.svg' alt="avatar">
+        } @else {
+          <img [src]="avatar()" alt="">
+        }
       </div>
-    }
-
-    @if (isEdit()) {
-      <div>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired> Senha</nz-form-label>
-          <nz-form-control nzErrorTip="Por favor, digite sua senha!">
-            <nz-input-group nzPrefixIcon="lock">
-              <input nz-input
-                placeholder="Senha"
-                type="password"
-                [type]="hide() ? 'password': 'text'"
-                formControlName="password"
-                minlength="4"
-                maxlength="64"
-                required>
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
+      <input #image type="file" accept=".jpeg,.png,.jpg" (change)="changeFile($event)" hidden>
+      <div class="avatar-btns">
+        <button nz-button nzType="primary" type="button" (click)="image.click()">Nova foto</button>
+        <button nz-button nzType="default" [disabled]="!avatar()" type="button" (click)="clearFile()">Deletar</button>
       </div>
-    }
+    </div>
+  </nz-form-item>
 
-
-  </div>
-  <div *nzModalFooter>
-    <nz-form-control>
-      <button nz-button nzType="default" type="button" (click)="cancel()">Fechar</button>
-      <button class="success" nz-button nzType="primary" type="submit"
-        (click)="saveOrUpdate()" [disabled]="!formGroup.valid">
-        <span nz-icon nzType="check" nzTheme="outline"></span>
-        Salvar
-      </button>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="name">Nome</nz-form-label>
+    <nz-form-control nzErrorTip="Nome inválido!">
+      <input nz-input id="name" type="text" maxlength="64" placeholder="Digite o nome completo" formControlName="name"/>
     </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzFor="email">E-mail</nz-form-label>
+    <nz-form-control nzErrorTip="E-mail inválido!">
+      <input nz-input appLowercase id="email" type="email" maxlength="50" placeholder="Digite o e-mail" formControlName="email"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="cell">Celular</nz-form-label>
+    <nz-form-control nzErrorTip="Número inválido!">
+      <input nz-input id="cell" formControlName="cellphone" maxlength="15" type="text"
+        [mask]="'(00) 00000-0000'" placeholder="Ex.: (92) 99999-9999"/>
+    </nz-form-control>
+  </nz-form-item>
+
+  @if (object().is_superuser || authService.user.is_superuser) {
+    <nz-form-item>
+      <nz-form-label nzRequired>Super usuário</nz-form-label>
+      <nz-form-control>
+        <nz-switch formControlName="is_superuser"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+  }
+
+  @if (isEdit()) {
+    <nz-form-item>
+      <nz-form-label nzRequired>Senha</nz-form-label>
+      <nz-form-control nzErrorTip="Por favor, digite sua senha!">
+        <nz-input-group nzPrefixIcon="lock">
+          <input nz-input placeholder="Senha" [type]="hide() ? 'password' : 'text'"
+            formControlName="password" minlength="4" maxlength="64" required>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  }
+
+  <div *nzModalFooter>
+    <button nz-button nzType="default" type="button" (click)="cancel()">Fechar</button>
+    <button nz-button nzType="primary" type="submit" (click)="saveOrUpdate()" [disabled]="!formGroup.valid">
+      <span nz-icon nzType="check" nzTheme="outline"></span>
+      Salvar
+    </button>
   </div>
 </form>
-
-

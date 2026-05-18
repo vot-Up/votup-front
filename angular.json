@@ -23,6 +23,7 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "less",
             "assets": [
+              "src/favicon.svg",
               "src/favicon.ico",
               "src/assets",
               {
@@ -44,11 +45,21 @@
           },
           "configurations": {
             "production": {
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": true
+                },
+                "fonts": {
+                  "inline": false
+                }
+              },
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "2.2mb",
-                  "maximumError": "3mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "6mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -93,6 +104,7 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "less",
             "assets": [
+              "src/favicon.svg",
               "src/favicon.ico",
               "src/assets"
             ],

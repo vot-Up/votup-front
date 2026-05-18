@@ -1,141 +1,120 @@
 <div nz-row nzJustify="space-between" nzAlign="middle">
   <h2>Votação</h2>
-  <button (click)="showModal()" nz-button nzType="primary" [nzSize]="'default'">
+  <button (click)="showModal()" nz-button nzType="primary">
     <span nz-icon nzType="plus" nzTheme="outline"></span>
     Criar votação
   </button>
 </div>
 
 <div class="inner-content">
-  <form nz-form [formGroup]="formGroup">
-    <div nz-row nzGutter="16">
-      <div nz-col nzFlex="auto">
+  <form nz-form [formGroup]="formGroup" class="filter-form">
+    <div nz-row nzGutter="16" class="filter-row">
+      <div nz-col nzFlex="auto" class="filter-field">
         <nz-form-item>
-          <input nz-input placeholder="Descrição" formControlName="description"/>
+          <input nz-input placeholder="Buscar votação" formControlName="description"/>
         </nz-form-item>
       </div>
-      <div nz-col nzLg="{{3}}">
-        <nz-form-item>
-          <nz-date-picker nzPlaceHolder="Data inicial" formControlName="start_date"
+      <div nz-col nzLg="4" nzXs="24" class="filter-field">
+        <nz-date-picker nzPlaceHolder="Data inicial" formControlName="start_date"
           nzFormat="dd/MM/yyyy"></nz-date-picker>
-        </nz-form-item>
       </div>
-      <div nz-col nzLg="{{3}}">
-        <nz-form-item>
-          <nz-date-picker nzPlaceHolder="Data final" formControlName="final_date"
+      <div nz-col nzLg="4" nzXs="24" class="filter-field">
+        <nz-date-picker nzPlaceHolder="Data final" formControlName="final_date"
           nzFormat="dd/MM/yyyy"></nz-date-picker>
-        </nz-form-item>
       </div>
-      <div nz-col nzLg="{{3}}">
-        <nz-select nzPlaceHolder="Status" formControlName="active" ngModel="">
+      <div nz-col nzLg="3" nzXs="24" class="filter-field">
+        <nz-select nzPlaceHolder="Status" formControlName="active">
           <nz-option nzValue="true" nzLabel="Ativo"></nz-option>
           <nz-option nzValue="false" nzLabel="Inativo"></nz-option>
           <nz-option nzValue="" nzLabel="Todos"></nz-option>
         </nz-select>
       </div>
-      <div nz-col>
-        <button (click)="search()" nz-button nzType="primary">
+      <div nz-col nzXs="24" nzLg="auto" class="filter-field">
+        <button type="button" (click)="search()" nz-button nzType="primary" nzBlock>
           <span nz-icon nzType="search" nzTheme="outline"></span>
         </button>
       </div>
     </div>
   </form>
 
-  <nz-table #tableDataVoting
-    [nzFrontPagination]="false"
-    [nzShowPagination]="false"
-    [nzData]="tableData()">
-    <thead>
-      <tr>
-        <th>Nome da votação</th>
-        <th>Data limite da votação</th>
-        <th>Ativo</th>
-        <th>Ação</th>
-        <!--            <th>Opcoes</th>-->
-      </tr>
-    </thead>
-    <tbody>
-      @for (vote of tableDataVoting.data; track vote) {
-        <tr style="position: relative;" (dblclick)="showModal(vote)">
-          <td>{{ vote.description }}</td>
-          <td>{{ vote.date | date: "dd/MM/yyyy"}}</td>
-          <td>
-            <nz-switch [nzDisabled]="true" [(ngModel)]="vote.active"></nz-switch>
-          </td>
-          <td>
-            <div nz-row nzJustify="start" nzAlign="middle" class="space">
-              @if (vote.active) {
-                <div>
-                  <button nz-button nzType="default"
-                    (click)="showCloseVoteMessage(vote)" disabled="{{!vote.active}}" nz-tooltip
-                    nzTooltipTitle="Encerrar"
-                    class="table-action-button">
-                    <span nz-icon nzType="stop"></span>
-                  </button>
-                </div>
-              } @else {
-                <button nz-button nzType="default"
-                  (click)="activeVoteModal(vote)" disabled="{{vote.active}}" nz-tooltip
-                  nzTooltipTitle="Ativar"
-                  class="table-action-button">
-                  <span nz-icon nzType="play-circle" nzTheme="outline"></span>
-                </button>
-              }
-              <button nz-button nzType="default"
-                nzTooltipPlacement=""
-                (click)="showRanking(vote)"
-                nz-tooltip
-                [disabled]="!vote.was_voted"
-                nzTooltipTitle="Resultado"
-                class="table-action-button">
-                <span nz-icon nzType="line-chart" nzTheme="outline"></span>
-              </button>
-              <!--                    <button nz-button nzType="default" nzTooltipPlacement=""-->
-              <!--                            (click)="generateReportResume(vote.id)"-->
-              <!--                            nz-tooltip-->
-              <!--                            [disabled]="!vote.was_voted"-->
-              <!--                            nzTooltipTitle="Resumo"-->
-              <!--                            class="table-action-button">-->
-              <!--                        <span nz-icon nzType="file-pdf" nzTheme="outline"></span>-->
-            <!--                    </button>-->
-            @if (authService.user.is_superuser) {
-              <div>
-                <button
-                  nz-button nzType="default"
-                  nzTooltipPlacement=""
-                  (click)="showEditVote(vote)"
-                  [disabled]="!vote.was_voted"
-                  nz-tooltip
-                  nzTooltipTitle="Resumo voto"
-                  class="table-action-button">
-                  <span nz-icon nzType="project" nzTheme="outline"></span>
-                </button>
-              </div>
-            }
-            <button nz-button nzType="default"
-              (click)="showModal(vote)" nz-tooltip
-              nzTooltipTitle="Editar"
-              class="table-action-button">
-              <span nz-icon nzType="edit"></span>
-            </button>
-            <button nz-button nzType="default"
-              (click)="showConfirmMessage(vote)" nz-tooltip
-              nzTooltipTitle="Excluir"
-              class="table-action-button">
-              <span nz-icon nzType="delete"></span>
-            </button>
+  <nz-list class="expandable-list-container">
+    @for (vote of tableData(); track vote.id) {
+      <nz-list-item
+        class="expandable-list-item"
+        [class.expanded]="expandedIds().has(vote.id)"
+        (click)="toggleExpand(vote.id)"
+      >
+        <div class="expandable-list-primary">{{ vote.description }}</div>
+        <div class="expandable-list-status">
+          <span class="status-badge" [class.status-active]="vote.active" [class.status-inactive]="!vote.active">
+            {{ vote.active ? 'Ativo' : 'Inativo' }}
+          </span>
+        </div>
+        <div class="expandable-list-chevron">
+          <span nz-icon nzType="down" nzTheme="outline"></span>
+        </div>
+      </nz-list-item>
+
+      <div class="expandable-list-expanded" [class.open]="expandedIds().has(vote.id)">
+        <div class="expandable-list-fields">
+          <div class="expandable-list-field">
+            <span class="field-label">Data limite</span>
+            <span class="field-value">{{ vote.date | date: "dd/MM/yyyy" }}</span>
           </div>
-        </td>
-      </tr>
+        </div>
+        <div class="expandable-list-actions">
+          <button class="action-btn" [disabled]="!vote.was_voted"
+            (click)="vote.was_voted && showRanking(vote); $event.stopPropagation()">
+            <span nz-icon nzType="line-chart"></span>
+            Resultado
+          </button>
+          @if (authService.user.is_superuser) {
+            <button class="action-btn" [disabled]="!vote.was_voted"
+              (click)="vote.was_voted && showEditVote(vote); $event.stopPropagation()">
+              <span nz-icon nzType="project"></span>
+              Resumo
+            </button>
+          }
+          <button class="action-btn" (click)="showModal(vote); $event.stopPropagation()">
+            <span nz-icon nzType="edit"></span>
+            Editar
+          </button>
+          @if (vote.active) {
+            <button class="action-btn action-warn"
+              (click)="showCloseVoteMessage(vote); $event.stopPropagation()">
+              <span nz-icon nzType="stop"></span>
+              Encerrar
+            </button>
+          } @else {
+            <button class="action-btn action-success"
+              (click)="activeVoteModal(vote); $event.stopPropagation()">
+              <span nz-icon nzType="play-circle"></span>
+              Ativar
+            </button>
+          }
+          <button class="action-btn action-danger"
+            (click)="showConfirmMessage(vote); $event.stopPropagation()">
+            <span nz-icon nzType="delete"></span>
+            Excluir
+          </button>
+        </div>
+      </div>
     }
-  </tbody>
-</nz-table>
-<div style="margin-top: 10px; flex-direction: row-reverse; display: flex">
-  <nz-pagination [nzPageIndex]="paginator().nzPageIndex"
-    [nzTotal]="pageLength()"
-    (nzPageIndexChange)="search()"
-    (nzPageSizeChange)="search()"
-    nzShowSizeChanger
-  [nzPageSize]="paginator().nzPageSize"></nz-pagination>
-</div>
+    @empty {
+      <div class="no-data-message">
+        <p>Nenhuma votação encontrada</p>
+      </div>
+    }
+  </nz-list>
+
+  <div class="pagination-wrapper">
+    <nz-pagination
+      [nzPageIndex]="paginator().nzPageIndex"
+      [nzTotal]="pageLength()"
+      (nzPageIndexChange)="search()"
+      (nzPageSizeChange)="search()"
+      nzShowSizeChanger
+      [nzPageSize]="paginator().nzPageSize"
+    ></nz-pagination>
+  </div>
 </div>

@@ -1,48 +1,41 @@
-<form nz-form [formGroup]="formGroup" nzLayout="vertical" novalidate class="voter-item-sheet" (ngSubmit)="saveOrUpdate()" (focusin)="scrollFocusedControlIntoView($event)">
-  <section class="voter-item-sheet__body">
-    <div class="avatar-uploader" role="group" aria-label="Foto do eleitor">
-      <input #image class="avatar-file-input" type="file" accept=".jpeg,.png,.jpg" aria-label="Selecionar foto do eleitor" (change)="changeFile($event)" />
-      <div class="avatar-preview">
-        @if (avatar()) {
-          <img [src]="avatar()" alt="Foto do eleitor">
+<form nz-form [formGroup]="formGroup" [nzLayout]="'vertical'" novalidate>
+  <nz-form-item>
+    <div class="avatar-row">
+      <div class="image-mask">
+        @if (!avatar()) {
+          <img width="80" src='../../../../assets/images/avatar.svg' alt="avatar">
         } @else {
-          <img src='../../../../assets/images/avatar.svg' alt="Avatar padrão">
+          <img [src]="avatar()" alt="">
         }
       </div>
-      <div class="avatar-copy">
-        <strong>Nova foto</strong>
-        <span>Toque para selecionar ou trocar a imagem</span>
-      </div>
-      <div class="avatar-actions">
-        <button nz-button nzType="primary" type="button" (click)="image.click()">
-          Nova foto
-        </button>
-        <button nz-button nzType="default" type="button" [disabled]="!avatar()" (click)="clearFile(image)">
-          Deletar
-        </button>
+      <input #image class="avatar-file-input" type="file" accept=".jpeg,.png,.jpg" (change)="changeFile($event)" hidden>
+      <div class="avatar-btns">
+        <button nz-button nzType="primary" type="button" (click)="image.click()">Nova foto</button>
+        <button nz-button nzType="default" [disabled]="!avatar()" type="button" (click)="clearFile(image)">Deletar</button>
       </div>
     </div>
+  </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label nzRequired nzFor="name">Nome</nz-form-label>
-      <nz-form-control nzErrorTip="Nome inválido!">
-        <input nz-input id="name" type="text" maxlength="64" placeholder="Digite o nome completo" formControlName="name" />
-      </nz-form-control>
-    </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="name">Nome</nz-form-label>
+    <nz-form-control nzErrorTip="Nome inválido!">
+      <input nz-input id="name" type="text" maxlength="64" placeholder="Digite o nome completo" formControlName="name"/>
+    </nz-form-control>
+  </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label nzRequired nzFor="cell">Celular</nz-form-label>
-      <nz-form-control nzErrorTip="Número inválido!">
-        <input nz-input id="cell" formControlName="cellphone" maxlength="15" type="text" [mask]="'(00) 00000-0000'" placeholder="Ex.: (92) 99999-9999" />
-      </nz-form-control>
-    </nz-form-item>
-  </section>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="cell">Celular</nz-form-label>
+    <nz-form-control nzErrorTip="Número inválido!">
+      <input nz-input id="cell" formControlName="cellphone" maxlength="15" type="text"
+        [mask]="'(00) 00000-0000'" placeholder="Ex.: (92) 99999-9999"/>
+    </nz-form-control>
+  </nz-form-item>
 
-  <footer class="sheet-footer">
+  <div *nzModalFooter>
     <button nz-button nzType="default" type="button" (click)="cancel()">Fechar</button>
-    <button class="success" nz-button nzType="primary" type="submit" [disabled]="!formGroup.valid">
+    <button nz-button nzType="primary" type="submit" (click)="saveOrUpdate()" [disabled]="!formGroup.valid">
       <span nz-icon nzType="check" nzTheme="outline"></span>
       Salvar
     </button>
-  </footer>
+  </div>
 </form>

@@ -1,155 +1,237 @@
-<form nz-form [nzLayout]="'vertical'" [formGroup]="formGroup">
-  <div>
-    <div nz-col nzFlex="4">
-      <nz-form-control nzErrorTip="Este campo é obrigatório.">
-        <div class="header-label" style=" align-items: baseline;">
-          <div style="height: 32px; display: flex; justify-content: center">
-            <nz-form-label nzRequired>Nome</nz-form-label>
+<form nz-form [nzLayout]="'vertical'" [formGroup]="formGroup" class="plate-item-sheet">
+  <section class="plate-item-sheet__body">
+    <nz-form-control nzErrorTip="Este campo é obrigatório.">
+      <nz-form-label nzRequired nzFor="plate-name">Nome</nz-form-label>
+      <div class="plate-name-row">
+        <input nz-input id="plate-name" type="text" formControlName="name" maxlength="54" />
+        @if (hide()) {
+          <button class="success" nz-button nzType="primary" type="button" (click)="savePlate(true)" [disabled]="!formGroup.valid">
+            <span nz-icon nzType="check" nzTheme="outline"></span>
+            Salvar
+          </button>
+        }
+      </div>
+    </nz-form-control>
+
+    <section [hidden]="hide()" class="assignment-section">
+      @if (isMobile()) {
+        <div class="mobile-assignment" data-testid="plate-mobile-assignment">
+          <div class="assignment-header">
+            <h4>Toque em um candidato para assignar na chapa</h4>
           </div>
-          <input nz-input type="text" formControlName="name" maxlength="54" style="margin-left: 10px"/>
-          <div nz-col nzFlex="4" [hidden]="!hide()">
-            <button class="success" nz-button nzType="primary" (click)="savePlate(true)"
-              [disabled]="!formGroup.valid" style="margin-left: 10px">
-              <span nz-icon nzType="check" nzTheme="outline"></span>
-              Salvar
-            </button>
+
+          <div class="mobile-slots">
+            <div class="mobile-slot" [class.filled]="presidents().length" [class.confirming]="removingSlot() === 'P'">
+              <span class="slot-label">Presidente</span>
+              @if (presidents().length) {
+                @if (removingSlot() === 'P') {
+                  <span class="slot-name">Remover {{ presidents()[0].name }}?</span>
+                  <div class="slot-confirm-row">
+                    <button type="button" class="slot-confirm-yes" (click)="confirmRemoveSlot(presidents()[0], 'P')">Remover</button>
+                    <button type="button" class="slot-confirm-no" (click)="cancelRemove()">Cancelar</button>
+                  </div>
+                } @else {
+                  <span class="slot-name">{{ presidents()[0].name }}</span>
+                  <button type="button" class="slot-remove-btn" (click)="toggleSlotRemove('P')">
+                    <span nz-icon nzType="delete" nzTheme="outline"></span>
+                    Remover
+                  </button>
+                }
+              } @else {
+                <span class="slot-empty">Sem presidente</span>
+              }
+            </div>
+
+            <div class="mobile-slot" [class.filled]="vice_presidents().length" [class.confirming]="removingSlot() === 'V'">
+              <span class="slot-label">Vice-presidente</span>
+              @if (vice_presidents().length) {
+                @if (removingSlot() === 'V') {
+                  <span class="slot-name">Remover {{ vice_presidents()[0].name }}?</span>
+                  <div class="slot-confirm-row">
+                    <button type="button" class="slot-confirm-yes" (click)="confirmRemoveSlot(vice_presidents()[0], 'V')">Remover</button>
+                    <button type="button" class="slot-confirm-no" (click)="cancelRemove()">Cancelar</button>
+                  </div>
+                } @else {
+                  <span class="slot-name">{{ vice_presidents()[0].name }}</span>
+                  <button type="button" class="slot-remove-btn" (click)="toggleSlotRemove('V')">
+                    <span nz-icon nzType="delete" nzTheme="outline"></span>
+                    Remover
+                  </button>
+                }
+              } @else {
+                <span class="slot-empty">Sem vice-presidente</span>
+              }
+            </div>
+          </div>
+
+          <div class="search-bar">
+            <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+              <input nz-input placeholder="Buscar" [ngModel]="searchUser()" (ngModelChange)="searchUser.set($event)" [ngModelOptions]="{standalone: true}" type="text" />
+            </nz-input-group>
+          </div>
+
+          <div class="mobile-list-head">
+            <strong>Disponíveis</strong>
+            <strong>{{ candidates().length }} pessoas</strong>
+          </div>
+
+          <div class="mobile-candidate-list">
+            @for (item of candidates(); track item.id) {
+              <div class="candidate-tap-item" [class.expanded]="selectedCandidateId() === item.id">
+                <button class="candidate-tap-row" type="button" (click)="selectCandidate(item)">
+                  <span class="candidate-avatar">
+                    @if (!item.avatar_url) {
+                      <nz-avatar nzSrc="../../../../assets/images/avatar.svg" nzIcon="user"></nz-avatar>
+                    }
+                    @if (item.avatar_url) {
+                      <nz-avatar [nzSrc]="item.avatar_url" nzIcon="user"></nz-avatar>
+                    }
+                  </span>
+                  <span class="candidate-name">{{ item.name }}</span>
+                  <span nz-icon [nzType]="selectedCandidateId() === item.id ? 'up' : 'right'" nzTheme="outline"></span>
+                </button>
+                @if (selectedCandidateId() === item.id) {
+                  <div class="candidate-inline-actions">
+                    <button type="button" class="role-btn role-president" [disabled]="presidents().length > 0" (click)="assignAndClear(item, 'P')">
+                      <span nz-icon nzType="crown" nzTheme="outline"></span>
+                      Presidente
+                    </button>
+                    <button type="button" class="role-btn role-vice" [disabled]="vice_presidents().length > 0" (click)="assignAndClear(item, 'V')">
+                      <span nz-icon nzType="user" nzTheme="outline"></span>
+                      Vice-Presidente
+                    </button>
+                  </div>
+                }
+              </div>
+            } @empty {
+              <div class="empty-list">Nenhum candidato disponível.</div>
+            }
           </div>
         </div>
-      </nz-form-control>
-    </div>
-  </div>
+      } @else {
+        <div class="desktop-assignment" data-testid="plate-desktop-assignment">
+          <div class="assignment-header">
+            <h4>Arraste o presidente e o vice-presidente da chapa:</h4>
+          </div>
+
+          <div cdkDropListGroup nz-row nzGutter="12">
+            <div nz-col nzFlex="6">
+              <div class="list-head" nz-row nzJustify="space-between">
+                <div><strong>Disponíveis</strong></div>
+                <div><strong>{{ candidates().length }} pessoas</strong></div>
+              </div>
+              <div class="search-bar">
+                <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
+                  <input nz-input placeholder="Buscar" [ngModel]="searchUser()" (ngModelChange)="searchUser.set($event)" [ngModelOptions]="{standalone: true}" type="text" />
+                </nz-input-group>
+              </div>
+
+              <div cdkDropList #userList="cdkDropList" class="list" id="U"
+                [cdkDropListData]="candidates()" (cdkDropListDropped)="dropItem($event)"
+                [cdkDropListConnectedTo]="[presidentList, vicePresidentList]">
+                @for (item of candidates(); track item.id) {
+                  <div nz-row nzAlign="middle" class="list-item" cdkDrag>
+                    <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    <div nz-col nzFlex="24">
+                      <div nz-row class="flex-1">
+                        <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
+                          <div nz-col>
+                            @if (!item.avatar_url) {
+                              <nz-avatar nzSrc="../../../../assets/images/avatar.svg" nzIcon="user"></nz-avatar>
+                            }
+                            @if (item.avatar_url) {
+                              <nz-avatar [nzSrc]="item.avatar_url" nzIcon="user"></nz-avatar>
+                            }
+                          </div>
+                          <div nz-col nzFlex="auto" class="name">
+                            <div>{{ item.name }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div nz-col nzFlex="6">
+              <div class="list-head" nz-row nzJustify="space-between">
+                <div><strong>Presidente</strong></div>
+              </div>
+
+              <div cdkDropList #presidentList="cdkDropList" class="list role-list" id="P"
+                [cdkDropListData]="presidents()" (cdkDropListDropped)="dropItem($event)"
+                [cdkDropListConnectedTo]="[userList, vicePresidentList]">
+                @for (item of presidents(); track item.id) {
+                  <div nz-row nzAlign="middle" class="list-item" cdkDrag>
+                    <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    <div nz-col nzFlex="24">
+                      <div nz-row class="flex-1">
+                        <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
+                          <div nz-col>
+                            @if (!item.avatar_url) {
+                              <nz-avatar nzSrc="../../../../assets/images/avatar.svg" nzIcon="user"></nz-avatar>
+                            }
+                            @if (item.avatar_url) {
+                              <nz-avatar [nzSrc]="item.avatar_url" nzIcon="user"></nz-avatar>
+                            }
+                          </div>
+                          <div nz-col nzFlex="auto" class="name">
+                            <div>{{ item.name }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <div class="list-head" nz-row nzJustify="space-between">
+                <div><strong>Vice-presidente</strong></div>
+              </div>
+              <div cdkDropList #vicePresidentList="cdkDropList" class="list role-list" id="V"
+                [cdkDropListData]="vice_presidents()" (cdkDropListDropped)="dropItem($event)"
+                [cdkDropListConnectedTo]="[userList, presidentList]">
+                @for (item of vice_presidents(); track item.id) {
+                  <div nz-row nzAlign="middle" class="list-item" cdkDrag>
+                    <span nz-icon nzType="holder" nzTheme="outline"></span>
+                    <div nz-col nzFlex="24">
+                      <div nz-row class="flex-1">
+                        <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
+                          <div nz-col>
+                            @if (!item.avatar_url) {
+                              <nz-avatar nzSrc="../../../../assets/images/avatar.svg" nzIcon="user"></nz-avatar>
+                            }
+                            @if (item.avatar_url) {
+                              <nz-avatar [nzSrc]="item.avatar_url" nzIcon="user"></nz-avatar>
+                            }
+                          </div>
+                          <div nz-col nzFlex="auto" class="name">
+                            <div>{{ item.name }}</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </section>
+  </section>
 </form>
-<div nz-col [hidden]="hide()">
-  <div nz-col>
-    <h4>Arraste o presidente e o vice-presidente da chapa:</h4>
-  </div>
 
-  <div cdkDropListGroup nz-row nzGutter="12">
-    <div nz-col nzFlex="6">
-      <div class="list-head" nz-row nzJustify="space-between">
-        <div><strong>Disponíveis</strong></div>
-        <div><strong>{{candidates().length}} pessoas</strong></div>
-      </div>
-      <div class="search-bar">
-        <nz-input-group nzSearch [nzAddOnAfter]="suffixIconButton">
-          <input nz-input placeholder="Buscar" [ngModel]="searchUser()" (ngModelChange)="searchUser.set($event)" type="text"/>
-        </nz-input-group>
-      </div>
-      <ng-template #suffixIconButton>
-        <button nz-button nzType="primary" nzSearch (click)="getCandidates()" type="submit">
-          <span nz-icon nzType="search"></span>
-        </button>
-      </ng-template>
-
-
-      <div cdkDropList #userList="cdkDropList" class="list" id="U"
-        [cdkDropListData]="candidates()" (cdkDropListDropped)="dropItem($event)"
-        [cdkDropListConnectedTo]="[presidentList, vicePresidentList]">
-        @for (item of candidates(); track item) {
-          <div nz-row nzAlign="middle" class="list-item" cdkDrag>
-            <span nz-icon nzType="holder" nzTheme="outline"></span>
-            <div nz-col nzFlex="24">
-              <div nz-row class="flex-1">
-                <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
-                  <div nz-col>
-                    @if (!item.avatar_url) {
-                      <nz-avatar nzSrc="..\..\..\..\assets\images\avatar.svg"
-                      nzIcon="user"></nz-avatar>
-                    }
-                    @if (item.avatar_url) {
-                      <nz-avatar nzSrc="{{item.avatar_url}}" nzIcon="user"></nz-avatar>
-                    }
-                  </div>
-                  <div nz-col nzFlex="auto" class="name">
-                    <div>{{item.name}}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-
-    <div nz-col nzFlex="6">
-      <div class="list-head" nz-row nzJustify="space-between">
-        <div><strong>Presidente</strong></div>
-      </div>
-
-      <div cdkDropList #presidentList="cdkDropList" class="list" id="P"
-        [cdkDropListData]="presidents()" (cdkDropListDropped)="dropItem($event)"
-        [cdkDropListConnectedTo]="[userList, vicePresidentList]"
-        style="margin-bottom: 16px; height: 100px;">
-        @for (item of presidents(); track item) {
-          <div nz-row nzAlign="middle" class="list-item" cdkDrag>
-            <span nz-icon nzType="holder" nzTheme="outline"></span>
-            <div nz-col nzFlex="24">
-              <div nz-row class="flex-1">
-                <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
-                  <div nz-col>
-                    @if (!item.avatar_url) {
-                      <nz-avatar nzSrc="..\..\..\..\assets\images\avatar.svg"
-                      nzIcon="user"></nz-avatar>
-                    }
-                    @if (item.avatar_url) {
-                      <nz-avatar nzSrc="{{item.avatar_url}}" nzIcon="user"></nz-avatar>
-                    }
-                  </div>
-                  <div nz-col nzFlex="auto" class="name">
-                    <div>{{item.name}}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-
-      <div class="list-head" nz-row nzJustify="space-between">
-        <div><strong>Vice-presidente</strong></div>
-      </div>
-      <div cdkDropList #vicePresidentList="cdkDropList" class="list" id="V"
-        [cdkDropListData]="vice_presidents()" (cdkDropListDropped)="dropItem($event)"
-        [cdkDropListConnectedTo]="[userList, presidentList]" style="height: 100px!important;">
-        @for (item of vice_presidents(); track item) {
-          <div nz-row nzAlign="middle" class="list-item" cdkDrag>
-            <span nz-icon nzType="holder" nzTheme="outline"></span>
-            <div nz-col nzFlex="24">
-              <div nz-row class="flex-1">
-                <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
-                  <div nz-col>
-                    @if (!item.avatar_url) {
-                      <nz-avatar nzSrc="..\..\..\..\assets\images\avatar.svg"
-                      nzIcon="user"></nz-avatar>
-                    }
-                    @if (item.avatar_url) {
-                      <nz-avatar nzSrc="{{item.avatar_url}}" nzIcon="user"></nz-avatar>
-                    }
-                  </div>
-                  <div nz-col nzFlex="auto" class="name">
-                    <div>{{item.name}}</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  </div>
-
-</div>
-<div *nzModalFooter>
-  <button nz-button
-    nzType="default"
-    (click)="close()">Fechar
+<ng-template #suffixIconButton>
+  <button nz-button nzType="primary" nzSearch (click)="getCandidates()" type="button">
+    <span nz-icon nzType="search"></span>
   </button>
-  <button class="success"
-    type="submit"
-    [hidden]="hide()"
-    nz-button nzType="success"
-    [disabled]="!formGroup.valid"
-    (click)="savePlate(true)">
+</ng-template>
+
+<div *nzModalFooter>
+  <button nz-button nzType="default" type="button" (click)="close()">Fechar</button>
+  <button class="success" type="button" [hidden]="hide()" nz-button nzType="success" [disabled]="!formGroup.valid" (click)="savePlate(true)">
     <span nz-icon nzType="check" nzTheme="outline"></span>
     Salvar
   </button>

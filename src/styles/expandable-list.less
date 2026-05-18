@@ -29,10 +29,12 @@
 // ----------------------------------------------------------------------------
 .expandable-list-container() {
   .expandable-list-container {
+    width: 100%;
     background: @colors-canvas;
     border: 1px solid @colors-border-subtle;
     border-radius: @rounded-md;
     overflow: hidden;
+    box-shadow: 0 18px 44px fade(@colors-shadow-subtle, 16%);
 
     .expandable-list-item {
       border-bottom: 1px solid @colors-border-subtle;
@@ -59,8 +61,10 @@
   .expandable-list-item {
     display: flex;
     align-items: center;
+    width: 100%;
     min-height: 48px;
     padding: @spacing-md @spacing-lg;
+    box-sizing: border-box;
     cursor: pointer;
     background: @colors-canvas;
     transition: background-color 0.15s ease;
@@ -184,6 +188,8 @@
 // ----------------------------------------------------------------------------
 .expandable-list-expanded() {
   .expandable-list-expanded {
+    width: 100%;
+    box-sizing: border-box;
     overflow: hidden;
     max-height: 0;
     opacity: 0;
@@ -194,15 +200,15 @@
   &.open {
     max-height: 500px;
     opacity: 1;
-    padding: @spacing-md @spacing-lg @spacing-lg;
+    padding: @spacing-sm @spacing-lg @spacing-md;
   }
 
   // Secondary fields grid
   .expandable-list-fields {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: @spacing-sm @spacing-xl;
-    margin-bottom: @spacing-md;
+    gap: @spacing-xs @spacing-lg;
+    margin-bottom: @spacing-sm;
 
     .expandable-list-field {
       display: flex;
@@ -235,10 +241,10 @@
       display: inline-flex;
       align-items: center;
       gap: @spacing-xs;
-      padding: @spacing-sm @spacing-md;
-      min-height: 48px;
+      padding: @spacing-xs @spacing-md;
+      min-height: 36px;
       border: 1px solid @colors-border-subtle;
-      border-radius: @rounded-lg;
+      border-radius: @rounded-md;
       background: @colors-canvas;
       color: @colors-body;
       font-size: @typography-body-sm;
@@ -288,6 +294,7 @@
 
         .action-btn {
           width: 100%;
+          min-height: 40px;
           justify-content: center;
         }
       }

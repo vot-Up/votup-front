@@ -26,15 +26,15 @@ import { NzDatePickerComponent } from 'ng-zorro-antd/date-picker';
 import { NzSelectComponent, NzOptionComponent } from 'ng-zorro-antd/select';
 import { NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent } from 'ng-zorro-antd/table';
 import { NzSwitchComponent } from 'ng-zorro-antd/switch';
-import { NzTooltipDirective } from 'ng-zorro-antd/tooltip';
 import { NzPaginationComponent } from 'ng-zorro-antd/pagination';
+import { NzListComponent, NzListItemComponent } from 'ng-zorro-antd/list';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-vote',
     templateUrl: './vote.component.html',
     styleUrls: ['./vote.component.less'],
-    imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzDatePickerComponent, NzSelectComponent, NzOptionComponent, NzTableComponent, NzTheadComponent, NzTrDirective, NzTableCellDirective, NzThMeasureDirective, NzTbodyComponent, NzSwitchComponent, NzTooltipDirective, NzPaginationComponent, DatePipe]
+    imports: [NzRowDirective, NzSpaceCompactItemDirective, NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective, NzIconDirective, FormsModule, NzFormDirective, ReactiveFormsModule, NzColDirective, NzFormItemComponent, NzInputDirective, NzDatePickerComponent, NzSelectComponent, NzOptionComponent, NzPaginationComponent, DatePipe, NzListComponent, NzListItemComponent]
 })
 export class VoteComponent extends BaseComponent<Voting> implements OnInit {
     private modalService = inject(NzModalService);
@@ -44,6 +44,7 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
 
     public modalClosedEmitter: EventEmitter<void> = new EventEmitter<void>();
     public isVoteActive = signal(false);
+    public expandedIds = signal<Set<number>>(new Set());
     public plateService: BaseService<Plate>;
     public hasPermissionValue: boolean
 
@@ -54,6 +55,14 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
         this.plateService = this.createService(URLS.PLATE);
     }
 
+
+    public toggleExpand(id: number): void {
+        this.expandedIds.update(ids => {
+            const next = new Set(ids);
+            next.has(id) ? next.delete(id) : next.add(id);
+            return next;
+        });
+    }
 
     public createFormGroup(): void {
         this.formGroup = this.formBuilder.group({
@@ -111,10 +120,11 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
             data['voting'] = voting;
         }
         this.modalService.create({
-            nzWidth: '80%',
+            nzWidth: 760,
             nzCentered: true,
-            nzTitle: 'Criar votação',
+            nzTitle: voting ? 'Editar votação' : 'Criar votação',
             nzContent: VoteItemComponent,
+            nzBodyStyle: {'max-height': 'calc(80vh - 110px)', 'overflow-y': 'auto', 'padding': '16px 20px'},
             nzAfterClose: this.modalClosedEmitter,
             nzData: data
         });

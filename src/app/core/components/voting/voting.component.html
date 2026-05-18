@@ -21,7 +21,7 @@
           <p>Nenhuma chapa ativa encontrada no momento.</p>
         </div>
       } @else {
-        <swiper-container effect="cards" grab-cursor="true" slides-per-view="1" class="plates-swiper" (swiperslidechange)="onSlideChange($event)">
+        <swiper-container effect="cards" grab-cursor="true" slides-per-view="1" rewind="true" threshold="6" short-swipes="true" long-swipes="true" long-swipes-ratio="0.35" long-swipes-ms="220" touch-ratio="1.2" cards-effect-slide-shadows="false" cards-effect-per-slide-offset="8" class="plates-swiper" (swiperslidechange)="onSlideChange($event)">
           @for (plate of listPlates(); track plate.url) {
             <swiper-slide>
               <article class="plate-card" [class.plate-card--selected]="selectedPlate()?.url === plate.url" (click)="eventButton(plate)">

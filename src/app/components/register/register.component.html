@@ -1,0 +1,85 @@
+<section class="register-page">
+  <div class="register-panel">
+    <div class="logo">
+      <img src="../../../assets/images/logo-votup.svg" height="32" alt="VotUp">
+      <span>VotUp</span>
+    </div>
+    <h1>Crie sua conta</h1>
+    <p>Cadastre-se para participar da eleição.</p>
+
+    <form nz-form class="register-form" [formGroup]="formGroup">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-radio-group formControlName="role" class="role-toggle">
+            <label nz-radio-button nzValue="ELEITOR">Eleitor</label>
+            <label nz-radio-button nzValue="CANDIDATO">Candidato</label>
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control nzErrorTip="{{ fieldErrors()['name'] || 'Por favor, digite seu nome!' }}">
+          <nz-input-group nzPrefixIcon="user">
+            <input type="text" nz-input formControlName="name" placeholder="Nome completo" autocomplete="off"/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control nzErrorTip="{{ fieldErrors()['email'] || 'Por favor, digite um email válido!' }}">
+          <nz-input-group nzPrefixIcon="mail">
+            <input type="email" nz-input formControlName="email" placeholder="Email" autocomplete="off"/>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control nzErrorTip="{{ fieldErrors()['cellphone'] || 'Número de telefone inválido!' }}">
+          <nz-input-group nzPrefixIcon="phone">
+            <input required nz-input type="text" formControlName="cellphone" maxlength="15" inputmode="tel" placeholder="(99) 99999-9999" [mask]="'(00) 00000-0000'" />
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Por favor, digite sua senha!">
+          <nz-input-group nzPrefixIcon="lock">
+            <input nz-input placeholder="Senha" type="password" formControlName="password" minlength="4" maxlength="64" autocomplete="off" required>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-control nzErrorTip="{{ fieldErrors()['confirm_password'] || 'As senhas não conferem!' }}">
+          <nz-input-group nzPrefixIcon="lock">
+            <input nz-input placeholder="Confirmar senha" type="password" formControlName="confirmPassword" minlength="4" maxlength="64" autocomplete="off" required>
+          </nz-input-group>
+        </nz-form-control>
+      </nz-form-item>
+
+      @if (errorMessage()) {
+        <nz-alert nzType="error" class="register-alert" [nzMessage]="errorMessage()" nzShowIcon></nz-alert>
+      }
+
+      <div class="actions">
+        <button nzBlock nz-button nzType="primary" class="submit-button" type="button" (click)="submit()" [disabled]="!formGroup.valid || isSubmitting()">
+          @if (isSubmitting()) {
+            Cadastrando...
+          } @else {
+            Cadastrar
+          }
+        </button>
+        <button nzBlock nz-button class="secondary-action" type="button" (click)="cancel()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+
+    <div class="register-link">
+      Já tem uma conta? <a routerLink="/login">Faça login</a>
+    </div>
+  </div>
+  <div class="register-visual">
+    <img src="assets/images/login.svg" alt="Ilustração de cadastro">
+  </div>
+</section>

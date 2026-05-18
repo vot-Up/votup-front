@@ -37,6 +37,8 @@ export class ResponsiveModalService {
             ...config,
             nzCentered: true,
             nzWidth: config.nzWidth ?? '520px',
+            nzZIndex: 2000,
+            nzMaskClosable: false,
         });
     }
 

@@ -7,15 +7,15 @@
 </div>
 
 <div class="inner-content">
-  <form nz-form [formGroup]="formGroup">
-    <div nz-row nzGutter="16">
-      <div nz-col nzFlex="auto">
+  <form nz-form [formGroup]="formGroup" class="filter-form">
+    <div nz-row nzGutter="16" class="filter-row">
+      <div nz-col nzFlex="auto" class="filter-field">
         <nz-form-item>
           <input nz-input placeholder="Buscar nome de candidato" formControlName="name"/>
         </nz-form-item>
       </div>
 
-      <div nz-col nzLg="{{3}}">
+      <div nz-col nzLg="3" nzXs="24" class="filter-field">
         <nz-select nzPlaceHolder="Status" formControlName="active">
           <nz-option nzValue="true" nzLabel="Ativo"></nz-option>
           <nz-option nzValue="false" nzLabel="Inativo"></nz-option>
@@ -23,78 +23,78 @@
         </nz-select>
       </div>
 
-      <div nz-col>
-        <button (click)="search()" nz-button nzType="primary">
+      <div nz-col nzXs="24" nzLg="auto" class="filter-field filter-search-btn">
+        <button type="button" (click)="search()" nz-button nzType="primary" nzBlock>
           <span nz-icon nzType="search" nzTheme="outline"></span>
+          <span class="search-label">Buscar</span>
         </button>
       </div>
     </div>
-
   </form>
 
-  <nz-table
-    #tableDataUser
-    [nzFrontPagination]="false"
-    [nzShowPagination]="false"
-    [nzData]="tableData()"
-    (nzCurrentPageDataChange)="changePaginator($event)">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Nome</th>
-        <th>Celular</th>
-        <th>Ativo</th>
-        <th>Ação</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (data of tableDataUser.data; track data) {
-        <tr style="position: relative;"
-          (dblclick)="editCandidate(data); isUpdate.set(true)" class="clicavel">
+  <nz-list class="expandable-list-container">
+    @for (data of tableData(); track data.id) {
+      <nz-list-item
+        class="expandable-list-item"
+        [class.expanded]="expandedIds().has(data.id)"
+        (click)="toggleExpand(data.id)"
+      >
+        <div class="expandable-list-avatar">
           @if (data?.avatar) {
+            <img [src]="data.avatar" alt="">
+          } @else {
+            <img src="../../../../assets/images/avatar.svg" alt="">
+          }
+        </div>
+        <div class="expandable-list-primary">{{ data.name }}</div>
+        <div class="expandable-list-status">
+          <span class="status-badge" [class.status-active]="data.active" [class.status-inactive]="!data.active">
+            {{ data.active ? 'Ativo' : 'Inativo' }}
+          </span>
+        </div>
+        <div class="expandable-list-chevron">
+          <span nz-icon nzType="down" nzTheme="outline"></span>
+        </div>
+      </nz-list-item>
+      <div class="expandable-list-expanded" [class.open]="expandedIds().has(data.id)">
+        <div class="expandable-list-fields">
+          <div class="expandable-list-field">
+            <span class="field-label">Celular</span>
+            <span class="field-value">{{ data.cellphone | phone }}</span>
+          </div>
+        </div>
+        <div class="expandable-list-actions">
+          <button class="action-btn" (click)="editCandidate(data); $event.stopPropagation()">
+            <span nz-icon nzType="edit"></span>
+            Editar
+          </button>
+          <button class="action-btn action-danger" (click)="excludeCandidate(data); $event.stopPropagation()">
+            <span nz-icon nzType="delete"></span>
+            Excluir
+          </button>
+          <button class="action-btn" (click)="toggleActive(data); $event.stopPropagation()">
+            <span nz-icon [nzType]="data.active ? 'stop' : 'check-circle'"></span>
+            {{ data.active ? 'Desativar' : 'Ativar' }}
+          </button>
+        </div>
+      </div>
+    }
+    @empty {
+      <div class="no-data-message">
+        <p>Nenhum candidato encontrado</p>
+      </div>
+    }
+  </nz-list>
 
-            <td>
-              <div class="image-mask image-small">
-                <img src="{{data.avatar_url}}" alt="">
-              </div>
-            </td>
-          }
-          @if (!data.avatar_url) {
-            <td>
-              <img src="../../../../assets/images/avatar.svg" width="32px" height="32px" alt="">
-            </td>
-          }
-          <td>{{ data.name }}</td>
-          <td>{{ data.cellphone | phone}}</td>
-          <td>
-            <nz-switch [(ngModel)]="data.active"
-            (click)="toggle(data, 'active')"></nz-switch>
-          </td>
-          <td>
-            <nz-space [nzSize]="'small'">
-              <button *nzSpaceItem nz-button nzType="default" nz-tooltip
-                nzTooltipTitle="Editar" (click)="editCandidate(data); isUpdate.set(true)">
-                <span nz-icon nzType="edit"></span>
-              </button>
-              <button *nzSpaceItem
-                nz-button nzType="default"
-                nz-tooltip
-                nzTooltipTitle="Excluir"
-                (click)="excludeCandidate(data)">
-                <span nz-icon nzType="delete"></span>
-              </button>
-            </nz-space>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </nz-table>
-  <div style="margin-top: 10px; flex-direction: row-reverse; display: flex">
-    <nz-pagination [nzPageIndex]="paginator().nzPageIndex"
+  <div class="pagination-wrapper">
+    <nz-pagination
+      [nzPageIndex]="paginator().nzPageIndex"
       [nzTotal]="pageLength()"
       (nzPageIndexChange)="search()"
       (nzPageSizeChange)="search()"
-      nzShowSizeChanger
-    [nzPageSize]="paginator().nzPageSize"></nz-pagination>
+      [nzShowSizeChanger]="!isMobile()"
+      [nzSimple]="isMobile()"
+      [nzPageSize]="paginator().nzPageSize"
+    ></nz-pagination>
   </div>
 </div>

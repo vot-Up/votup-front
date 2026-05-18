@@ -6,19 +6,23 @@ import { ɵNzTransitionPatchDirective } from 'ng-zorro-antd/core/transition-patc
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-    selector: 'app-main',
-    templateUrl: './main.component.html',
-    styleUrls: ['./main.component.less'],
-    imports: [NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective]
+  selector: 'app-main',
+  templateUrl: './main.component.html',
+  styleUrls: ['./main.component.less'],
+  imports: [NzButtonComponent, NzWaveDirective, ɵNzTransitionPatchDirective]
 })
 export class MainComponent {
   router = inject(Router);
 
   goToCreateVote(): void {
-      this.router.navigate(['login']).then();
+    this.router.navigate(['login']).then();
   }
 
   goToLoginElector(): void {
-      this.router.navigate(['login-elector']).then();
+    this.router.navigate(['login-elector']).then();
+  }
+
+  goToRegister(): void {
+    this.router.navigate(['register']).then();
   }
 }

@@ -13,59 +13,56 @@ import { NzWaveDirective } from 'ng-zorro-antd/core/wave';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.less'],
-    imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzFormControlComponent, ɵNzTransitionPatchDirective, NzInputGroupComponent, NzInputDirective, NzButtonComponent, NzAlertComponent, NzWaveDirective]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.less'],
+  imports: [FormsModule, NzFormDirective, ReactiveFormsModule, NzFormItemComponent, NzFormControlComponent, ɵNzTransitionPatchDirective, NzInputGroupComponent, NzInputDirective, NzButtonComponent, NzAlertComponent, NzWaveDirective]
 })
 export class LoginComponent implements OnInit {
-    formBuilder = inject(FormBuilder);
-    router = inject(Router);
-    authService = inject(AuthService);
-    route = inject(ActivatedRoute);
+  formBuilder = inject(FormBuilder);
+  router = inject(Router);
+  authService = inject(AuthService);
+  route = inject(ActivatedRoute);
 
+  public url = signal<string>("/");
+  public message = signal<string>("sign-in");
+  public formGroup: FormGroup
+  public hide = signal(true);
+  public test = signal(false);
 
-    public url = signal<string>("/");
-    public message = signal<string>("sign-in");
-    public formGroup: FormGroup
-    public hide = signal(true);
-    public test = signal(false);
+  ngOnInit(): void {
+    this.createFormGroup();
+    this.message.set("sign-in");
+    this.url.set(this.route.snapshot.queryParams["u"] || "/");
+  }
 
-    ngOnInit(): void {
-        this.createFormGroup();
+  public createFormGroup(): void {
+    this.formGroup = this.formBuilder.group({
+      email: [null, CustomValidators.required],
+      password: [null, CustomValidators.required]
+    })
+  }
+
+  public login(): void {
+    this.message.set("processing");
+    const rawValue = this.formGroup.getRawValue();
+    this.authService.login(rawValue.email, rawValue.password)
+      .pipe(take(1))
+      .subscribe(() => {
+        if (this.formGroup.valid) {
+          this.authService.navigateByRole();
+          this.playSound();
+        }
+      }, () => {
         this.message.set("sign-in");
-        this.url.set(this.route.snapshot.queryParams["u"] || "/");
-    }
+        this.test.set(true);
+        this.formGroup.reset()
+      }
+    );
+  }
 
-    public createFormGroup(): void {
-        this.formGroup = this.formBuilder.group({
-            email: [null, CustomValidators.required],
-            password: [null, CustomValidators.required]
-        })
-    }
-
-    public login(): void {
-        this.message.set("processing");
-        const rawValue = this.formGroup.getRawValue();
-
-        this.authService.login(rawValue.email, rawValue.password)
-            .pipe(take(1))
-            .subscribe(() => {
-                    if (this.formGroup.valid) {
-                        this.router.navigate(["core/users"]).then();
-                        this.playSound();
-                    }
-                },
-                () => {
-                    this.message.set("sign-in");
-                    this.test.set(true);
-                    this.formGroup.reset()
-                }
-            );
-    }
-
-    playSound() {
-        const audioElement = document.getElementById('audioElement') as HTMLAudioElement;
-        audioElement.play();
-    }
+  playSound() {
+    const audioElement = document.getElementById('audioElement') as HTMLAudioElement;
+    audioElement.play();
+  }
 }

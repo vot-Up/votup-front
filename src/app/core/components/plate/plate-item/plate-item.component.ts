@@ -1,4 +1,5 @@
 import { Component, ChangeDetectionStrategy, OnInit, inject, signal } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { CdkDragDrop, transferArrayItem, CdkDropListGroup, CdkDropList, CdkDrag } from "@angular/cdk/drag-drop";
 import {Plate} from "../../../../../models/core/plate";
 import {URLS} from "../../../../app/app.urls";
@@ -31,6 +32,7 @@ import { NzAvatarComponent } from 'ng-zorro-antd/avatar';
 })
 export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     private modalService = inject(NzModalService);
+    private breakpointObserver = inject(BreakpointObserver);
     messageService = inject(NzMessageService);
     data = inject(NZ_MODAL_DATA);
 
@@ -45,6 +47,9 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
     public plateUserService: BaseService<PlateUser>;
     public hide = signal(true);
     public searchUser = signal('');
+    public isMobile = signal(false);
+    public selectedCandidateId = signal<number | null>(null);
+    public removingSlot = signal<'P' | 'V' | null>(null);
 
     constructor() {
 
@@ -52,6 +57,12 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
 
         this.candidateService = this.createService(URLS.CANDIDATE);
         this.plateUserService = this.createService(URLS.PLATE_USER)
+
+        this.breakpointObserver.observe('(max-width: 767px)')
+            .pipe(takeUntil(this.unsubscribe))
+            .subscribe(result => {
+                this.isMobile.set(result.matches);
+            });
     }
 
     ngOnInit() {
@@ -67,7 +78,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
 
     createFormGroup(): void {
         this.formGroup = this.formBuilder.group({
-            name: [this.object?.name, CustomValidators.required]
+            name: [this.object()?.name, CustomValidators.required]
         })
     }
 
@@ -84,6 +95,99 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
                 this.showMessageForRole(destination, origin);
             }
         }
+    }
+
+    public selectCandidate(candidate: Candidate): void {
+        this.removingSlot.set(null);
+        this.selectedCandidateId.set(
+            this.selectedCandidateId() === candidate.id ? null : candidate.id
+        );
+    }
+
+    public clearSelection(): void {
+        this.selectedCandidateId.set(null);
+    }
+
+    public toggleSlotRemove(role: 'P' | 'V'): void {
+        this.selectedCandidateId.set(null);
+        this.removingSlot.set(this.removingSlot() === role ? null : role);
+    }
+
+    public cancelRemove(): void {
+        this.removingSlot.set(null);
+    }
+
+    public confirmRemoveSlot(candidate: Candidate, role: 'P' | 'V'): void {
+        this.removingSlot.set(null);
+        this.removeCandidateFromRole(candidate, role);
+    }
+
+    public assignAndClear(candidate: Candidate, role: 'P' | 'V'): void {
+        this.assignCandidateToRole(candidate, role);
+        this.selectedCandidateId.set(null);
+    }
+
+    public assignCandidateToRole(candidate: Candidate, role: 'P' | 'V'): void {
+        if (this.isRoleFilled(role)) {
+            this.showMessageForRole(role, 'U');
+            return;
+        }
+
+        if (this.isCandidateAssigned(candidate)) {
+            this.messageService.create(
+                'warning',
+                'É necessário remover o usuário da função atual antes disso!'
+            );
+            return;
+        }
+
+        const plateUser = this.createPlateUserPayload(candidate, role);
+        this.candidates.set(this.candidates().filter(item => item.id !== candidate.id));
+        if (role === 'P') {
+            this.presidents.set([candidate]);
+        } else {
+            this.vice_presidents.set([candidate]);
+        }
+        this.savePlateUser(plateUser);
+    }
+
+    public removeCandidateFromRole(candidate: Candidate, role: 'P' | 'V'): void {
+        const plateUser = this.createPlateUserDeletePayload(candidate);
+
+        if (role === 'P') {
+            this.presidents.set(this.presidents().filter(item => item.id !== candidate.id));
+        } else {
+            this.vice_presidents.set(this.vice_presidents().filter(item => item.id !== candidate.id));
+        }
+
+        if (!this.candidates().some(item => item.id === candidate.id)) {
+            this.candidates.set([candidate, ...this.candidates()]);
+        }
+        this.deletePlateUser(plateUser);
+    }
+
+    public isRoleFilled(role: 'P' | 'V'): boolean {
+        return role === 'P' ? this.presidents().length > 0 : this.vice_presidents().length > 0;
+    }
+
+    public isCandidateAssigned(candidate: Candidate): boolean {
+        return this.presidents().some(item => item.id === candidate.id)
+            || this.vice_presidents().some(item => item.id === candidate.id);
+    }
+
+    private createPlateUserPayload(candidate: Candidate, role: 'P' | 'V'): PlateUser {
+        const plateUser: PlateUser = new PlateUser();
+        plateUser.plate = this.object().url;
+        plateUser.type = role;
+        plateUser.candidate = candidate.url;
+        return plateUser;
+    }
+
+    private createPlateUserDeletePayload(candidate: Candidate): PlateUser {
+        const plateUser: PlateUser = new PlateUser();
+        plateUser.plate = this.object().id;
+        plateUser.candidate = candidate.id;
+        return plateUser;
     }
 
     private handleTransfer(event: CdkDragDrop<Candidate[]>, destination: string): void {
@@ -119,7 +223,7 @@ export class PlateItemComponent extends BaseComponent<Plate> implements OnInit {
         }
     }
 
-    private transferItem(event) {
+    private transferItem(event: CdkDragDrop<Candidate[]>) {
         transferArrayItem(
             event.previousContainer.data,
             event.container.data,

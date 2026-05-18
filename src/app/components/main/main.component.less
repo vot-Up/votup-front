@@ -1,118 +1,123 @@
 @import (reference) "../../../theme.less";
 
 .main-page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    gap: @spacing-2xl;
-    background: @colors-canvas-soft;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: @spacing-2xl;
+  background: @colors-canvas-soft;
 }
 
-.main-copy,
-.main-visual {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+.main-copy, .main-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .main-copy {
-    gap: @spacing-lg;
-    padding: @spacing-xl @spacing-lg 0;
+  gap: @spacing-md;
+  padding: @spacing-xl @spacing-lg 0;
 }
 
 .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: @spacing-sm;
-    color: @colors-ink;
-    font-size: @typography-body-sm;
-    font-weight: @font-weight-semibold;
+  display: inline-flex;
+  align-items: center;
+  gap: @spacing-sm;
+  color: @colors-ink;
+  font-size: @typography-body-sm;
+  font-weight: @font-weight-semibold;
 
-    img {
-        margin-top: -@spacing-xs;
-    }
+  img {
+    margin-top: -@spacing-xs;
+  }
 }
 
 .title {
-    margin: 0;
-    color: @colors-ink;
-    font-size: clamp(32px, 8vw, @typography-display-xl);
-    font-weight: @font-weight-display;
-    line-height: .95;
-    letter-spacing: -0.03em;
+  margin: 0;
+  color: @colors-ink;
+  font-size: clamp(32px, 8vw, @typography-display-xl);
+  font-weight: @font-weight-display;
+  line-height: .95;
+  letter-spacing: -0.03em;
 }
 
 .subtitle {
-    margin: 0;
-    color: @colors-body;
-    font-size: @typography-body-md;
-    font-weight: @font-weight-regular;
+  margin: 0;
+  color: @colors-body;
+  font-size: @typography-body-md;
+  font-weight: @font-weight-regular;
 }
 
 .actions {
-    width: 100%;
-    display: grid;
-    gap: @spacing-sm;
+  width: 100%;
+  display: grid;
+  gap: @spacing-sm;
 }
 
 .secondary-action,
-.primary-action {
-    min-height: 48px;
-    height: auto;
-    border-radius: @rounded-xl;
-    font-weight: @font-weight-semibold;
-    padding-inline: @spacing-xl;
+.primary-action,
+.tertiary-action {
+  min-height: 44px;
+  height: auto;
+  border-radius: @rounded-xl;
+  font-weight: @font-weight-semibold;
+  padding-inline: @spacing-lg;
 }
 
 .secondary-action {
-    color: @colors-primary;
-    border: 1px solid @colors-primary;
-    background: transparent;
+  color: @colors-primary;
+  border: 1px solid @colors-primary;
+  background: transparent;
 }
 
 .primary-action {
-    background: @colors-primary;
-    border-color: @colors-primary;
-    color: @colors-ink;
+  background: @colors-primary;
+  border-color: @colors-primary;
+  color: @colors-ink;
+}
+
+.tertiary-action {
+  color: @colors-body;
+  border: 1px solid @colors-border-muted;
+  background: @colors-canvas;
 }
 
 .main-visual {
-    align-items: center;
-    justify-content: center;
-    padding: 0 @spacing-lg @spacing-xl;
+  align-items: center;
+  justify-content: center;
+  padding: 0 @spacing-lg @spacing-xl;
 
-    img {
-        max-width: min(100%, 560px);
-        width: 100%;
-        height: auto;
-        display: block;
-    }
+  img {
+    max-width: min(100%, 560px);
+    width: 100%;
+    height: auto;
+    display: block;
+  }
 }
 
 @media (min-width: 768px) {
-    .main-page {
-        min-height: calc(100vh - 48px);
-        flex-direction: row;
-        align-items: center;
-        gap: @spacing-3xl;
-    }
+  .main-page {
+    min-height: calc(100vh - 48px);
+    flex-direction: row;
+    align-items: center;
+    gap: @spacing-3xl;
+  }
 
-    .main-copy,
-    .main-visual {
-        width: 50%;
-    }
+  .main-copy, .main-visual {
+    width: 50%;
+  }
 
-    .main-copy {
-        padding: @spacing-3xl 0 @spacing-3xl @spacing-2xl;
-    }
+  .main-copy {
+    padding: @spacing-3xl 0 @spacing-3xl @spacing-2xl;
+  }
 
-    .actions {
-        width: auto;
-        grid-template-columns: repeat(2, minmax(0, 190px));
-    }
+  .actions {
+    width: auto;
+    grid-template-columns: repeat(3, minmax(0, 190px));
+  }
 
-    .main-visual {
-        padding: @spacing-3xl @spacing-2xl @spacing-3xl 0;
-        justify-content: flex-end;
-    }
+  .main-visual {
+    padding: @spacing-3xl @spacing-2xl @spacing-3xl 0;
+    justify-content: flex-end;
+  }
 }

@@ -85,12 +85,19 @@ export class PlateComponent extends BaseComponent<Plate> implements OnInit {
         });
     }
 
+    private readonly modalBodyStyle = {
+        padding: '16px 20px',
+        'max-height': 'calc(80vh - 110px)',
+        'overflow-y': 'auto',
+    };
+
     showModal(): void {
         const modal = this.modalService.create({
-            nzWidth: '80%',
+            nzWidth: 760,
             nzCentered: true,
             nzTitle: 'Criar chapa',
             nzContent: PlateItemComponent,
+            nzBodyStyle: this.modalBodyStyle,
         });
         modal.afterClose.subscribe(() => {
             this.search();
@@ -99,10 +106,11 @@ export class PlateComponent extends BaseComponent<Plate> implements OnInit {
 
     showEditModal(plate: Plate): void {
         const modal = this.modalService.create({
-            nzWidth: '80%',
+            nzWidth: 760,
             nzCentered: true,
             nzTitle: 'Editar chapa',
             nzContent: PlateItemComponent,
+            nzBodyStyle: this.modalBodyStyle,
             nzAfterClose: this.modalClosedEmitter,
             nzData: {
                 pk: plate.id,

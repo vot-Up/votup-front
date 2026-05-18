@@ -94,9 +94,11 @@ export class VotingComponent extends BaseComponent<Plate> implements OnInit {
     public onSlideChange(event: Event): void {
         const swiper = (event as CustomEvent).detail?.[0];
         const index = swiper?.activeIndex ?? 0;
-        const plate = this.listPlates()[index];
-        if (plate) {
-            this.selectPlate(plate, index);
+        const activePlate = this.listPlates()[index];
+        const selectedPlate = this.selectedPlate();
+
+        if (selectedPlate && activePlate?.url !== selectedPlate.url) {
+            this.clearSelection();
         }
     }
 

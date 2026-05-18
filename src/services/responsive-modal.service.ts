@@ -77,6 +77,8 @@ export class ResponsiveModalService {
       nzOkType: 'primary',
       nzOkDanger: true,
       nzCentered: true,
+      nzZIndex: 2000,
+      nzMaskClosable: false,
       ...config,
     });
   }

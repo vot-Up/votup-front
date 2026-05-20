@@ -105,6 +105,7 @@ export class VoterComponent extends BaseComponent<Voter> implements OnInit {
     const modal = this.responsiveModal.create({
       nzTitle: 'Cadastrar eleitor',
       nzContent: VoterItemComponent,
+      nzWidth: 760,
     });
     modal.afterClose.subscribe(() => {
       this.search();
@@ -116,6 +117,7 @@ export class VoterComponent extends BaseComponent<Voter> implements OnInit {
     const modal = this.responsiveModal.create({
       nzTitle: 'Editar dados do eleitor',
       nzContent: VoterItemComponent,
+      nzWidth: 760,
       nzAfterClose: this.modalClosedEmitter,
       nzData: { pk: voter.id, voter: voter, isUpdate: true },
     });

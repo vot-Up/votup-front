@@ -1,3 +1,5 @@
+@import (reference) "../../../../../theme.less";
+
 .plate-item-sheet {
     display: flex;
     flex-direction: column;
@@ -28,8 +30,9 @@
 
 .assignment-header h4 {
     margin: 0;
-    font-size: 15px;
-    font-weight: 700;
+    color: @colors-body-strong;
+    font-size: @typography-body-sm;
+    font-weight: @font-weight-semibold;
 }
 
 .search-bar {
@@ -44,9 +47,10 @@
 .list {
     height: 180px;
     overflow-y: auto;
-    padding: 6px;
-    border: 1px dashed rgba(255, 255, 255, 0.16);
-    border-radius: 12px;
+    padding: @spacing-xs;
+    border: 1px solid @colors-border-subtle;
+    border-radius: @rounded-md;
+    background: @colors-canvas;
 }
 
 .role-list {
@@ -56,18 +60,26 @@
 }
 
 .list-item {
-    min-height: 52px;
-    margin-bottom: 6px;
-    padding: 6px 8px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
+    min-height: 48px;
+    margin-bottom: @spacing-xs;
+    padding: @spacing-xs @spacing-sm;
+    border: 1px solid transparent;
+    border-radius: @rounded-md;
+    background: @colors-surface-soft;
+    color: @colors-body-strong;
     cursor: grab;
+
+    &:hover {
+        border-color: @colors-border-subtle;
+        background: @colors-surface-card;
+    }
 }
 
 .name {
     display: flex;
     line-height: normal;
-    font-size: 1.1rem;
+    font-size: @typography-body-sm;
+    font-weight: @font-weight-medium;
 
     > div {
         display: flex;
@@ -78,6 +90,11 @@
 .ant-avatar {
     width: 2.25rem !important;
     height: 2.25rem !important;
+    background: @colors-surface-card;
+    border: 1px solid @colors-border-subtle;
+    color: @colors-body-strong;
+    font-size: @typography-caption;
+    font-weight: @font-weight-semibold;
 }
 
 .mobile-assignment {
@@ -98,9 +115,9 @@
 .mobile-slot {
     width: 100%;
     min-height: 48px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid @colors-border-subtle;
+    border-radius: @rounded-md;
+    background: @colors-canvas;
     display: grid;
     gap: 2px;
     padding: 8px 12px;
@@ -108,30 +125,30 @@
 }
 
 .mobile-slot.filled {
-    border-color: rgba(159, 232, 112, 0.55);
-    background: rgba(159, 232, 112, 0.09);
+    border-color: fade(@colors-brand-mint, 55%);
+    background: fade(@colors-brand-mint, 16%);
 }
 
 .mobile-slot.confirming {
-    border-color: rgba(208, 50, 56, 0.45);
-    background: rgba(208, 50, 56, 0.07);
+    border-color: fade(@colors-negative, 45%);
+    background: fade(@colors-negative, 7%);
 }
 
 .slot-label {
     font-size: 12px;
-    font-weight: 700;
+    font-weight: @font-weight-semibold;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.68);
+    color: @colors-muted;
 }
 
 .slot-name {
     font-size: 15px;
-    font-weight: 700;
+    font-weight: @font-weight-semibold;
 }
 
 .slot-empty {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.7);
+    color: @colors-muted;
 }
 
 .slot-remove-btn {
@@ -143,7 +160,7 @@
     padding: 0;
     font-size: 12px;
     font-weight: 600;
-    color: #9fe870;
+    color: @colors-brand-mint;
     cursor: pointer;
 }
 
@@ -165,27 +182,27 @@
 }
 
 .slot-confirm-yes {
-    background: rgba(208, 50, 56, 0.85);
-    color: #fff;
+    background: @colors-negative;
+    color: @colors-on-primary;
 }
 
 .slot-confirm-no {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.85);
+    background: @colors-surface-card;
+    color: @colors-body;
 }
 
 .candidate-tap-item {
     width: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid @colors-border-subtle;
+    border-radius: @rounded-md;
+    background: @colors-canvas;
     overflow: hidden;
     transition: border-color .15s;
 }
 
 .candidate-tap-item.expanded {
-    border-color: rgba(159, 232, 112, 0.5);
-    background: rgba(159, 232, 112, 0.06);
+    border-color: fade(@colors-brand-mint, 50%);
+    background: fade(@colors-brand-mint, 12%);
 }
 
 .candidate-tap-row {
@@ -217,9 +234,9 @@
     gap: 6px;
     padding: 8px 6px;
     border-radius: 10px;
-    border: 1px solid rgba(159, 232, 112, 0.35);
-    background: rgba(159, 232, 112, 0.12);
-    color: #9fe870;
+    border: 1px solid fade(@colors-brand-mint, 42%);
+    background: fade(@colors-brand-mint, 16%);
+    color: @colors-brand-teal;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
@@ -232,7 +249,7 @@
 }
 
 .role-btn:not(:disabled):active {
-    background: rgba(159, 232, 112, 0.25);
+    background: fade(@colors-brand-mint, 28%);
 }
 
 .mobile-list-head {
@@ -257,9 +274,9 @@
 
 .empty-list {
     padding: 16px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.04);
-    color: rgba(255, 255, 255, 0.7);
+    border-radius: @rounded-md;
+    background: @colors-surface-soft;
+    color: @colors-muted;
     text-align: center;
 }
 

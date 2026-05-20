@@ -11,7 +11,7 @@
     gap: @spacing-lg;
     padding: @spacing-md @spacing-lg;
     background: @colors-canvas;
-    border-bottom: 1px solid @colors-border-subtle;
+    border-bottom: 1px solid @colors-hairline;
 }
 
 .brand {
@@ -48,9 +48,9 @@
     grid-template-columns: repeat(5, 1fr);
     gap: 0;
     padding: @spacing-xs;
-    background: @colors-canvas;
-    border-top: 1px solid @colors-border-subtle;
-    box-shadow: 0 -8px 24px @colors-shadow-subtle;
+    background: @colors-surface-soft;
+    border-top: 1px solid @colors-hairline;
+    box-shadow: 0 -8px 24px fade(@colors-surface-dark, 10%);
 }
 
 .shell-nav-item {
@@ -61,7 +61,7 @@
     justify-content: center;
     gap: @spacing-xxs;
     padding: @spacing-sm @spacing-xs;
-    border-radius: @rounded-lg;
+    border-radius: @rounded-md;
     color: @colors-body;
     text-decoration: none;
     font-size: @typography-caption;
@@ -69,8 +69,8 @@
 }
 
 .shell-nav-item.active {
-    color: @colors-primary;
-    background: fade(@colors-primary, 14%);
+    color: @colors-on-primary;
+    background: @colors-primary;
 }
 
 .shell-nav-item [nz-icon] {
@@ -83,6 +83,11 @@
 
 nz-content {
     padding: @spacing-lg @spacing-md calc(@spacing-3xl + 64px);
+}
+
+nz-content.public-content {
+    min-height: 100svh;
+    padding: 0;
 }
 
 @media (min-width: 768px) {
@@ -100,7 +105,7 @@ nz-content {
         gap: @spacing-xs;
         padding: @spacing-sm @spacing-2xl;
         border-top: 0;
-        border-bottom: 1px solid @colors-border-subtle;
+        border-bottom: 1px solid @colors-hairline;
     }
 
     .shell-nav-item {
@@ -115,5 +120,9 @@ nz-content {
 
     nz-content {
         padding: @spacing-xl @spacing-2xl @spacing-2xl;
+    }
+
+    nz-content.public-content {
+        padding: 0;
     }
 }

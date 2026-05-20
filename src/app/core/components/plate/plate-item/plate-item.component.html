@@ -81,7 +81,7 @@
                 <button class="candidate-tap-row" type="button" (click)="selectCandidate(item)">
                   <span class="candidate-avatar">
                     @if (!item.avatar_url) {
-                      <nz-avatar nzSrc="../../../../assets/images/avatar.svg" nzIcon="user"></nz-avatar>
+                      <nz-avatar [nzText]="item.name?.slice(0, 1) || '?'"></nz-avatar>
                     }
                     @if (item.avatar_url) {
                       <nz-avatar [nzSrc]="item.avatar_url" nzIcon="user"></nz-avatar>
@@ -137,7 +137,7 @@
                         <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
                           <div nz-col>
                             @if (!item.avatar_url) {
-                              <nz-avatar nzSrc="../../../../assets/images/avatar.svg" nzIcon="user"></nz-avatar>
+                              <nz-avatar [nzText]="item.name?.slice(0, 1) || '?'"></nz-avatar>
                             }
                             @if (item.avatar_url) {
                               <nz-avatar [nzSrc]="item.avatar_url" nzIcon="user"></nz-avatar>
@@ -170,7 +170,7 @@
                         <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
                           <div nz-col>
                             @if (!item.avatar_url) {
-                              <nz-avatar nzSrc="../../../../assets/images/avatar.svg" nzIcon="user"></nz-avatar>
+                              <nz-avatar [nzText]="item.name?.slice(0, 1) || '?'"></nz-avatar>
                             }
                             @if (item.avatar_url) {
                               <nz-avatar [nzSrc]="item.avatar_url" nzIcon="user"></nz-avatar>
@@ -200,7 +200,7 @@
                         <div nz-row nzGutter="8" class="flex-1" nzJustify="space-around" nzAlign="middle">
                           <div nz-col>
                             @if (!item.avatar_url) {
-                              <nz-avatar nzSrc="../../../../assets/images/avatar.svg" nzIcon="user"></nz-avatar>
+                              <nz-avatar [nzText]="item.name?.slice(0, 1) || '?'"></nz-avatar>
                             }
                             @if (item.avatar_url) {
                               <nz-avatar [nzSrc]="item.avatar_url" nzIcon="user"></nz-avatar>

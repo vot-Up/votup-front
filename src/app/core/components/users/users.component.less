@@ -13,11 +13,42 @@
     margin-bottom: @spacing-md;
 
     .filter-row {
+        display: grid !important;
+        grid-template-columns: minmax(240px, 1fr) minmax(160px, 220px) 44px;
+        gap: @spacing-sm;
         align-items: flex-end;
     }
 
     .filter-field {
-        margin-bottom: @spacing-sm;
+        width: 100%;
+        max-width: none;
+        margin-bottom: 0;
+    }
+
+    nz-form-item {
+        margin-bottom: 0;
+    }
+
+    input[nz-input],
+    nz-select {
+        width: 100%;
+    }
+
+    .filter-search-btn button {
+        width: 44px;
+        min-width: 44px;
+        height: 32px;
+        padding: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    .filter-form .filter-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .filter-form .filter-search-btn button {
+        width: 100%;
     }
 }
 

@@ -25,7 +25,7 @@
         </nz-select>
       </div>
 
-      <div nz-col nzXs="24" nzLg="auto" class="filter-field">
+      <div nz-col nzXs="24" nzLg="auto" class="filter-field filter-search-btn">
         <button type="button" (click)="search()" nz-button nzType="primary" nzBlock>
           <span nz-icon nzType="search" nzTheme="outline"></span>
         </button>
@@ -44,7 +44,7 @@
           @if (data?.avatar) {
             <img [src]="data.avatar" alt="">
           } @else {
-            <img src="../../../../assets/images/avatar.svg" alt="">
+            <span class="entity-monogram" aria-hidden="true">{{ data.name?.slice(0, 1) || '?' }}</span>
           }
         </div>
         <div class="expandable-list-primary">{{ data.name }}</div>

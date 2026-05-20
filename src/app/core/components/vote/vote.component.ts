@@ -59,7 +59,11 @@ export class VoteComponent extends BaseComponent<Voting> implements OnInit {
     public toggleExpand(id: number): void {
         this.expandedIds.update(ids => {
             const next = new Set(ids);
-            next.has(id) ? next.delete(id) : next.add(id);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
             return next;
         });
     }

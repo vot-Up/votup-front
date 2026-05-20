@@ -1,14 +1,45 @@
-@if (!isVoting()) {
-  <section class="login-elector-page">
-    <div class="login-elector-panel">
-      <div class="logo">
+@if (!isVoting() && unavailable(); as unavailableState) {
+  <section class="voting-status-page" [class.voting-status-page-upcoming]="unavailableState.kind === 'upcoming'">
+    <div class="voting-status-copy">
+      <div class="auth-brand logo">
         <img src="../../../assets/images/logo-votup.svg" height="32" alt="VotUp">
         <span>VotUp</span>
       </div>
-      <h1>Vamos lá!</h1>
-      <p>Digite o seu telefone para votar.</p>
 
-      <form class="login-form" nz-form [formGroup]="formGroup" (ngSubmit)="getVotingUser()">
+      <span class="status-eyebrow">{{ unavailableState.eyebrow }}</span>
+      <h1>{{ unavailableState.title }}</h1>
+      <p>{{ unavailableState.description }}</p>
+
+      <div class="status-actions" [class.status-actions-single]="!unavailableState.canRetry">
+        @if (unavailableState.canRetry) {
+          <button nz-button nzType="primary" class="primary-action" type="button" (click)="tryAnotherPhone()">
+            Tentar outro telefone
+          </button>
+        }
+        <button nz-button [nzType]="unavailableState.canRetry ? 'default' : 'primary'" [class.primary-action]="!unavailableState.canRetry" [class.secondary-action]="unavailableState.canRetry" type="button" (click)="cancel()">
+          Voltar ao início
+        </button>
+      </div>
+    </div>
+
+    <div class="voting-status-visual">
+      <img [src]="unavailableState.illustration" [alt]="unavailableState.alt">
+    </div>
+  </section>
+}
+@else if (!isVoting()) {
+  <section class="login-elector-page">
+    <div class="auth-panel login-elector-panel">
+      <div class="auth-brand logo">
+        <img src="../../../assets/images/logo-votup.svg" height="32" alt="VotUp">
+        <span>VotUp</span>
+      </div>
+      <div class="auth-copy">
+        <h1>Quero votar</h1>
+        <p>Digite o telefone cadastrado para localizar sua votação disponível.</p>
+      </div>
+
+      <form class="auth-form login-form" nz-form [formGroup]="formGroup" (ngSubmit)="getVotingUser()">
         <nz-form-item>
           <nz-form-control nzErrorTip="Número de telefone inválido">
             <nz-input-group nzPrefixIcon="phone">
@@ -17,8 +48,8 @@
           </nz-form-control>
         </nz-form-item>
 
-        <div class="actions">
-          <button nz-button nzType="primary" class="primary-action" (click)="getVotingUser()" [disabled]="!formGroup.valid">
+        <div class="auth-actions actions">
+          <button nz-button nzType="primary" class="primary-action" type="submit" [disabled]="!formGroup.valid">
             Prosseguir
           </button>
           <button nz-button class="secondary-action" type="button" (click)="cancel()">
@@ -27,8 +58,14 @@
         </div>
       </form>
     </div>
-    <div class="login-elector-visual">
-      <img src="assets/images/login.svg" alt="Ilustração de votação">
+    <div class="auth-visual login-elector-visual">
+      <div class="auth-visual-panel">
+        <img src="assets/images/login.svg" alt="Ilustração de votação segura">
+      </div>
+      <div class="auth-assurance">
+        <strong>Acesso do eleitor</strong>
+        <span>O telefone identifica sua participação e libera apenas a eleição vinculada ao seu cadastro.</span>
+      </div>
     </div>
   </section>
 }

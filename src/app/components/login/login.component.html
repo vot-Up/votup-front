@@ -1,17 +1,19 @@
 <section class="login-page">
-    <div class="login-panel">
-        <div class="logo">
+    <div class="auth-panel login-panel">
+        <div class="auth-brand logo">
             <img src="../../../assets/images/logo-votup.svg" height="32" alt="VotUp">
             <span>VotUp</span>
         </div>
-        <h1>Bem-vindo de volta</h1>
-        <p>Entre com seu email e senha para acessar o painel administrativo.</p>
+        <div class="auth-copy">
+            <h1>Bem-vindo de volta</h1>
+            <p>Acesse o painel administrativo para acompanhar usuários, chapas e etapas da eleição.</p>
+        </div>
 
-        <form nz-form class="login-form" [formGroup]="formGroup">
+        <form nz-form class="auth-form login-form" [formGroup]="formGroup">
             <nz-form-item>
                 <nz-form-control nzErrorTip="Por favor, digite seu email!">
                     <nz-input-group nzPrefixIcon="user">
-                        <input type="email" nz-input formControlName="email" placeholder="Email" autocomplete="off"/>
+                        <input type="email" nz-input formControlName="email" placeholder="Email administrativo" autocomplete="username"/>
                     </nz-input-group>
                 </nz-form-control>
             </nz-form-item>
@@ -25,7 +27,7 @@
                                formControlName="password"
                                minlength="4"
                                maxlength="64"
-                               autocomplete="off"
+                               autocomplete="current-password"
                                required>
                     </nz-input-group>
                 </nz-form-control>
@@ -38,16 +40,23 @@
             </div>
 
             @if (test()) {
-                <nz-alert nzType="warning" class="login-alert" nzMessage="Usuario não encontrado" nzShowIcon></nz-alert>
+                <nz-alert nzType="warning" class="login-alert" nzMessage="Usuário não encontrado. Verifique o email e tente novamente." nzShowIcon></nz-alert>
             }
 
-            <button nzBlock nz-button nzType="primary" class="submit-button" (click)="login()" [disabled]="!formGroup.valid">
-                Entrar
-            </button>
+            <div class="auth-actions login-actions">
+                <button nzBlock nz-button nzType="primary" class="submit-button" (click)="login()" [disabled]="!formGroup.valid">
+                    Entrar
+                </button>
+            </div>
         </form>
     </div>
-    <div class="login-visual">
-        <img src="assets/images/login.svg" alt="Ilustração de login">
+    <div class="auth-visual login-visual">
+        <div class="auth-visual-panel">
+            <img src="assets/images/login.svg" alt="Ilustração de login seguro">
+        </div>
+        <div class="auth-assurance">
+            <strong>Ambiente administrativo verificado</strong>
+            <span>Use credenciais autorizadas para operar dados sensíveis da eleição.</span>
+        </div>
     </div>
 </section>
-

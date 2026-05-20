@@ -7,31 +7,57 @@
 @import 'styles/design-tokens';
 
 // Additional global-only variables
-@shadow-drag-preview: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+@shadow-drag-preview: 0 5px 5px -3px fade(@colors-surface-dark, 18%), 0 8px 10px 1px fade(@colors-surface-dark, 12%), 0 3px 14px 2px fade(@colors-surface-dark, 10%);
 
-// NG-ZORRO OVERRIDES// NG-ZORRO OVERRIDES
+// NG-ZORRO OVERRIDES
 // View all variables: https://github.com/NG-ZORRO/ng-zorro-antd/blob/master/components/style/themes/default.less
 @primary-color: @colors-primary;
-@font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+@font-family: @font-family-body;
 @text-color: @colors-body;
 @heading-color: @colors-ink;
 @border-radius-base: @rounded-md;
-@btn-border-radius-base: @rounded-xl;
-@btn-border-radius-sm: @rounded-lg;
+@btn-border-radius-base: @rounded-md;
+@btn-border-radius-sm: @rounded-sm;
 
 // SHARED MIXINS
 @import 'styles/expandable-list';
 
 // COMPONENT STYLES
+html,
 body {
-    background-color: @colors-canvas-soft;
-    color: @colors-body;
-    font-family: @font-family;
+    min-height: 100%;
+    margin: 0;
 }
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: @colors-canvas;
+    color: @colors-body;
+    font-family: @font-family;
+    font-size: @typography-body-md;
+    line-height: 1.55;
+}
+
+h1,
 h2 {
     margin-bottom: 0;
     color: @colors-ink;
+    font-family: @font-family-display;
+    font-weight: @font-weight-display;
+    letter-spacing: -0.05em;
+}
+
+h1 {
+    line-height: 1;
+}
+
+h2 {
+    line-height: 1.05;
 }
 
 .logo {
@@ -48,19 +74,21 @@ h2 {
 
 .ant-layout,
 .ant-layout-footer {
-    background-color: @colors-canvas-soft;
+    background-color: @colors-canvas;
 }
 
 .ant-layout-header {
     padding: 0 @spacing-2xl;
     background-color: @colors-canvas;
-    box-shadow: 0 2px @spacing-sm @colors-shadow-subtle;
+    border-bottom: 1px solid @colors-hairline;
+    box-shadow: none;
     align-items: center;
 }
 
 .ant-layout-footer {
+    background-color: @colors-surface-soft;
     font-size: @typography-caption;
-    opacity: .55;
+    color: @colors-muted;
 }
 
 .layout {
@@ -93,9 +121,11 @@ nz-content {
 }
 
 .inner-content {
-    background: @colors-canvas;
+    background: @colors-surface-soft;
     padding: @spacing-xl;
     margin-top: @spacing-lg;
+    border: 1px solid @colors-hairline;
+    border-radius: @rounded-lg;
 }
 
 nz-footer {
@@ -104,9 +134,9 @@ nz-footer {
 
 .ant-menu-item {
     line-height: 32px;
-    border: 1px solid @colors-canvas;
+    border: 1px solid transparent;
     margin-right: @spacing-xs;
-    border-radius: @rounded-pill;
+    border-radius: @rounded-md;
 }
 
 .ant-menu-horizontal {
@@ -123,7 +153,9 @@ nz-footer {
 }
 
 .ant-menu-item.ant-menu-item-selected {
-    border: 1px solid @primary-color;
+    background: @colors-surface-card;
+    border-color: @colors-hairline;
+    color: @colors-ink;
 }
 
 .ant-menu-horizontal > .ant-menu-item::after {
@@ -143,7 +175,7 @@ nz-footer {
 }
 
 .logout {
-    color: @primary-color;
+    color: @colors-ink;
 }
 
 .ant-table table {
@@ -159,10 +191,11 @@ nz-footer {
 .ant-modal {
     .ant-modal-header {
         background: @colors-canvas;
-        color: @colors-canvas;
+        color: @colors-ink;
 
         .ant-modal-title {
-            color: @colors-body;
+            color: @colors-ink;
+            font-weight: @font-weight-semibold;
         }
     }
 
@@ -176,14 +209,15 @@ nz-footer {
 .list {
     height: 380px;
     overflow-y: auto;
-    background-color: @colors-canvas;
-    border: 1px solid @colors-border-subtle;
+    background-color: @colors-surface-soft;
+    border: 1px solid @colors-hairline;
+    border-radius: @rounded-lg;
     display: block;
 }
 
 .list-item {
     padding: @spacing-sm;
-    border-bottom: 1px solid @colors-border-subtle;
+    border-bottom: 1px solid @colors-hairline;
     cursor: move;
     background: @colors-canvas;
 
@@ -193,8 +227,8 @@ nz-footer {
 }
 
 .list-head {
-    background-color: @colors-surface-muted;
-    border: 1px solid @colors-border-subtle;
+    background-color: @colors-surface-card;
+    border: 1px solid @colors-hairline;
     border-bottom: 0;
     padding: @spacing-sm;
 }
@@ -261,14 +295,14 @@ nz-footer {
 /* END DRAG AND DROP */
 
 .success {
-    background-color: @colors-positive;
-    border: 1px solid @colors-positive;
-    color: @colors-canvas;
+    background-color: @colors-brand-teal;
+    border: 1px solid @colors-brand-teal;
+    color: @colors-on-dark;
 
     &:hover {
-        background-color: darken(@colors-positive, 8%);
-        border: 1px solid darken(@colors-positive, 8%);
-        color: @colors-canvas;
+        background-color: lighten(@colors-brand-teal, 6%);
+        border: 1px solid lighten(@colors-brand-teal, 6%);
+        color: @colors-on-dark;
     }
 }
 

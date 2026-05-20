@@ -1,15 +1,31 @@
+@import (reference) "../../../../../theme.less";
+
+.profile-editor-form {
+    display: grid;
+    gap: @spacing-md;
+}
+
 .avatar-row {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: @spacing-md;
 }
 
 .image-mask {
     flex: 0 0 auto;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
     overflow: hidden;
+    border: 1px solid @colors-border-subtle;
+    border-radius: @rounded-full;
+    background: @colors-surface-card;
+    color: @colors-muted;
+
+    .anticon {
+        font-size: @typography-title-md;
+    }
 
     img {
         display: block;
@@ -21,10 +37,27 @@
 
 .avatar-btns {
     display: flex;
-    gap: 8px;
+    gap: @spacing-xs;
     flex-wrap: wrap;
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: @spacing-md;
+}
+
 nz-form-item {
-    margin-bottom: 12px;
+    margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+    .avatar-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }

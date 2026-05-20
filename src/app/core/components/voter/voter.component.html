@@ -41,7 +41,7 @@
           @if (data?.avatar) {
             <img [src]="data.avatar" alt="">
           } @else {
-            <img src="../../../../assets/images/avatar.svg" alt="">
+            <span class="entity-monogram" aria-hidden="true">{{ data.name?.slice(0, 1) || '?' }}</span>
           }
         </div>
         <div class="expandable-list-primary">{{ data.name }}</div>

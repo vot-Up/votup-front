@@ -1,9 +1,11 @@
-import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
+import { HttpContextToken, HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from "@angular/common/http";
 import {Observable} from "rxjs";
 import {tap} from "rxjs/operators";
 import {inject} from "@angular/core";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {AuthService} from "../../services/auth.service";
+
+export const SKIP_ERROR_TOAST = new HttpContextToken<boolean>(() => false);
 
 export const authInterceptorFn: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
   const toast = inject(NzMessageService);
@@ -12,7 +14,11 @@ export const authInterceptorFn: HttpInterceptorFn = (req: HttpRequest<unknown>, 
   req = addHeader(req);
   return next(req).pipe(
     tap({
-      error: (err: HttpErrorResponse) => handleError(err, toast, authService)
+      error: (err: HttpErrorResponse) => {
+        if (!req.context.get(SKIP_ERROR_TOAST)) {
+          handleError(err, toast, authService);
+        }
+      }
     })
   );
 };

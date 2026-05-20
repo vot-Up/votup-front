@@ -1,42 +1,44 @@
-<form nz-form [formGroup]="formGroup" [nzLayout]="'vertical'" novalidate>
+<form nz-form [formGroup]="formGroup" [nzLayout]="'vertical'" class="profile-editor-form" novalidate>
   <nz-form-item>
     <div class="avatar-row">
       <div class="image-mask">
         @if (!avatar()) {
-          <img width="80" src='..\..\..\..\assets\images\avatar.svg' alt="avatar">
+          <span nz-icon nzType="user" nzTheme="outline" aria-hidden="true"></span>
         } @else {
           <img [src]="avatar()" alt="">
         }
       </div>
       <input #image type="file" accept=".jpeg,.png,.jpg" (change)="changeFile($event)" hidden>
       <div class="avatar-btns">
-        <button nz-button nzType="primary" type="button" (click)="image.click()">Nova foto</button>
-        <button nz-button nzType="default" [disabled]="!avatar()" type="button" (click)="clearFile()">Deletar</button>
+        <button nz-button nzType="default" type="button" (click)="image.click()">Nova foto</button>
+        <button nz-button nzType="default" [disabled]="!avatar()" type="button" (click)="clearFile()">Remover</button>
       </div>
     </div>
   </nz-form-item>
 
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="name">Nome</nz-form-label>
-    <nz-form-control nzErrorTip="Nome inválido!">
-      <input nz-input id="name" type="text" maxlength="64" placeholder="Digite o nome completo" formControlName="name"/>
-    </nz-form-control>
-  </nz-form-item>
+  <div class="form-grid">
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="name">Nome</nz-form-label>
+      <nz-form-control nzErrorTip="Nome inválido!">
+        <input nz-input id="name" type="text" maxlength="64" placeholder="Digite o nome completo" formControlName="name"/>
+      </nz-form-control>
+    </nz-form-item>
 
-  <nz-form-item>
-    <nz-form-label nzFor="email">E-mail</nz-form-label>
-    <nz-form-control nzErrorTip="E-mail inválido!">
-      <input nz-input appLowercase id="email" type="email" maxlength="50" placeholder="Digite o e-mail" formControlName="email"/>
-    </nz-form-control>
-  </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzFor="email">E-mail</nz-form-label>
+      <nz-form-control nzErrorTip="E-mail inválido!">
+        <input nz-input appLowercase id="email" type="email" maxlength="50" placeholder="Digite o e-mail" formControlName="email"/>
+      </nz-form-control>
+    </nz-form-item>
 
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="cell">Celular</nz-form-label>
-    <nz-form-control nzErrorTip="Número inválido!">
-      <input nz-input id="cell" formControlName="cellphone" maxlength="15" type="text"
-        [mask]="'(00) 00000-0000'" placeholder="Ex.: (92) 99999-9999"/>
-    </nz-form-control>
-  </nz-form-item>
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="cell">Celular</nz-form-label>
+      <nz-form-control nzErrorTip="Número inválido!">
+        <input nz-input id="cell" formControlName="cellphone" maxlength="15" type="text"
+          [mask]="'(00) 00000-0000'" placeholder="Ex.: (92) 99999-9999"/>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
 
   @if (object().is_superuser || authService.user.is_superuser) {
     <nz-form-item>

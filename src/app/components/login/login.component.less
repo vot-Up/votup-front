@@ -1,98 +1,60 @@
 @import (reference) "../../../theme.less";
+@import (reference) "../../../styles/auth-screen.less";
 
 .login-page {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    gap: @spacing-2xl;
-    background: @colors-canvas-soft;
-    padding: @spacing-xl @spacing-lg;
+    .auth-screen(@colors-brand-lavender, @colors-brand-mint);
+    .auth-responsive();
 }
 
-.login-panel,
-.login-visual {
-    display: flex;
-    flex-direction: column;
+.auth-panel {
+    .auth-panel();
 }
 
-.login-panel {
-    gap: @spacing-lg;
+.auth-brand {
+    .auth-brand();
 }
 
-.logo {
-    display: inline-flex;
-    align-items: center;
-    gap: @spacing-sm;
-    color: @colors-ink;
-    font-size: @typography-body-sm;
-    font-weight: @font-weight-semibold;
-
-    img {
-        margin-top: -@spacing-xs;
-    }
+.auth-copy {
+    .auth-copy();
 }
 
-h1 {
-    margin: 0;
-    color: @colors-ink;
-    font-size: clamp(32px, 7vw, @typography-display-md);
-    font-weight: @font-weight-display;
-    line-height: .95;
+.auth-form {
+    .auth-form(@colors-brand-lavender);
 }
 
-p {
-    margin: 0;
-    color: @colors-body;
-    font-size: @typography-body-md;
+.auth-actions {
+    .auth-actions();
 }
 
-.login-form {
-    width: 100%;
-    max-width: 420px;
+.auth-visual {
+    .auth-visual(@colors-brand-lavender);
+}
+
+.auth-visual-panel {
+    .auth-visual-panel(@colors-brand-lavender);
+}
+
+.auth-assurance {
+    .auth-assurance();
 }
 
 .login-link {
-    text-align: right;
-    margin-bottom: @spacing-md;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -@spacing-xs;
 
     a {
+        height: auto;
         padding: 0;
+        color: @colors-ink;
+        font-size: @typography-body-sm;
+        font-weight: @font-weight-medium;
+        text-decoration: underline;
     }
 }
 
 .login-alert {
-    margin-bottom: @spacing-md;
-}
-
-.submit-button {
-    min-height: 48px;
-    border-radius: @rounded-xl;
-}
-
-.login-visual {
-    align-items: center;
-
-    img {
-        max-width: min(100%, 520px);
-        width: 100%;
-        height: auto;
-        display: block;
-    }
-}
-
-@media (min-width: 768px) {
-    .login-page {
-        flex-direction: row;
-        align-items: center;
-        padding: @spacing-3xl @spacing-2xl;
-    }
-
-    .login-panel,
-    .login-visual {
-        width: 50%;
-    }
-
-    .login-visual {
-        justify-content: flex-end;
-    }
+    border-color: fade(@colors-warning, 42%);
+    border-radius: @rounded-md;
+    background: fade(@colors-warning, 10%);
 }

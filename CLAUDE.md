@@ -39,10 +39,15 @@ Single test file: Karma has no built-in filter, but you can focus tests in the s
 
 ### Design System
 
-Design tokens are defined in `src/styles/design-tokens.less` and imported by `src/theme.less` and component Less files. The design language (`DESIGN.md`) is based on Wise branding:
-- Primary accent: `@colors-primary` (`#9fe870`) — used only for CTA, never as success/status indicator
-- Canonical radius: `@rounded-xl` (24 px) for buttons and cards
-- Breakpoints: mobile `<768px`, tablet `768–1023px`, desktop `≥1024px`
+`DESIGN.md` is the canonical visual contract. Keep `src/styles/design-tokens.less` aligned with it, and import those tokens through `src/theme.less` or component Less files instead of hardcoding colors, typography, spacing, or radius.
+
+Current direction from `DESIGN.md`:
+- Canvas: warm cream `@colors-canvas` (`#fffaf0`) with soft cream surfaces, never cool gray as the page floor.
+- Primary CTA and main ink: near-black `@colors-primary` / `@colors-ink` (`#0a0a0a`) with white `@colors-on-primary` text.
+- Accent cards: rotate the saturated palette `@colors-brand-pink`, `@colors-brand-teal`, `@colors-brand-lavender`, `@colors-brand-peach`, `@colors-brand-ochre`, and cream card surfaces.
+- Typography: display headings use `@font-family-display`, weight `@font-weight-display` (500), tight line-height, and negative letter spacing; UI/body text uses `@font-family-body`.
+- Shape: buttons/inputs use `@rounded-md` (12 px), content cards use `@rounded-lg` (16 px), and feature/illustration cards use `@rounded-xl` (24 px).
+- Breakpoints: mobile `<768px`, tablet `768–1023px`, desktop `≥1024px`.
 
 ### Expandable List Pattern
 

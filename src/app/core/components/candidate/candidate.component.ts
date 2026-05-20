@@ -95,6 +95,7 @@ export class CandidateComponent extends BaseComponent<Candidate> implements OnIn
     const modal = this.responsiveModal.create({
       nzTitle: 'Cadastrar candidato',
       nzContent: CandidateItemComponent,
+      nzWidth: 760,
     });
     modal.afterClose.subscribe(() => {
       this.search();
@@ -106,6 +107,7 @@ export class CandidateComponent extends BaseComponent<Candidate> implements OnIn
     const modal = this.responsiveModal.create({
       nzTitle: 'Editar dados do candidato',
       nzContent: CandidateItemComponent,
+      nzWidth: 760,
       nzAfterClose: this.modalClosedEmitter,
       nzData: {
         pk: candidate.id,

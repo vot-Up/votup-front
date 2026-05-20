@@ -1,0 +1,263 @@
+@import (reference) 'design-tokens';
+
+.auth-screen(@accent; @accent-soft) {
+    min-height: 100svh;
+    height: 100svh;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: center;
+    gap: @spacing-xl;
+    overflow: hidden;
+    padding: @spacing-lg;
+    background:
+        linear-gradient(90deg, @colors-canvas 0 54%, fade(@accent-soft, 48%) 54% 100%),
+        @colors-canvas;
+    color: @colors-body;
+}
+
+.auth-panel() {
+    width: min(100%, 420px);
+    display: grid;
+    gap: @spacing-md;
+    justify-self: center;
+}
+
+.auth-brand() {
+    display: inline-flex;
+    align-items: center;
+    gap: @spacing-sm;
+    width: fit-content;
+    color: @colors-ink;
+    font-size: @typography-body-sm;
+    font-weight: @font-weight-semibold;
+
+    img {
+        width: 28px;
+        height: 28px;
+        margin: 0;
+    }
+}
+
+.auth-copy() {
+    display: grid;
+    gap: @spacing-xs;
+
+    h1 {
+        max-width: 13ch;
+        margin: 0;
+        color: @colors-ink;
+        font-family: @font-family-display;
+        font-size: clamp(34px, 4vw, 46px);
+        font-weight: @font-weight-display;
+        line-height: 1.04;
+        letter-spacing: -0.045em;
+    }
+
+    p {
+        max-width: 44ch;
+        margin: 0;
+        color: @colors-body;
+        font-size: @typography-body-sm;
+        line-height: 1.5;
+    }
+}
+
+.auth-form(@accent) {
+    display: grid;
+    gap: @spacing-sm;
+    width: 100%;
+
+    nz-form-item {
+        margin-bottom: 0;
+    }
+
+    :host ::ng-deep .ant-input-affix-wrapper,
+    :host ::ng-deep .ant-input-group-wrapper,
+    :host ::ng-deep .ant-input-group-addon,
+    :host ::ng-deep input[nz-input] {
+        border-radius: @rounded-md;
+    }
+
+    :host ::ng-deep .ant-input-affix-wrapper {
+        min-height: 42px;
+        padding: 0 @spacing-md;
+        border-color: @colors-hairline;
+        background: @colors-canvas;
+        box-shadow: none;
+        transition: border-color .18s ease-out, box-shadow .18s ease-out, background-color .18s ease-out;
+    }
+
+    :host ::ng-deep .ant-input-affix-wrapper:hover {
+        border-color: fade(@colors-primary, 22%);
+    }
+
+    :host ::ng-deep .ant-input-affix-wrapper-focused,
+    :host ::ng-deep .ant-input-affix-wrapper:focus-within {
+        border-color: @colors-primary;
+        box-shadow: 0 0 0 3px fade(@accent, 22%);
+        background: @colors-canvas;
+    }
+
+    :host ::ng-deep .ant-input-prefix {
+        color: @colors-muted;
+    }
+
+    :host ::ng-deep input[nz-input] {
+        color: @colors-ink;
+        font-size: @typography-body-sm;
+        background: transparent;
+    }
+
+    :host ::ng-deep input[nz-input]::placeholder {
+        color: @colors-muted-soft;
+    }
+
+    :host ::ng-deep input[nz-input]:-webkit-autofill,
+    :host ::ng-deep input[nz-input]:-webkit-autofill:hover,
+    :host ::ng-deep input[nz-input]:-webkit-autofill:focus {
+        -webkit-text-fill-color: @colors-ink;
+        box-shadow: 0 0 0 1000px @colors-canvas inset;
+        transition: background-color 9999s ease-out;
+    }
+}
+
+.auth-actions() {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: @spacing-sm;
+    margin-top: @spacing-xs;
+
+    button {
+        min-height: 44px;
+        border-radius: @rounded-md;
+        font-weight: @font-weight-semibold;
+    }
+
+    .primary-action,
+    .submit-button {
+        background: @colors-primary;
+        border-color: @colors-primary;
+        color: @colors-on-primary;
+    }
+
+    .secondary-action {
+        background: @colors-surface-card;
+        border: 1px solid @colors-hairline;
+        color: @colors-ink;
+    }
+
+    button[disabled],
+    button[disabled]:hover {
+        background: @colors-surface-card;
+        border-color: @colors-hairline;
+        color: @colors-muted-soft;
+    }
+}
+
+.auth-visual(@accent) {
+    display: none;
+    justify-self: center;
+    width: min(100%, 520px);
+}
+
+.auth-visual-panel(@accent) {
+    position: relative;
+    min-height: 300px;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    overflow: hidden;
+    border: 1px solid fade(@colors-primary, 8%);
+    border-radius: @rounded-xl;
+    background:
+        radial-gradient(circle at 86% 18%, fade(@colors-brand-mint, 68%) 0 13%, transparent 14%),
+        linear-gradient(135deg, fade(@accent, 92%), fade(@accent, 68%));
+    box-shadow: 0 22px 44px fade(@colors-surface-dark, 14%);
+
+    &::before,
+    &::after {
+        content: '';
+        position: absolute;
+        border-radius: @rounded-lg;
+        background: fade(@colors-canvas, 68%);
+        border: 1px solid fade(@colors-primary, 8%);
+    }
+
+    &::before {
+        width: 156px;
+        height: 92px;
+        left: 36px;
+        top: 34px;
+        transform: rotate(-6deg);
+    }
+
+    &::after {
+        width: 120px;
+        height: 72px;
+        right: 38px;
+        bottom: 42px;
+        transform: rotate(7deg);
+    }
+
+    img {
+        position: relative;
+        z-index: 1;
+        width: min(72%, 380px);
+        height: auto;
+        padding: @spacing-md;
+        border-radius: @rounded-xl;
+        background: transparent;
+        filter: drop-shadow(0 22px 28px fade(@colors-surface-dark, 20%));
+    }
+}
+
+.auth-assurance() {
+    display: grid;
+    gap: @spacing-sm;
+    margin-top: @spacing-xs;
+    color: @colors-body;
+    font-size: @typography-body-sm;
+
+    strong {
+        color: @colors-ink;
+        font-weight: @font-weight-semibold;
+    }
+
+    span {
+        display: block;
+        max-width: 42ch;
+    }
+}
+
+.auth-responsive() {
+    @media (min-width: 900px) {
+        grid-template-columns: minmax(320px, .58fr) minmax(380px, .82fr);
+        padding: @spacing-2xl 7vw;
+    }
+
+    @media (min-width: 900px) {
+        .auth-panel {
+            justify-self: start;
+        }
+
+        .auth-visual {
+            display: block;
+        }
+    }
+
+    @media (max-width: 899px) {
+        padding: @spacing-md;
+        background: @colors-canvas;
+
+        .auth-panel {
+            justify-self: stretch;
+            margin: 0 auto;
+        }
+
+        .auth-copy h1 {
+            max-width: 13ch;
+            font-size: clamp(32px, 10vw, 40px);
+        }
+    }
+}

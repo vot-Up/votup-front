@@ -1,21 +1,63 @@
-.photo {
-  position: absolute;
-  transform: translate(-50%, -50%);
+@import (reference) "../../../../../theme.less";
+
+.profile-editor-form {
+    display: grid;
+    gap: @spacing-md;
 }
 
-.noState {
-  width: 100%;
+.avatar-row {
+    display: flex;
+    align-items: center;
+    gap: @spacing-md;
 }
 
-.full-width {
-  width: 100%;
+.image-mask {
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid @colors-border-subtle;
+    border-radius: @rounded-full;
+    background: @colors-surface-card;
+    color: @colors-muted;
+
+    .anticon {
+        font-size: @typography-title-md;
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
 }
 
-.mr-32 {
-  margin-right: 32px;
+.avatar-btns {
+    display: flex;
+    gap: @spacing-xs;
+    flex-wrap: wrap;
 }
 
-.mr-36-8 {
-    margin-left: 36px;
-    margin-right: 8px;
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: @spacing-md;
+}
+
+nz-form-item {
+    margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+    .avatar-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }

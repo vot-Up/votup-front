@@ -60,7 +60,11 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
     public toggleExpand(id: number): void {
         this.expandedIds.update(ids => {
             const next = new Set(ids);
-            next.has(id) ? next.delete(id) : next.add(id);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
             return next;
         });
     }
@@ -87,7 +91,8 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
     public openModal(): void {
         const modal = this.responsiveModal.create({
             nzTitle: 'Cadastrar usuário',
-            nzContent: UsersItemComponent
+            nzContent: UsersItemComponent,
+            nzWidth: 760,
         });
         modal.afterClose.subscribe(() => {
             this.search();
@@ -98,6 +103,7 @@ export class UsersComponent extends BaseComponent<User> implements OnInit {
         const modal = this.responsiveModal.create({
             nzTitle: 'Editar dados do usuário',
             nzContent: UsersItemComponent,
+            nzWidth: 760,
             nzAfterClose: this.modalClosedEmitter,
             nzData: {
                 pk: user.id,

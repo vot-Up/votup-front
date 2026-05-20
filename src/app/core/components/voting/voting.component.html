@@ -39,7 +39,7 @@
                 <div class="candidate-list">
                   <div class="candidate-row">
                     <ng-container *ngIf="getCandidatePlate('P', plate) as president">
-                      <nz-avatar class="candidate-avatar" [nzSrc]="president.avatar || president.avatar_url || 'assets/images/avatar.svg'"></nz-avatar>
+                      <nz-avatar class="candidate-avatar" [nzSrc]="president.avatar || president.avatar_url || null" nzIcon="user"></nz-avatar>
                       <div>
                         <div class="candidate-name">{{ president.name }}</div>
                         <div class="candidate-role">Presidente</div>
@@ -49,7 +49,7 @@
 
                   <div class="candidate-row">
                     <ng-container *ngIf="getCandidatePlate('V', plate) as vice">
-                      <nz-avatar class="candidate-avatar" [nzSrc]="vice.avatar || vice.avatar_url || 'assets/images/avatar.svg'"></nz-avatar>
+                      <nz-avatar class="candidate-avatar" [nzSrc]="vice.avatar || vice.avatar_url || null" nzIcon="user"></nz-avatar>
                       <div>
                         <div class="candidate-name">{{ vice.name }}</div>
                         <div class="candidate-role">Vice-presidente</div>
